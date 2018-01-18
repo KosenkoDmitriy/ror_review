@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Review Maiden</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">  --> 
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700,800' rel='stylesheet' type='text/css'>
+    <%= stylesheet_link_tag 'bootstrap.min','fullcalendar','matrix-style','matrix-media','font-awesome','jquery.gritter', 'home' %>
+<script type="text/javascript">
+  <%= country = ""%>
+  <%= state = ""%>
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.js"></script>
+</head>
+<body>
+  <div id="sidebar">
+    <a href="<%= home_index_path %>" class="visible-phone"><i class="icon icon-home"></i> Dashboard</a>
+    <ul>
+      <li ><a href="<%= home_index_path %>"><i class="icon icon-home"></i> <span>Dashboard</span></a> </li>
+      <li> <a href="<%= home_reviews_path %>"><i class="icon icon-signal"></i> 
+      <span>Reviews</span></a> </li>
+      <li> <a href="<%= home_location_listing_path %>"><i class="icon icon-inbox"></i> <span>Locations
+      </span></a> </li>
+      <li><a href="#"><i class="icon icon-th"></i>
+      <span>Reports  </span></a></li>
+      <% if current_user.has_role?(:Client) || current_user.has_role?(:superadmin) %>
+        <li><a href="<%= home_requests_path %>"><i class="icon icon-fullscreen"></i>
+        <span>Requests</span></a>
+        </li>
+        <li ><a  href="<%= home_settings_user_path %>" ><i class="icon icon-cog"></i> <span>Settings</span> </a>    
+        </li>
+      <%end%>
+    </ul>
+  </div>
+  <div id="content">
+    <div id="content-header">
+    </div>
+  <div class="container">
+</head>
+<body>
+  <div class="formTittle">
+    <h4>Request To Add Location</h4>
+  </div>
+    <%= form_for :location, url:send_request_add_location_path do |f| %>
+      <div class="form-group">  
+        <div class="col-sm-12"> 
+           <%= f.text_field :name, placeholder: "Client Name",class: "form-control formInputlocation " %>
+        </div>
+      </div>
+      <div class="form-group">  
+        <div class="col-sm-12">          
+          <%= f.text_field :street, placeholder: "Street Address",class: "form-control formInputlocation " %>
+        </div>
+      </div>
+      <div class="form-group">  
+        <div class="col-sm-12">          
+          <%= f.select :country, CS.countries.sort_by{|k, v| v.upcase}.collect {|code, country| [country, code] }, prompt: "Country" ,class: "form-control formInputlocation"%>
+        </div>
+      </div>
+      <div class="form-group">  
+        <div class="col-sm-12">          
+          <%= f.select :state, "", prompt: "State" ,class: "form-control formInputlocation"%> 
+        </div>
+      </div>
+      <div class="form-group">  
+        <div class="col-sm-12">          
+          <%= f.select :city, CS.cities(state,country), prompt: " City" ,class: "form-control formInputlocation"%>
+        </div>
+      </div>
+      <div class="form-group">  
+        <div class="col-sm-12">          
+          <%= f.text_field :zipcode, placeholder: "Postal Code",class: "form-control formInputlocation" %>
+        </div>
+      </div>
+      <div class="form-group">  
+        <div class="col-sm-12"> 
+          <%= f.text_field :user_name, placeholder: "Primary Contact Name",class: "form-control formInputlocation " %>
+        </div>
+      </div>
+      <div class="form-group">  
+        <div class="col-sm-12">          
+          <%= f.text_field :location_phone_no,  placeholder:"Location Phone Number", class: "form-control formInputlocation" %>
+        </div>
+      </div>
+      <div class="form-group">  
+        <div class="col-sm-12">          
+          <%= f.text_field :google_place_id, placeholder: "Google Place Url",class: "form-control formInputlocation"%>
+        </div>
+      </div>
+       <div class="form-group">  
+        <div class="col-sm-12">          
+          <%= f.text_field :google_location_id, placeholder: "Google Location Id",class: "form-control formInputlocation"%>
+        </div>
+      </div>
+      <div class="form-group">  
+        <div class="col-sm-offset-6 col-sm-8 buttonsLocation">
+          <%= f.hidden_field :location_country, placeholder: "country" %>
+          <%= f.hidden_field :location_state, placeholder: "state" %>
+          <%= f.hidden_field :location_city, placeholder: "city" %>
+          <%= link_to "CANCEL",home_index_path, class: "btn btn-default locationCancelButton" , method: :get%>
+          <%= f.submit "Send Request",class: "btn btn-success addLocationbutton",id: "request_to_add_location_button" %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
+</div> 
+<script>
+//on request to add location submit button checks the validation of fields 
+ $(document).ready(function(){
+    var phoneReg =  /^\+(?:[0-9] ?){10,15}[0-9]$/;
+    $('#location_location_phone_no').first().keyup(function() {
+        var $phone = this.value;
+        var phoneReg = /^\+(?:[0-9] ?){10,15}[0-9]$/;
+        if (!phoneReg.test($phone)) {
+            $("#location_location_phone_no").css({"color": "RED"});
+        } else {
+            $("#location_location_phone_no").css({"color": "GREEN"});
+        }
+  });
+  $("#request_to_add_location_button").click(function(e){
+    $("#request_add_location_errors").text("");
+    $("#request_add_location_errors").fadeIn();
+    $("#request_add_location_errors").removeClass("alert alert-danger"); 
+    var client_address = $("#location_name").val();
+    var address_country = $("#location_country").val();
+    var address_state = $("#location_state").val();
+    var address_city = $("#location_city").val();
+    var location_phone_no = $("#location_location_phone_no").val();
+    var street_address = $("#location_street").val();
+    var user_name = $("#location_user_name").val();
+    var zip_code = $("#location_zipcode").val();
+    var google_place_id = $("#location_google_place_id").val();
+    if (client_address == "") {
+      alert("Please enter client name.");
+      e.preventDefault();
+      }else if (street_address == "") {
+      alert("Please enter street address.");
+      e.preventDefault();
+    }else if (address_country == "") {
+      alert("Please select country");
+      e.preventDefault();
+    }else if (address_state == "") {
+      alert("Please select state");
+      e.preventDefault();
+    }else if (address_city == "") {
+      alert("Please select city");
+      e.preventDefault();
+    }else if (zip_code == "") {
+      alert("Please enter postal code ,only numbers are allowed");
+      e.preventDefault();
+    }else if (user_name == "") {
+      alert("Please enter primary contact person name for location");
+      e.preventDefault();
+    }else if (location_phone_no == "") {
+      alert("Please enter location phone number.");
+      e.preventDefault();
+    }else if (google_place_id == "") {
+      alert("Please enter valid google place Url ");
+      e.preventDefault();
+    }
+    $("#request_add_location_errors").delay(10000).fadeOut('slow');
+    });
+  });
+  $('#location_zipcode').keypress(function(event) {
+          var $this = $(this);
+          if ((event.which != 46 || $this.val().indexOf('.') != -1) &&
+             ((event.which < 48 || event.which > 57) &&
+             (event.which != 0 && event.which != 8))) {
+                 event.preventDefault();
+          }
+          var text = $(this).val();
+          if ((event.which == 46) && (text.indexOf('.') == -1)) {
+              setTimeout(function() {
+                  if ($this.val().substring($this.val().indexOf('.')).length > 0) {
+                      $this.val($this.val().substring(0, $this.val().indexOf('.') + 0));
+                  }
+              }, 1);
+          }
+          if ((text.indexOf('.') != -1) &&
+              (text.substring(text.indexOf('.')).length > 0) &&
+              (event.which != 0 && event.which != 8) &&
+              ($(this)[0].selectionStart >= text.length - 0)) {
+                  event.preventDefault();
+          }      
+      });
+</script>
+<script type="text/javascript">
+//validation to get the country,state and city 
+  $(document).on('change', '#location_country', function(e) {
+    var input_country = $(this);
+    country = $(this).val();
+    $.getJSON('/states/' + $(this).val(), function (data) {
+      var input_state = $("#location_state");
+      input_state.empty();
+      input_state.append('<option value="">State</option>');
+      $.each(data, function (i,j) {
+        opt1 = j.toString().split(",");
+        var opt = '<option value='+ opt1[1] +'>' + opt1[0] + '</option>';
+        input_state.append(opt);
+      });
+    });
+  });
+  $(document).on('change', '#location_state', function(e) {
+    var input_country = $("#location_country");  
+    var input_state = $(this);
+    $.getJSON('/cities/' + input_country.val() + '/' + $(this).val(), function (data) {
+      var input_city = $("#location_city");
+      input_city.empty();
+      input_city.append('<option value="">City</option>');
+      $.each(data, function (i,j) {
+        var opt = '<option value='+ j +'>' + j + '</option>';
+        input_city.append(opt);
+      });
+    });
+  });     
+</script>
+<script type="text/javascript">
+  $("form").submit(function(){
+    var location_country =  document.getElementById("location_country").selectedOptions[0].text;
+    document.getElementById("location_location_country").value = location_country;
+    var location_state =  document.getElementById("location_state").selectedOptions[0].text;
+    document.getElementById("location_location_state").value = location_state;
+    var location_city =  document.getElementById("location_city").selectedOptions[0].text;
+    document.getElementById("location_location_city").value = location_city;
+  });
+</script>
+<%= javascript_include_tag 'matrix.charts','excanvas.min','jquery.ui.custom','bootstrap.min','jquery.flot.min','jquery.flot.resize.min','jquery.peity.min','jquery.peity.min','fullcalendar.min','matrix','matrix.dashboard','matrix.dashboard','matrix.interface','matrix.chat','matrix.form_validation','jquery.wizard','jquery.uniform','select2.min','matrix.popover','jquery.dataTables.min','matrix.tables'%> 
+  <div class="row-fluid">
+    <div id="footer" class="span12"> </div>
+  </div>
+</body>
+</html>

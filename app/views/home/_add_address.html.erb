@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Review Maiden</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">  
+<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700,800' rel='stylesheet' type='text/css'>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.js"></script><%= stylesheet_link_tag 'bootstrap.min','fullcalendar','matrix-style','matrix-media','font-awesome','jquery.gritter','home' %>
+<script type="text/javascript">
+  <%= country = ""%>
+  <%= state = ""%>
+</script>
+<style type="text/css">
+.panel-body .btn:not(.btn-block)
+ { 
+  width:185px;margin-bottom:10px;height: 100px; }
+select{
+      color: #999;
+      width: 436px;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+}
+form .error {
+  color: #ff0000;
+  }
+  .navbar-inverse {
+    background-color: #68727b;
+    border-color: #68727b;
+    /* width: 0; */
+    margin-top: -5px !important;
+}
+</style>
+<style>
+  .formTittle{
+   text-align:center;
+   font-size: 17px;
+  }
+  .container{
+  border: 1px solid gainsboro;
+  width: 45%;
+  background: white;
+  }
+  .containerContent{
+    border: 1px solid gainsboro;
+  }
+  .primaryName{
+    padding: 0;
+  }
+  .addLocationbutton{
+    margin-right: 77px;
+    border-radius: 18px;
+    width: 105px;
+    height: 29px;
+    background-image: none;
+    background-color: #2ebd59 !important;
+  }
+  .updateLocationbutton{
+    margin-right: 60px;
+    border-radius: 18px;
+    width: 105px;
+    height: 29px;
+    background-image: none;
+    background-color: #2ebd59 !important;
+  }
+
+  .spanLine{
+    border-top: 1px solid gainsboro;
+    margin-top: 5px;
+    margin-left: 3px
+  }
+  .buttonsLocation{
+    margin-top: 12px;
+    right: -27px;
+    margin-bottom: 7px;
+  }
+  .clientCancelButton{
+    border: none;
+    color: black;
+    font-style: normal;
+  }
+  .formInput{
+    width: 100%;
+    height: 32px !important;
+    border-radius: 7px !important;
+  }
+  #address_country{
+    width: 100%;
+    height: 32px !important;
+    border-radius: 7px !important;
+  }
+  #address_id{
+    width: 100%;
+    height: 32px !important;
+    border-radius: 7px !important;
+  }
+  #address_state{
+    width: 100%;
+    height: 32px !important;
+    border-radius: 7px !important;
+  }
+  #address_city{
+    width: 100%;
+    height: 32px !important;
+    border-radius: 7px !important;
+  }
+  #address_client{
+    width: 100%;
+    height: 32px !important;
+    border-radius: 7px !important;
+  }
+</style>
+</head>
+<body>
+  <div id="sidebar"><a href="<%= home_index_path %>" class="visible-phone"><i class="icon icon-home"></i> Dashboard</a>
+    <ul>
+      <li ><a href="<%= home_index_path %>"> <i class="icon icon-home"></i> <span>Dashboard</span></a> </li>
+      <li> <a href="<%= home_reviews_path %>"><i class="icon icon-signal"></i> 
+      <span>Reviews</span></a> </li>
+      <li> <a href="<%= home_location_listing_path %>"><i class="icon icon-inbox"></i> <span>Locations
+      </span></a> </li>
+      <li><a href="#"><i class="icon icon-th"></i>
+      <span>Reports  </span></a></li>
+      <% if current_user.has_role?(:Client) || current_user.has_role?(:superadmin) %>
+      <li><a href="<%= home_requests_path %>"><i class="icon icon-fullscreen"></i>
+      <span>Requests</span></a>
+      </li>
+      <li ><a  href="<%= home_settings_user_path %>" ><i class="icon icon-cog"></i> <span>Settings</span> </a>    
+      </li>
+      <%end%>
+    </ul>
+  </div>
+  <div id="content">
+    <div id="content-header">
+    </div>
+  <div class="container">
+</head>
+<body>
+  <%if @address.id.blank?%>
+    <div class="formTittle">
+      <h4>Add New Location</h4>
+    </div>
+  <%else%>
+    <div class="formTittle">
+      <h4>Edit Location</h4>
+    </div>
+  <% end %>
+  <%if @address.id.blank?%>
+    <% url = create_location_path(@address) %>
+  <%else%>
+    <% url = update_location_path(@address) %>
+  <%end%> 
+  <%= form_for @address, url: url do |f| %>
+    <div class="form-group">  
+      <div class="col-sm-12"> 
+        <%= f.fields_for :location, @location do |s| %>
+          <%= s.collection_select :clients_id, Client.all.where("name != ?", "superadmin"), :id, :name, prompt: "Client" %>
+        <%end%>
+      </div>
+    </div>
+    <%= f.fields_for :address_attributes, @address do |c| %>
+    <div class="form-group">  
+      <div class="col-sm-12">          
+        <%= c.text_field :street, placeholder: "Street Address",class: "form-control formInput " %>
+      </div>
+    </div>
+    <div class="form-group">  
+      <div class="col-sm-12">         
+        <%= c.select :country , CS.countries.sort_by{|k, v| v.upcase}.collect {|code, country| [country, code] } ,required: true ,class: "form-control formInput "  %>
+      </div>
+    </div>
+    <div class="form-group">  
+      <div class="col-sm-12">   
+        <%= c.select :state, "",  prompt: "State" ,class: "form-control formInput" %> 
+      </div>
+    </div>
+    <div class="form-group">  
+      <div class="col-sm-12">          
+        <%= c.select :city, CS.cities(state,country), :selected => @address.city,prompt: "City" ,class: "form-control formInput" %>
+      </div>
+    </div>
+    <div class="form-group">  
+      <div class="col-sm-12">          
+        <%= c.text_field :zipcode, placeholder: "Postal Code",class: "form-control formInput" %>
+      </div>
+    </div>
+    <%end%>
+    <div class="form-group">  
+      <div class="col-sm-12"> 
+        <%= f.select :clients,"",prompt: "Primary Contact Name",class: "form-control formInput" %> 
+      </div>
+    </div>
+    <%= f.fields_for :location, @location do |s| %>
+    <div class="form-group">  
+      <div class="col-sm-12">          
+        <%= s.text_field :location_phone_no,  placeholder:"Location Phone Number", class: "form-control formInput" %>
+      </div>
+    </div>
+    <div class="form-group">  
+      <div class="col-sm-12">          
+        <%= s.text_field :google_place_id, placeholder: "Google Place Url",class: "form-control formInput"%>
+      </div>
+    </div>
+     <div class="form-group">  
+      <div class="col-sm-12">          
+        <%= s.text_field :google_location_id, placeholder: "Google Location Id",class: "form-control formInput"%>
+      </div>
+    </div>
+    <%end%>
+    <p style="font-size: 14px;margin-left: 20px;">Customer#</p>
+    <span class="col-sm-12 spanLine"></span>  
+    <div class="form-group">  
+      <div class="col-sm-offset-6 col-sm-8 buttonsLocation">
+        <%= f.hidden_field :address_address_attributes_country, placeholder: "country", :value => "address_address_attributes_country" %>
+        <%= f.hidden_field :address_address_attributes_state, placeholder: "state", :value => "address_address_attributes_state"%>
+        <%= f.hidden_field :address_address_attributes_city, placeholder: "city", :value => "address_address_attributes_city" %>
+        <%if !@address.id.present?%>
+          <%= link_to "CANCEL",home_index_path, class: "btn btn-default clientCancelButton" , method: :get%>
+          <%= f.submit "Add Location",class: "btn btn-success addLocationbutton",id: "add_location_button" %>
+        <%end%>
+        <%if @address.id.present?%>
+         <%= link_to "CANCEL",home_index_path, class: "btn btn-default clientCancelButton" , method: :get%>
+          <%= f.submit "Update Location",class: "btn btn-success updateLocationbutton",id: "add_location_button" %>
+        <%end%>
+        </div>
+      </div>
+    </div>
+  </div>
+  <% end %>
+</div> 
+<script type="text/javascript">
+  $(document).on('change', '#address_address_attributes_country', function(e) {
+        var input_country = $(this);
+        country = $(this).val();
+        $.getJSON('/states/' + country, function (data) {
+          var input_state = $("#address_address_attributes_state");
+          input_state.empty();
+          input_state.append('<option value="">State</option>');
+          $.each(data, function (i,j) {
+            opt1 = j.toString().split(",");
+            var opt = '<option value='+ opt1[1] +'>' + opt1[0] + '</option>';
+            input_state.append(opt);
+          });
+        });
+      });
+  $(document).on('change', '#address_address_attributes_state', function(e) {
+    var input_country = $("#address_address_attributes_country");  
+    var input_state = $(this);
+    $.getJSON('/cities/' + input_country.val() + '/' + $(this).val(), function (data) {
+      var input_city = $("#address_address_attributes_city");
+      input_city.empty();
+      input_city.append('<option value=""> City</option>');
+      $.each(data, function (i,j) {
+        var opt = '<option value='+ j +'>' + j + '</option>';
+        input_city.append(opt);
+        });
+      });
+    });     
+</script>
+<script type="text/javascript">
+  $("form").submit(function(){
+    var address_address_attributes_country =  document.getElementById("address_address_attributes_country").selectedOptions[0].text;
+    document.getElementById("address_address_address_attributes_country").value = address_address_attributes_country;
+    var address_address_attributes_state =  document.getElementById("address_address_attributes_state").selectedOptions[0].text;
+    document.getElementById("address_address_address_attributes_state").value = address_address_attributes_state;
+  });
+</script>
+<script type="text/javascript">
+//to get the users's of a client in dropdown after client is selected
+  $("#address_location_clients_id").on('change', function () {
+    var client_id = this.value;
+      console.log("==client id=="+client_id);
+      $.ajax({
+        url: "<%=  application_client_users_path %>",
+        type: "POST",
+        data: {client_id: client_id},
+        success: function (data)
+        {
+          $("#address_clients").empty();  
+          $.each(data["user"], function(keys,values)
+          {
+            console.log(keys,values);
+            $("#address_clients").append('<option value='+values.id+'>'+values.first_name+' '+values.last_name+'</option>');
+          })
+        }
+      });
+  });
+</script>
+<script>
+//on add location submit button checks the validation of fields 
+  $(document).ready(function(){
+    var phoneReg =  /^\+(?:[0-9] ?){10,15}[0-9]$/;
+    $('#address_location_location_phone_no').first().keyup(function() {
+        var $phone = this.value;
+        var phoneReg = /^\+(?:[0-9] ?){10,15}[0-9]$/;
+        if (!phoneReg.test($phone)) {
+            $("#address_location_location_phone_no").css({"color": "RED"});
+        } else {
+            $("#address_location_location_phone_no").css({"color": "GREEN"});
+        }
+  });
+  $("#add_location_button").click(function(e){
+    $("#add_address_errors").text("");
+    $("#add_address_errors").fadeIn();
+    $("#add_address_errors").removeClass("alert alert-danger"); 
+    var client_address = $("#address_location_clients_id").val();
+    var address_address_attributes_country = $("#address_address_attributes_country").val();
+    var address_address_attributes_state = $("#address_address_attributes_state").val();
+    var address_address_attributes_city = $("#address_address_attributes_city").val();
+    var location_phone_no = $("#address_location_location_phone_no").val();
+    var street_address = $("#address_address_attributes_street").val();
+    var zip_code = $("#address_address_attributes_zipcode").val();
+    var google_place_id = $("#address_location_google_place_id").val();
+    var google_location_id = $("#address_location_google_location_id").val();
+    if (client_address == "") {
+      alert("Please select client name.");
+      e.preventDefault();
+      }else if (street_address == "") {
+      alert("Please enter street address.");
+      e.preventDefault();
+    }else if (address_address_attributes_country == "") {
+      alert("Please select country");
+      e.preventDefault();
+    }else if (address_address_attributes_state == "") {
+      alert("Please select state");
+      e.preventDefault();
+    }else if (address_address_attributes_city == "") {
+      alert("Please select city");
+      e.preventDefault();
+    }else if (zip_code == "") {
+      alert("Please enter postal code ,only numbers are allowed");
+      e.preventDefault();
+    }else if (location_phone_no == "") {
+      alert("Please enter location phone number.");
+      e.preventDefault();
+    }else if (google_place_id == "") {
+      alert("Please enter valid google place url  ");
+      e.preventDefault();
+    }
+    $("#add_address_errors").delay(10000).fadeOut('slow');
+    });
+  });
+  $('#address_address_attributes_zipcode').keypress(function(event) {
+          var $this = $(this);
+          if ((event.which != 46 || $this.val().indexOf('.') != -1) &&
+             ((event.which < 48 || event.which > 57) &&
+             (event.which != 0 && event.which != 8))) {
+                 event.preventDefault();
+          }
+          var text = $(this).val();
+          if ((event.which == 46) && (text.indexOf('.') == -1)) {
+              setTimeout(function() {
+                  if ($this.val().substring($this.val().indexOf('.')).length > 0) {
+                      $this.val($this.val().substring(0, $this.val().indexOf('.') + 0));
+                  }
+              }, 1);
+          }
+          if ((text.indexOf('.') != -1) &&
+              (text.substring(text.indexOf('.')).length > 0) &&
+              (event.which != 0 && event.which != 8) &&
+              ($(this)[0].selectionStart >= text.length - 0)) {
+                  event.preventDefault();
+          }      
+      });
+</script>
+<%= javascript_include_tag 'matrix.charts','excanvas.min','jquery.ui.custom','bootstrap.min','jquery.flot.min','jquery.flot.resize.min','jquery.peity.min','jquery.peity.min','fullcalendar.min','matrix','matrix.dashboard','matrix.dashboard','matrix.interface','matrix.chat','matrix.form_validation','jquery.wizard','jquery.uniform','select2.min','matrix.popover','jquery.dataTables.min','matrix.tables'%> 
+  <div class="row-fluid">
+    <div id="footer" class="span12"> </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Review Maiden</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> 
+<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700,800' rel='stylesheet' type='text/css'>
+<%= stylesheet_link_tag 'bootstrap.min','fullcalendar','matrix-style','matrix-media','font-awesome','jquery.gritter', 'users' %>
+  <script type="text/javascript">
+    <%= country = ""%>
+    <%= state = ""%>
+  </script>
+</head>
+<body>
+<!--close-top-serch-->
+<!--sidebar-menu-->
+<div id="sidebar"><a href="<%= home_index_path %>" class="visible-phone"><i class="icon icon-home"></i> Dashboard</a>
+    <ul>
+      <li ><a href="<%= home_index_path %>"><i class="icon icon-home"></i> <span>Dashboard</span></a> </li>
+      <li> <a href="<%= home_reviews_path %>"><i class="icon icon-signal"></i> 
+      <span>Reviews</span></a> </li>
+      <li> <a href="<%= home_location_listing_path %>"><i class="icon icon-inbox"></i> <span>Locations
+      </span></a> </li>
+      <!-- <li><a href="#"><i class="icon icon-th"></i>
+      <span>Reports  </span></a></li> -->
+        <li><a href="<%= home_requests_path %>"><i class="icon icon-fullscreen"></i>
+        <span>Requests</span></a>
+        </li>
+        <li class="signout settingsSignout"><a  href="<%= home_settings_user_path %>" ><i class="icon icon-cog"></i> <span>Settings</span> </a></li>
+      <li><a href="<%= destroy_user_session_path %>" method="delete" data="{confirm= 'Are you sure?'}"><i class="icon icon-signout"></i><span>Sign Out</span> </a>      
+      </li>
+    </ul>
+  </div>
+<!--sidebar-menu-->
+
+<!--main-container-part-->
+<div id="content">
+  <div class="container">
+    <%if @user.id.blank?%>
+      <div class="formTittle">
+        <h4>Add New User</h4>
+      </div>
+    <%else%>
+      <div class="formTittle">
+        <h4>Edit User</h4>
+      </div>
+    <% end %>
+    
+    <div class="notice">
+      <%= flash[:error] %>
+    </div>
+
+      <%= flash[:notice] %>
+
+    <%if @user.id.blank?%>
+      <% url = create_super_user_path(@user) %>
+    <%else%>
+      <% url = update_super_user_path(@user) %>
+    <%end%>    
+    <%= form_for @user, url: url do |f| %>
+      <div class="form-group">
+        <div class="col-sm-12">
+          <%= f.text_field :first_name,  placeholder:"First Name",class: "form-control formInput"%>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-12">
+          <%= f.text_field :last_name,  placeholder:"Last Name",class: "form-control formInput"%>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-12">
+          <%= f.email_field :email,  placeholder:"Email", maxlength: "50",class: "form-control formInput"%>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-12">
+          <%= f.password_field :password, placeholder:"Password", maxlength: "50",class: "form-control formInput"%>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-12">
+          <%= f.password_field :password_confirmation,  placeholder:"Confirm Password ", maxlength: "50",class: "form-control formInput"%>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-12">
+          <label class="roleForm">Role:</label>
+          <%= select_tag(:roles_name, options_for_super_user_role(params[:role]),class: "roleFor")%>
+        </div>
+      </div>
+ 
+      <span class="sub_country_error" id="sub_country_error"></span>
+      <%= country_select("sub_cnrty_code", "country", include_blank: "Select a Country") %>
+      <span class="mobile_blnk_error" id="mobile_blnk_error" ></span>
+      <span class="mobile_no_error" id="mobile_no_error" ></span>
+        
+        <div class="row coun">
+          <div class="col-md-2">
+            <input type="text" class="form-control" name="country_code_mob" id="country_code_mob" label="false" placeholder="code" style="background-color:white; width: 57px; margin-left:22px; height: 32px; border-radius: 6px;" readonly="true">
+            </div>
+          </div>
+      <div class="form-group">
+        <div class="col-sm-12">
+          <%= f.text_field :primary_mobile_no,  placeholder:"Phone",class: "form-control formInput phone"%>
+        </div>
+      </div>
+      <span class="col-sm-12 spanLine"></span>  
+      <div class="form-group">  
+        <div class="col-sm-offset-6 col-sm-8 buttonsClient">
+          <!-- <button class="btn btn-default clientCancelButton"><a href="<%= home_index_path %>" >Cancel</a></button> -->
+          <%= link_to "Cancel", home_settings_user_path, class: "btn btn-default clientCancelButton" , method: :get%>
+          <!--   <button type="submit" class="btn btn-success clientSaveButton clientButton" ><a class="clientAlgButton">Save User</a></button> -->
+          <%= f.submit "Save User",class: "btn btn-success addUserButton"%>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div> 
+<%= javascript_include_tag 'matrix.charts','excanvas.min','jquery.ui.custom','bootstrap.min','jquery.flot.min','jquery.flot.resize.min','jquery.peity.min','jquery.peity.min','fullcalendar.min','matrix','matrix.dashboard','matrix.dashboard','matrix.interface','matrix.chat','matrix.form_validation','jquery.wizard','jquery.uniform','select2.min','matrix.popover','jquery.dataTables.min','matrix.tables'%> 
+<!--end-main-container-part-->
+
+<!--Footer-part-->
+
+<div class="row-fluid">
+  <div id="footer" class="span12"> </div>
+</div>
+
+ <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="/resources/demos/style.css">
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.js"></script>
+</body>
+</html>
+<script>
+$.validator.addMethod("pattern1", function(value, element) {
+  return this.optional(element) || value == value.match(/^\d{10}$/);
+});
+$.validator.addMethod("pattern3", function(value, element) {
+  return this.optional(element) || value == value.match(/^[a-zA-Z~^`']*$/);
+});
+
+$(function() {
+    // validate the form when it is submitted
+     $("#new_user").validate();
+     $("#user_first_name").rules("add", {
+         required: true,
+         maxlength: 50,
+         pattern3: true,
+         messages: {
+                required: "Please provide first name",
+                maxlength: "First name must be less than 50 characters long",
+                pattern3: "Please enter valid first name",
+         }
+      });
+     $("#user_last_name").rules("add", {
+         required: true,
+         maxlength: 50,
+         pattern3: true,
+         messages: {
+                required: "Please provide last name",
+                maxlength: "Last name must be less than 50 characters long",
+                pattern3: "Please enter valid last name",
+         }
+      });
+     $("#user_primary_mobile_no").rules("add", {
+         required: true,
+         pattern1: true,
+         messages: {
+                required: "Please provide phone number",
+                pattern1: "Mobile number must be 10 digit number",
+         }
+      });
+      $("#sub_cnrty_code_country").rules("add", {
+        required:true,
+        messages: {
+          required: "  Please select country",
+        }
+      }); 
+     $("#user_email").rules("add", {
+         required:true,
+         email: true,
+         messages: {
+                required: "Please enter valid email id.",
+         }
+      });
+     
+     $("#user_password").rules("add", {
+         required:true,
+         minlength: 6,
+         messages: {
+                required: "Please provide password",
+                minlength: "Password length is minimum 6 characters",
+         }
+      });
+     $("#user_password_confirmation").rules("add", {
+         required: true,
+         minlength: 6,
+         equalTo: '#user_password',
+         messages: {
+                required: "Please provide confirmation password",
+                minlength: "Confirm Password length is minimum 6 characters",
+                equalTo: "password and confirm password does not match"
+         }
+      });
+});
+    $(document).on('change', '#sub_cnrty_code_country', function(e) {
+    country = $("#sub_cnrty_code_country").val();
+    $.ajax({
+      type:"GET",
+      url:"/change_country_code/"+country,
+      dataType:"json",
+      data: {},
+      success:function(result){
+
+          $("#country_code_mob").val("+"+result["country_code_mob"]);
+        }
+    }); 
+  });
+</script>

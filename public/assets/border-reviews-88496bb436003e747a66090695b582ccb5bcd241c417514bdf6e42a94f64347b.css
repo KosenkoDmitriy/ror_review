@@ -1,0 +1,8 @@
+/* border for reviews */
+
+.border
+{
+  border-color:rgba(128, 128, 128, 0.25);
+  border-width: 2px;border-style: solid;
+  min-height: 87px
+}

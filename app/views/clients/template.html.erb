@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Review Maiden</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/bootstrap-responsive.min.css" />
+    <link rel="stylesheet" href="css/fullcalendar.css" />
+    <link rel="stylesheet" href="css/matrix-style.css" />
+    <link rel="stylesheet" href="css/matrix-media.css" />
+    <link href="font-awesome/css/font-awesome.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/jquery.gritter.css" />
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700,800' rel='stylesheet' type='text/css'>
+    <%= stylesheet_link_tag 'clients'%>
+  </head>
+  <body>
+  <!--close-top-serch-->
+  <!--sidebar-menu-->
+    <div id="sidebar"><a href="#" class="visible-phone"><i class="icon icon-home"></i> Dashboard</a>
+      <ul>
+        <li ><a  href="<%= home_index_path %>"  ><i class="icon icon-home"></i> <span>Main Menu</span></a> </li>
+        <li><a  href="<%= home_settings_user_path %>" ><i class="icon icon-signal"></i> <span>Users</span></a> </li>
+        <li ><a  href="<%= notification_settings_path %>" ><i class="icon icon-inbox"></i> <span>Notifications
+        </span></a> </li>
+        <li><a href="<%= home_settings_subscription_path %>"><i class="icon icon-th"></i>
+         <span>Subscription  </span></a></li>
+        <li><a  href="<%= home_admin_profile_path %>"><i class="icon icon-fullscreen"></i><span>Profile</span></a></li>
+        <% if current_user.has_role?(:superadmin) %>
+          <li ><a  href="<%= home_settings_client_path %>" ><i class="fa fa-handshake-o"></i><span>Clients</span></a> </li>
+        <%end%>    
+        <li class="active"><a href="<%= clients_template_path %>"> <i class="fa fa-file"></i><span>Templates</span></a> </li>
+        <% if current_user.has_role?(:Client) %>
+        <li><a href="<%= clients_add_gmb_account_details_for_client_path %>"> <i class="fa fa-file"></i>
+          <span>Add GMB Details</span></a> 
+        </li>
+        <%end%>
+        <li class="settingsignout"><a  href="<%= home_settings_user_path %>" ><i class="icon icon-cog"></i> <span>Settings</span> </a></li>
+        <li><a href="<%= destroy_user_session_path %>" method="delete" data="{confirm= 'Are you sure?'}"><i class="icon icon-signout"></i><span>Sign Out</span> </a></li>
+      </ul>
+    </div>
+    <div id="content">
+      <div id="content-header">
+      </div>
+      <div class="container-fluid">
+        <div align="center">
+          <div class="row">
+            <div  class="quick-actions_homepage">
+              <div class="panel-body">   
+                <div class="boxcol-xs-8 col-md-8 template-boxwes">
+                  <a class="btn btn-default btn-lg panelstylefirst" role="button">
+                  <span class="glyphicon glyphicon-list-alt"></span> <label class="req-sent"><div id="request_sent"><%= @request_count %></div> </label>Requests Sent
+                  <label class="req-label">(in the last month)</label></a>
+                  <a class="btn btn-default btn-lg panelstyle" role="button"><span class="glyphicon glyphicon-bookmark"></span><label class="req-pend"><div id="request"><%= @count %></div></label> Requests Pending
+                  <label class="pend-label">(for this month)</label></a>
+                  <a class="btn btn-default btn-lg panelstyle" role="button" >
+                  <span class="glyphicon glyphicon-list-alt"></span> <label class="rating-r">4.9+ </label>
+                  Current Rating
+                  <label class="label-r">(increased from last month)</label></a>
+                  <a class="btn btn-default btn-lg" role="button"><span class="glyphicon glyphicon-bookmark"></span><label class="over-all"><div id="reviews"><%= @reviews %></div></label> Total # of Review
+                  <label class="label-over">(Overall)</label></a>
+                </div>
+              </div>
+            </div>
+          </div>  
+        </div>
+      </div>
+      <div  class="shadow-box"></div>
+      <div id="flash_messages">
+        <p><h3><%= flash[:success] %></h3></p>
+        <p><h3><%= flash[:error] %></h3></p>
+        <p><h3><%= flash[:notice] %></h3></p>
+      </div>
+      <div id="content-header">
+      </div>
+      <div class="container-fluid">
+        <div class="row-fluid">
+          <div class="span8">
+            <h4>Template Settings</h4>
+          </div>
+        </div></br></br>
+
+        <div class="row-fluid">
+          <div class="span12">
+            <table class="table table-bordered" >
+              <tbody>
+                <tr>
+                  <td class ="template-setting-col" style=" width: 6%;"><b>Defaults</b></td>
+                  <td class ="template-setting-col template"><b>Template</b></td>
+                  <td class ="template-setting-col template-row-align"><b>Email</b></td>
+                  <td class ="template-setting-col template-row-align"><b>SMS</b></td>
+                </tr>
+                <tr>
+                  <td class ="template-setting-row" ><input type="checkbox"  name="checkfield" id="g01-01"  checked></td>
+                  <td class ="template-setting-row row-size"><b>Google</b></td>
+                  <td class="template-setting-row template-row-align frm1 simple-align"><a  data-toggle="modal" class="icon-edit" data-target="#mailTemplate" remote="true"></a></td>
+                  <td class="template-setting-row template-row-align frm1 simple-align"><a  data-toggle="modal" class="icon-edit" data-target="#smsTemplate"></a></td>
+                </tr>
+                <tr>
+                  <td class ="template-setting-col"><input type="checkbox" name="checkfield" id="g01-01"  onchange="doalert(this)"/></td>
+                  <td class ="template-setting-col row-size"><b>Facebook</b></td>
+                  <td class ="template-setting-col template-row-align"><a><i class="icon-edit"></a></td>
+                  <td class ="template-setting-col template-row-align"><a><i class="icon-edit"></a></td>
+                  </td>       
+                </tr>
+                <tr>
+                  <td><input type="checkbox"  name="email"></td>
+                  <td class="template-row-align"<b>Yelp</b></td>
+                  <td class="template-row-align"><i class="icon-edit"></a></td>
+                  <td class="template-row-align"><i class="icon-edit"></a></td>
+                  </td>         
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="row-fluid">
+        <div id="footer" class="span12"> 
+        </div>
+      </div>
+    </div> 
+
+    <!-- Modal EMAIL TEMPLATE -->
+    <div class="modal fade modalEmailTemplate" id="mailTemplate" role="dialog">
+      <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body modalEmailBody" >
+           <!--start body-->
+            <%= render 'form_email' %>
+           <!-- end body -->
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Modal SMS TEMPLATE-->
+    <div class="modal fade smsModalTemplate" id="smsTemplate"  role="dialog">
+      <div class="modal-dialog">
+      
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body smsModalBody">
+           <!--start body-->
+            <%= form_for @template_sms.nil? ? :templates : @template_sms , url:  @template_sms.nil? ? clients_create_template_path : update_client_sms_path(@template_sms) , method: :post do |k| %>
+            <h3 class="hcolor">
+            <%= k.text_area :template_text, required: true, :id => "smsTextTemplate", placeholder: " SMS Body Text", :class=> "smsTextBoxTemplate"%>
+            <div>
+              <a class="review_link_sms_class" id="review_link_sms" >Insert Review Link</a>
+              <%= k.submit "Save", :class => " btn-info SaveSmsTemplate"%>
+              <% end %>
+              <!-- end body -->
+              <a data-dismiss="modal" class="cancelSmsModal">Cancel </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+      $('#location_address_id').on('change', function(event){
+        var selected_resource_id = $(this).val();
+        $.ajax({ 
+          type: 'GET', 
+          url: "<%= home_request_pending_path %>",
+          data: { id: selected_resource_id }, 
+          success: function (data)
+            {
+            $("#request").empty();
+            var count=data["count"];
+            $("#request").append(''+count+'');
+            }
+        });
+      });
+
+
+    $("#client_address_id").change(function () {
+        var client_id = this.value;
+        console.log("==client id=="+client_id);
+
+      $.ajax({
+        url: "<%= home_total_reviews_path %>",
+        type: "GET",
+        data: {client_id: client_id},
+        success: function (data)
+        {
+          console.log(data);
+          $("#reviews").empty();
+          var reviews=data["reviews"];
+          $("#reviews").append(''+reviews+'');
+        }
+      });
+    });
+
+    $( window ).load(function() {
+      $("#client_address_id option[value='1']").text('');
+    });
+
+
+    //Every checkboxes in the page
+    $('.select_check input:checkbox').click(function() {
+        $('.select_check input:checkbox').not(this).prop('checked', false);
+    });          
+      // function doalert(checkboxElem) {
+      //   if (checkboxElem.checked) {
+      //     acselect_checktive("icon-edit");
+      //   } select_check
+      //   else {
+      //     inactive("icon-edit");
+      //   }
+      // }
+      // onchange="doalert(this)"
+  </script>
+  </head>
+</html>
+
+   <script type="text/javascript">
+   
+  
+  //START---->> INSERT REVIEW LINK FOR SMS TEMPLATE FUNCTION
+    var addedlink;
+    var ckdata ;
+    var review_link = "$review_link$";
+    var text;
+    $("#review_link_sms").click(function(){ 
+      var ckdata = $("#smsTextTemplate").val();
+      // text = $(ckdata).text();
+      addedlink = ckdata.concat(review_link);
+      // var instance = CKEDITOR.instances.ckedtr ;
+      // instance.setData(addedlink);
+       $("#smsTextTemplate").val(addedlink);
+    });
+  //END---->> INSERT REVIEW LINK FOR SMS TEMPLATE FUNCTION
+  
+  //START---->> INSERT REVIEW LINK FOR EMAIL TEMPLATE FUNCTION
+
+    $("#review_link_email").click(function(){
+      var ckdata = CKEDITOR.instances.emailBodyText.getData();
+      // alert(ckdata);
+      // text = $(ckdata).text();
+     //// ckdata = $("#emailBodyText").val();
+      // alert(ckdata);
+      ckdata = ckdata.substring(0, ckdata.length - 5);
+       addedlink = ckdata.concat(review_link);
+      var instance = CKEDITOR.instances.emailBodyText ;
+      instance.setData(addedlink);
+      //// $("#emailBodyText").val(addedlink);
+    });
+    //END---->> INSERT REVIEW LINK FOR EMAIL TEMPLATE FUNCTION
+
+  </script>
+  
+  

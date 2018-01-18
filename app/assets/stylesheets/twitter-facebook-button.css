@@ -1,0 +1,42 @@
+.fbcolor{
+  color:rgb(59, 89, 152);
+  font-size:50px;
+}
+.twicolor{
+  color:rgb(85, 172, 238);
+  font-size:50px;
+  padding-left:20px;
+}
+.fbcolor:hover{
+  color:rgb(59, 89, 152);
+}
+.twicolor:hover{
+  color:rgb(85, 172, 238);
+}
+.twi{
+  margin-left:58px;
+}
+.fbb{
+  margin-left:58px;
+}
+.twiback
+{
+  background-color: rgb(0, 183, 255);
+  color: white;
+  width: 32%;
+  background-image: none !important;
+  margin-left:58px;;
+  width: 116px;
+  height: 28px;
+  border-radius: 5px
+}  
+.faback
+{
+  background-color: rgb(59, 89, 152);
+  color: white;
+  background-image: none !important;
+  margin-left: 7px;
+  width: 116px;
+  height: 28px;
+  border-radius: 5px;
+}

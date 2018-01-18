@@ -1,0 +1,823 @@
+/* request_review.html.erb */
+
+.panel-body .btn:not(.btn-block)
+{ 
+width:185px;margin-bottom:10px;height: 100px; 
+
+}
+.labelcolor
+{
+  color: black;
+}
+.feedback{
+  background: #d5d5d5;
+  height: 600px
+}
+select option:disabled {
+    color: #808080;
+}
+.logodiv{
+  margin-top: 182px;
+  margin-left: 21%;
+}
+.btn-circle.btn-xl {
+  width: 70px;
+  height: 70px;
+  padding: 10px 16px;
+  font-size: 34px;
+  line-height: 1.33;
+  border-radius: 50%;
+  margin-left: 22px;
+  margin-right: 28px;
+  background-image: none !important;
+}
+.glyphicon-remove{
+  color: red !important;
+}
+.glyphicon-ok{
+  color: white !important;
+}
+
+.btn-success{
+  background-color: #20e255 !important;
+}
+.request-text{
+  font-size: 15px;
+  line-height: 20px;
+}
+.request-resp{
+  font-size: 25px;
+  line-height: 188px;
+}
+.request-review-content{
+  height: 600px;
+  width: 400px;
+}
+.request-margin{
+  margin-top: 14%;
+}
+
+
+.text-area{
+  border-radius: 10px;
+  width: 287px;
+  height: 103px;
+}
+.text-area_submit{
+  padding: 8px 123px;
+  font-size: 23px;
+  border-radius: 22px;
+  background-color: #53ca58 !important;
+  color: white;
+  margin-top: 12px;
+}
+.csvData{
+  margin-left: 30%;
+  color: white;
+  margin-top: 40px;
+}
+.bulkSendButton{
+  margin-top: 9px;
+}
+
+.listData{
+  width: 40%;
+  height: 200px;
+  overflow-y: scroll;
+  border: 1px solid;
+  padding-left: 1%;
+}
+.selectallcheckbox{
+  width: 41%;
+  height: 30px;
+  border: 1px solid;
+  margin-top: 142px
+}
+#selectall{
+  margin-left: 2%;
+  margin-top: -1px;
+}
+.selectlable{
+  font-size: 15px;
+  color: skyblue;
+}
+
+
+
+/* template.html.css */
+.labelcolor
+{
+  color: black;
+}
+.panelstylefirst
+{
+  cursor: none;
+  pointer-events: none;
+}
+.panelstyle
+{
+  cursor: none;
+  pointer-events: none;
+}
+.btn-lg
+{
+  cursor: none;
+  pointer-events: none;
+}
+.template-setting-col
+{
+  width: 750px;
+  height: 35px;
+  border-bottom: solid;
+  background-color: lightgray;
+}
+.template-setting-row
+{
+  width: 750px;
+  height: 35px;
+  border-bottom: solid;
+}
+
+.boxcol-xs-8
+{
+  margin-left: -72px;
+  margin-right: -40px;
+  margin-top: -30px;
+  font-weight: bolder;
+}
+.col-xs-8 {
+  margin-top: -10px;
+}
+.req-sent{
+  color: #26af26; 
+  font-size: 24px;
+  font-weight: bold;
+
+}
+.req-label{
+  font-size: 12px;
+}
+.req-pend{
+  color: orange; 
+  font-size: 24px;
+  font-weight: bold;
+}
+.pend-label{
+  font-size: 12px;
+}
+ .template{
+  width: 77%;
+  border-left: 1px solid !important;
+}
+.template-row-align{
+  border-left: 1px solid !important;
+
+}
+.row-size{
+  width: 77%;
+  border-left: 1px solid !important;
+}
+.rating-r{
+ color: #26af26; 
+font-size: 24px;
+font-weight: bold;
+}
+.label-r{
+  font-size: 12px;
+}
+.over-all{
+  color: #0c8cbf;
+  font-size: 24px;
+  font-weight: bold;
+}
+.label-over{
+  font-size: 12px;
+}
+.settingsignout
+{
+  margin-top: 45%;
+}
+a{
+  cursor: pointer;
+}
+.cancelEmailTemplate{
+  margin-left: 450px;font-size: 20px; 
+  position: relative;
+  margin-bottom: 10px;
+  bottom: 58px;  
+}
+.modalEmailTemplate
+{
+  width: 700px;
+  height: 500px;
+  display:none;
+  padding-left: 20px !important;
+}
+.modalEmailBody{
+  border: 1px solid rgb(204, 204, 204) !important;
+  border-radius:5px;
+}
+
+.cancelSmsModal{
+
+  margin-left: 135px !important;
+  font-size: 20px !important;
+  font-weight: normal !important;
+}
+.smsTextBoxTemplate{
+  width:500px;
+   height:250px;
+   border-radius: 8px;
+   border:none;
+    border-bottom: 1px solid #ccc;
+}
+.smsModalTemplate{
+  width:550px; 
+  height:450px;
+  padding-left: 30px;
+  display:none;
+}
+.smsModalBody{
+  width:500px;
+  padding-left: 2px;
+  height:320px;
+  border: 1px solid rgb(204, 204, 204);
+  border-radius:5px;
+}
+
+.SaveSmsTemplate{background:rgb(16, 187, 254) none repeat scroll 0% 0% !important;
+  float:right;
+  width: 90px !important;
+  height: 40px;
+  font-weight: bold;
+  font-size: 16px;
+  border-radius: 8px;
+}
+@media only screen and (max-width: 768px) and (min-width: 300px)  {
+.panel-body .btn:not(.btn-block) {
+  width: 32%;
+}
+#user-nav {
+  width: 100%;
+  top: 0px;
+  left: 0px;
+}
+.top-boxes {
+  left: 0px;
+}
+#client_address_id {
+  width: 33% !important;
+  color: black;
+}
+#sidebar > ul {
+  display: block;
+}
+#location_address_id {
+  width: 94% !important;
+  margin-top: 12px;
+}
+#sidebar {
+  top: 8px;
+}
+.FAQbutton{
+  margin-top: 0 !important;
+}
+.addbutton{
+  margin-top: 0 !important;
+}
+.sendReviewrequestButton{
+  margin-top: 0 !important;
+}
+.row-fluid .span4 {
+  width: auto;
+}
+.feedback-resp {
+  height: 656px; 
+  width: 331px;
+}
+.logoDiv {
+  width: 51%;
+}
+#search {
+  display: block;
+}
+.dropdownButton {
+  margin-top: -17px !important;
+}
+#search button {
+  padding: 18px 14px 4px;
+  margin-top: -17px !important;
+}
+#header {
+  background: #262324;
+}
+.setting-user-container {
+  margin-top: 0px !important; 
+  height: auto !important; 
+}
+.boxcol-xs-7{
+  margin-left: -7%;
+}
+.article{
+  background: white;
+}
+.tmp{
+  margin: 19px;
+  margin-left: 0 !important;
+}
+#choose_file {
+  margin-left: 80px;
+  width: 100px;
+  height: 30px;
+}
+#checkExtension {
+  opacity: 0;
+  margin-top: -32px;
+  width: 100%;
+  height: 34px;
+}
+#bulkrequestmodal{
+  width: 70%;
+}
+canvas{
+  width: 403px !important;
+}
+.template-boxwes{
+  margin-top: 9px !important; 
+}
+.modalEmailTemplate{
+  left: 80% !important;
+  width: 89% !important;
+}
+.cke_reset{
+  width: 500px;
+}
+.insertReviewLinkEmail{
+  margin-left: 0 !important;
+}
+.cancelEmailTemplate{
+  margin-left: 100% !important;
+  bottom: 48px;
+
+}
+.submitEmailTemplate{
+  left: 95%;
+  margin-top: -78px !important;
+}
+#review_link_email {
+  top: -28px !important;
+}
+.smsModalBody{
+  width: 265px !important;
+}
+.smsModalTemplate{
+  width: 300px !important;
+}
+.cancelSmsModal{
+  margin-left: 0 !important;
+  font-size: 16px !important
+}
+.review_link_sms_class{
+  font-size: 16px;
+}
+}
+
+
+@media (max-width: 970px) and (min-width: 768px){
+#sidebar, #sidebar > ul {
+  width: 43px;
+  display: block;
+  position: absolute;
+  height: 100%;
+  z-index: 1;
+  top: 130px;
+}
+#user-nav {
+  width: 50% !important;
+  left: 30% !important;
+  margin-top: -16px !important;
+}
+#content {
+  margin-top: 31px;
+  width: 100%;
+  top: 20px;
+
+}
+.body-size {
+  width: 783px !important;
+  background: #39393c;
+
+}
+#sidebar {
+  top: 93px !important;
+}
+.logoDiv {
+  width: 51%;
+  height: 62px;
+  background: #252122;
+}
+#header {
+  background: #39393c;
+}
+#sidebar > ul {
+  top: 0px;
+}
+.row-fluid .span4 {
+  width: auto;
+}
+
+#location_address_id {
+  width: 94% !important;
+  margin-top: 12px;
+  margin-left: 3%;
+}
+.boxcol-xs-4 {
+  width: 70%;
+}
+.row-fluid .span4 {
+  width: 50% !important;
+  margin-left: 14% !important;
+  margin-top: 103px;
+}
+.dropdownButton {
+  width: 157px;
+}
+.boxcol-xs-6 {
+  width: 70%;
+}
+.boxcol-xs-8 {
+  width: 70%;
+}
+#search {
+ top: 5px;
+ right: -4px;
+}
+.dataTables_wrapper {
+  top: 100px;
+}
+}
+
+
+
+/* send_request.html.erb */
+
+.text-field{
+  width: 322px;
+  height: 40px !important;
+  font-size: 21px !important;
+  border-radius: 6px !important;
+} 
+.submitButton{
+  width: 100% !important;
+  font-size: 23px !important;
+  background-color: #2acc55 !important;
+  border-color: #0aad35 !important;
+  height: 52px;
+  border-radius: 6px !important;
+  background-image: none !important;
+}
+#choose_file  {
+  margin-left: 150px;
+  /*  cursor:pointer;*/
+  background: #00bfff;
+  border-radius: .5em;
+  float: left;
+  padding: .5em;
+  height: 40px;
+  width: 180px;
+  text-align: center;
+}
+#checkExtension{
+  opacity:0;
+}
+#border{
+  height: 220px;
+  border-style: dashed;
+  border-color: #8080804d;
+  border-size: 2px;
+}
+  #border1{
+  height: 220px;
+}
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 70px;
+  height: 25px;
+}
+.downlod-button{
+  float: right;
+  width: 23%;
+}
+.switch input {display:none;}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 28px;
+  width: 27px;
+  left: 12px;
+  bottom: 0px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #00bfff;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+.btn.btn-info[disabled] {
+  background-color: #00bfff99;
+}
+.btn.btn-default {
+  background-color: "white";
+}
+#client_id{
+  width: 100px;
+}
+.automanual{
+  font-size: 18px;
+}
+.automanual:hover {
+  background-color: orange;
+}
+.send-div{
+  width:320px; 
+  background-color:#FFFFFF; 
+  border:1px solid #CCCCCC; 
+  padding:0px; 
+  border-radius: 7px;
+  display:none;
+  margin-top: -11px;
+}
+.step4{
+  float: left;
+  margin-left: 7px;
+}
+.img-upload{
+  height:110px; 
+  width:100px;
+
+}
+.file-name{
+  font-weight: bold;
+
+}
+.select-csv{
+  color: white;
+  font-weight: bold;
+
+}
+#sub_cnrty_code_country{
+  width: 336px;
+  margin-left: 2px;
+  height: 44px !important;
+  border-radius: 7px !important;
+  }
+#revws_country{
+  width: 337px;
+  height: 50px;
+  font-size: 16px;
+  border-radius: 6px;
+}
+
+/* add_templateby_email.html.erb */
+
+.tmp
+{
+  color: none;
+  margin-left: 1000px;
+  margin-right:12px;
+  font-size: initial;
+}
+.tn
+{
+  font-size: initial;
+  background-color: cyan;
+  border-radius: 6px;
+  height: 40px;
+}
+.bcolor{
+  background-color: white;
+}
+.hcolor{
+  color:black;
+}
+.ck_font{
+  font-size: large;
+  margin-left: 14px;
+}
+ 
+/* created_password.html.erb */
+
+.header
+{
+  text-align: center;
+  color: white;
+}
+.password-content{
+  width: 92%!important;
+}
+#noticediv{
+  width: 25%!important;
+}
+
+/* feedback_response.html.erb */
+
+.feedback_response{
+  background: #d5d5d5;
+  height: 600px;
+}
+.labelcolor
+{
+  color: black;
+}
+select option:disabled {
+    color: #808080;
+}
+.address-name{
+  font-size: 20px;
+  line-height: 217px;
+}
+.response-text{
+  font-size: 25px;
+  line-height: 80px; 
+  padding: 2px 22px;
+}
+.textstyle
+{
+  color: white;
+}
+.textstyle-privacy
+{
+  color: #666;
+}
+#privacy-policy{
+ max-width: 90%;
+ margin-left: 40px;
+}
+.response-logo{
+  margin-left: 103px; 
+  margin-top: 184px
+}
+.feedback-resp{
+  height: 600px;
+  width: 400px
+}
+.feedback-content{
+  margin-top: 5%
+}
+
+/* review_feedback.html.erb */
+
+.feedback{
+  background: #d5d5d5;
+  height: 600px;
+}
+
+.labelcolor
+{
+  color: black;
+}
+select option:disabled {
+    color: #808080;
+}
+.btn-success{
+  background-color: #20e255 !important;
+}
+.text-area{
+  border-radius: 10px;
+  width: 287px;
+  height: 103px;
+}
+.text-area_submit{
+  padding: 8px 123px;
+  font-size: 23px;
+  border-radius: 22px;
+  background-color: #53ca58 !important;
+  color: white;
+  margin-top: 12px;
+}
+.review-feedback-address{
+  font-size: 20px;
+  line-height: 65px;
+}
+.review-feed-content{
+  font-size: 25px;
+  line-height: 129px; 
+  padding: 2px 22px;
+}
+.review-feed-container{
+  height: 600px; 
+  width: 400px;
+}
+.review-feed-log{
+  margin-left: 80px;
+  margin-top: 80px
+}
+
+/* _form_email.html.erb */
+.cncl_page
+{
+  color: none;
+  margin-left: 947px;
+  margin-right:12px;
+  font-size: initial;
+}
+.save_email_sbmt
+{
+  font-size: initial;
+  background-color: #10bbfe;
+  border-radius: 6px;
+  height: 40px;
+}
+.bcolor{
+  background-color: white;
+}
+.hcolor{
+  color:black;
+}
+.insertReviewLinkEmail{
+  font-size: large;
+  position: relative;
+  /*margin-left: 252px !important;*/
+}
+.articleemail{
+  float: left;
+  margin: 10px;
+  padding: 10px;
+  max-width: 3000px;
+  height: 500px;
+  border: 1px solid black;
+  margin-left:21px;
+}
+#review_link_email{
+  cursor: pointer;
+  top: -34px;
+}
+.emailSubjectTemplate{
+  width:640px !important;
+  border:none !important; 
+  border-bottom:1px solid #ccc !important;
+  margin-left: -13px !important;
+  padding-right: 20px !important;
+  padding-bottom: 15px !important;
+}
+.emailBodyTemplate{
+  width:640px;
+  height:250px;
+  border:none;border-bottom:1px solid #ccc ;
+  margin-left: -13px;
+  padding-right: 20px;
+
+}
+.submitEmailTemplate{
+  background:rgb(16, 187, 254) none repeat scroll 0% 0% !important;
+  float:right;
+  width: 90px !important;
+  height: 40px !important;
+  font-size: 16px !important;
+  border-radius: 8px;
+  position: relative;
+  margin-top: -65px;
+  font-weight: bold;
+
+}
+#review_link_sms{
+  font-size: 16px !important;
+}
+
+#review_link_email{
+  margin-left: 265px;
+}

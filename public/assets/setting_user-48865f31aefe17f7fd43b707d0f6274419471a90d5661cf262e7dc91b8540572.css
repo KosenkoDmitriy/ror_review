@@ -1,0 +1,80 @@
+.setting-addUser {
+	font-size: 18px;
+	margin-left: 70%;
+	position: relative;
+	z-index: 20;
+	color: black;
+}
+@media only screen and (max-width: 768px) and (min-width: 300px){
+#location_address_id {
+  width: 96% !important;
+}
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+#usertables_wrapper{
+  margin-left: -12%;	
+}
+.setting-user-button {
+  margin-left: -2%;
+}
+#content {
+  min-height: 1000px;
+}
+.set-add-user{
+  float: right;
+}
+.sett-user-table{
+  margin-top: -18%;
+}
+.dataTables_wrapper .dataTables_filter input {
+  position: relative;
+  margin-top: 0 !important;
+  width: 93px;
+  border-radius: 5px;
+  /* float: right; */
+  padding-left: 7px;
+  border-color: black;
+  left: 57%;
+ /* top: -27px*/
+}
+.dataTables_wrapper .dataTables_filter {
+  margin-top: 2.5em;
+}
+.searchicon {
+  top: -29px;
+  margin: 0;
+  left: -21px;
+}
+.icon-search{
+  margin-left: 84%;
+}
+#usertables_wrapper {
+  margin-left: -17%;
+}
+.set-add-user{
+margin-left: 3% !important;
+}
+.setting-addUser {
+  margin-left: 40%;
+}
+}
+
+@media only screen and (max-width: 320px){
+.setting-addUser {
+    margin-left: 32%;
+}
+.dataTables_wrapper .dataTables_filter input {
+  left: 75%;
+}
+.icon-search {
+  margin-left: 105%;
+}
+.user-circle {
+  margin-top: -40px;
+}
+.fa-plus-circle {
+  top: 11px;
+  left: -1%;
+}
+}

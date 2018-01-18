@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Review Maiden</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css ">
+<head>
+<%= stylesheet_link_tag 'clients' %>
+</head>
+</head>
+<body>
+  <div class="container-fluid">
+    <div class="row-fluid">
+      <div class="span4">
+      </div>
+  <% if !device_name.is_mobile? %> 
+    <div class="span4">     
+      <div class="widget-box feedback-response">
+        <div class="form-group feedback-content">
+          <div style="text-align: center">
+            <p for="Username" class="labelcolor address-name">[ <%= @current_address.city %> <%= @current_address.state %> <%= @current_address.country %>  ]</p> 
+            <p for="Username" class="labelcolor response-text">Thank you for your response</p>
+          </div>
+        </div>
+        <div class="logodiv">
+          <p class="response-logo">powered by<%= image_tag "logo1.png" , :alt => "Logo"%></p>
+        </div>
+      </div>
+    </div>
+  <% else %>
+    <div class="span4">     
+      <div class="widget-box feedback-resp">
+        <div class="form-group feedback-content">
+          <div style="text-align: center">
+            <p for="Username" class="labelcolor address-name">[ <%= @current_address.city %> <%= @current_address.state %> <%= @current_address.country %>  ]</p> 
+            <p for="Username" class="labelcolor response-text">Thank you for your response</p>
+          </div>
+        </div>
+        <div class="logodiv">
+          <p class="response-logo">powered by<%= image_tag "logo1.png" , :alt => "Logo"%></p>
+        </div>
+      </div>
+    </div>
+  <% end %>
+  <div class="row-fluid">
+    <div id="footer" class="span12"> </div>
+  </div>
+</body>
+</html>

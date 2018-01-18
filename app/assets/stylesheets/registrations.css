@@ -1,0 +1,87 @@
+.panel-body .btn:not(.btn-block)
+ { 
+  width:185px;margin-bottom:10px;height: 100px; 
+}
+@media only screen and (max-width: 768px) and (min-width: 300px)  {
+#header {
+  background: #262324;
+}
+#client_address_id {
+  width: auto;
+  color: black;
+}
+#location_address_id {
+  width: 94% !important;
+  margin-top: 12px;
+}
+#sidebar {
+  top: 8px;
+}
+.FAQbutton{
+  margin-top: 0 !important;
+}
+.addbutton{
+  margin-top: 0 !important;
+}
+.sendReviewrequestButton{
+  margin-top: 0 !important;
+}
+.addnote-btn-width{
+  color: black !important;
+  background: #e6e6e6 !important;
+}
+.body-size {
+  width: 473px;
+}
+#sidebar > ul {
+  display: block;
+}
+.view-all-btn {
+  margin-top: 7px;
+}
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+#choose_file {
+  margin-left: 80px;
+  width: 100px;
+  height: 30px;
+}
+#checkExtension {
+  opacity: 0;
+  margin-top: -32px;
+  width: 100%;
+  height: 34px;
+}
+#bulkrequestmodal{
+  width: 70%;
+}
+canvas{
+  width: 403px !important;
+}
+
+#content {
+  min-height: 1000px;
+}
+#user-nav {
+  width: 100%;
+  top: 0px;
+  left: 0px;
+}
+#search{
+  display: inline;
+}
+.dropdown-content {
+}
+#search button {
+  padding: 18px 14px 4px;
+  margin-left: 22%;
+}
+.row-fluid .span6 {
+  width: 100%;
+}
+.logoDiv {
+   width: 51%;
+}
+}
+ 

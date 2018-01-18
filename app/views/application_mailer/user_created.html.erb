@@ -1,0 +1,5 @@
+<p>Someone has requested a link to create your password. You can do this through the link below.</p>
+<%user_id = User.last.id%>
+<p><%= link_to 'Create password', created_password_url(user_id)%></p>
+
+<p>If you didn't request this, please ignore this email.  </p>

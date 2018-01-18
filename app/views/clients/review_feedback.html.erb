@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Review Maiden</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<%= stylesheet_link_tag 'clients'%>
+</head>
+<body>
+   <%= flash[:success] %>
+  <div class="container-fluid">
+    <div class="row-fluid">
+      <div class="span4">
+      </div>
+    <% if !device_name.is_mobile?  %> 
+    <div class="span4">
+      <div class="widget-box feedback">
+        <div class="form-group feedback-content">
+          <div style="text-align: center">
+            <p for="Username" class="labelcolor review-feedback-address">[  <%= @current_address.city %> <%= @current_address.state %> <%= @current_address.country %>  ]</p> 
+            <p for="Username" class="labelcolor review-feed-content"><b>How can we improve?</b></p>
+            <%= form_for @response , url: user_feedback_path(@response.id) , method: :post do |f| %>
+              <div> 
+                <%= f.text_area :feedback, placeholder: "Add your comment here" ,class: "text-area" , :required => true %>
+                <div> 
+                  <%= f.submit "Send", class: "text-area_submit" %>
+                </div> 
+                <% end %>
+              </div><br>
+              <div>
+                <p>We will never share your personal information</p> 
+                  Read our privacy policy <%= link_to "here", clients_privacy_policy_path,:style => "color: #08c;", method: :get %>
+                </p>
+              </div>
+            </div>
+          </div> 
+          <div class="logodiv">
+            <p class="review-feed-log">powered by<%= image_tag "logo1.png" , :alt => "Logo"%></p>
+          </div>
+        </div>
+      </div> 
+    <% else %>
+      <div class="span4">
+        <div class="widget-box review-feed-container">
+          <div class="form-group feedback-content">
+            <div style="text-align: center">
+              <p for="Username" class="labelcolor review-feedback-address">[  <%= @current_address.city %> <%= @current_address.state %> <%= @current_address.country %>  ]</p> 
+              <p for="Username" class="labelcolor review-feed-content"><b>How can we improve?</b></p>
+              <%= form_for @response , url: user_feedback_path(@response.id) , method: :post do |f| %>
+              <div> 
+                <%= f.text_area :feedback, placeholder: "Add your comment here" ,class: "text-area" , :required => true %>
+                <div> 
+                  <%= f.submit "Send", class: "text-area_submit" %>
+                </div> 
+                <% end %>
+              </div><br>
+              <div>
+                <p>We will never share your personal information</p> 
+                  Read our privacy policy <%= link_to "here", clients_privacy_policy_path,:style => "color: #08c;", method: :get %>
+                </p>
+              </div>
+            </div>
+          </div> 
+        <div class="logodiv">
+          <p class="review-feed-log">powered by<%= image_tag "logo1.png" , :alt => "Logo"%></p>
+        </div>
+      <% end %>
+    </div>
+  </div>
+  <div class="row-fluid">
+    <div id="footer" class="span12"> </div>
+  </div>
+</body>
+</html>

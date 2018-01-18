@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  positive: false
+  url: MyString
+  feedback: MyText
+  google_review: false
+
+two:
+  positive: false
+  url: MyString
+  feedback: MyText
+  google_review: false

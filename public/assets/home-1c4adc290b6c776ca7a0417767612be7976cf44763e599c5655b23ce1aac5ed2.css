@@ -1,0 +1,25 @@
+.panel-body .btn:not(.btn-block){ 
+  width:185px;margin-bottom:10px;height: 100px;
+}
+    
+#search-form{
+          float: right;
+          margin-right: 16%;
+          margin-top: -3px;
+  }
+    
+.buttonClass{
+    margin-top: -7px;
+  }
+
+.colAlign{
+    text-align: center !important;
+  }
+
+.subForm{
+    width: 28%;
+  }
+
+.colSub{
+    margin-right: 85%;
+  }

@@ -1,0 +1,13 @@
+<script src="https://cdn.ckeditor.com/4.7.1/standard/ckeditor.js"></script>
+<%= stylesheet_link_tag 'filter-button','twitter-facebook-button','user-thumb','box-model','button','border-reviews','clients' %>
+        <%= form_for @template.nil? ? :templates : @template, url:  @template.nil? ? clients_create_template_path : update_client_path(@template), method: :post do |k| %>
+          
+          <%= k.text_field :email_subject, required: true, :class => "emailSubjectTemplate", :id => "email", placeholder: "Email Subject"%>
+          
+          <%= k.cktext_area :template_text, required: true, :class =>"emailBodyTemplate",  :id => "emailBodyText", placeholder: "Email Body Text", :maxlength => 255 %>
+
+              <a class="insertReviewLinkEmail" id="review_link_email">Insert Review Link</a>
+                          <a data-dismiss="modal" class="cancelEmailTemplate">Cancel </a>
+
+            <%= k.submit "Save", :class => " btn-info submitEmailTemplate", id: "sbmtbtn" %>
+        <% end %>

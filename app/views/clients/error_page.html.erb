@@ -1,0 +1,19 @@
+<html>
+  <style type="text/css">
+    .textstyle
+    {
+      color: white;
+    }
+  </style>
+  <body>
+    <div class="<%= "alert alert-error container" if !flash[:error].nil? %> " id="errordiv" style="text-align:center; width: 400px"  >
+      <p><%= flash[:error] %></p>
+    </div>
+    <script>
+      function goBack() {
+      window.history.back()
+      }
+    </script>
+  </body>
+</html>
+          

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Review Maiden</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">  
+<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700,800' rel='stylesheet' type='text/css'>
+<%= stylesheet_link_tag 'bootstrap.min','fullcalendar','matrix-style','matrix-media','font-awesome','jquery.gritter' %>
+
+<style type="text/css">
+.panel-body .btn:not(.btn-block)
+ { 
+  width:185px;margin-bottom:10px;height: 100px; }
+select{
+      color: #999;
+}
+form .error {
+  color: #ff0000;
+  }
+  .navbar-inverse {
+    background-color: #68727b;
+    border-color: #68727b;
+    /* width: 0; */
+    margin-top: -5px !important;
+}
+</style>
+<style>
+  .formTittle{
+   text-align:center;
+   font-size: 17px;
+  }
+  .container{
+  border: 1px solid gainsboro;
+  width: 45%;
+  background: white;
+  }
+  .containerContent{
+    border: 1px solid gainsboro;
+  }
+  .primaryName{
+    padding: 0;
+  }
+  .addLocationbutton{
+    border-radius: 18px;
+    width: 105px;
+    height: 29px;
+    background-image: none;
+    background-color: #2ebd59 !important;
+    margin-right: 101px;
+  }
+
+  .spanLine{
+    border-top: 1px solid gainsboro;
+    margin-top: 5px;
+    margin-left: 3px
+  }
+  .buttonsLocation{
+    margin-top: 12px;
+    right: -27px;
+    margin-bottom: 7px;
+  }
+ 
+  .formInput{
+    width: 100%;
+    height: 32px !important;
+    border-radius: 7px !important;
+  }
+
+</style>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.js"></script>
+</head>
+<body>
+  <div id="sidebar"><a href="<%= home_index_path %>" class="visible-phone"><i class="icon icon-home"></i> Dashboard</a>
+    <ul>
+      <li ><a href="<%= home_index_path %>"> <i class="icon icon-home"></i> <span>Dashboard</span></a> </li>
+      <li> <a href="<%= home_reviews_path %>"><i class="icon icon-signal"></i> 
+      <span>Reviews</span></a> </li>
+      <li> <a href="<%= home_location_listing_path %>"><i class="icon icon-inbox"></i> <span>Locations
+      </span></a> </li>
+      <li><a href="#"><i class="icon icon-th"></i>
+      <span>Reports  </span></a></li>
+      <li><a href="<%= home_requests_path %>"><i class="icon icon-fullscreen"></i>
+      <span>Requests</span></a>
+      </li>
+      <% if current_user.has_role?(:Client) %>
+        <li><a href="<%= clients_add_gmb_account_details_for_client_path %>"> <i class="fa fa-file"></i>
+          <span>Add GMB Details</span></a> 
+        </li>
+      <%end%>
+    </ul>
+  </div>
+  <div id="content">
+    <div id="content-header">
+    </div>
+  <div class="container">
+</head>
+<body>
+  <div class="<%= "alert alert-success container" if !flash[:notice].nil? %> " class="alert-style" id="gmb_account_deatils">
+    <p><%= flash[:notice] %></p>
+  </div>
+  <div class="formTittle">
+    <h4>Add GMB Account Details </h4>
+  </div>
+  <%= form_for :client, url: update_gmb_account_details_for_client_path do |f| %>
+    <div class="form-group">  
+      <div class="col-sm-12">    
+        <%= f.text_field :google_client_id, placeholder: "Google Client Id",class: "form-control formInput" %>
+      </div>
+    </div>
+    <div class="form-group">  
+      <div class="col-sm-12">          
+        <%= f.text_field :google_secret_key,  placeholder:"Google Secret Key", class: "form-control formInput" %>
+      </div>
+    </div>
+    <div class="form-group">  
+      <div class="col-sm-12">          
+        <%= f.text_field :google_refresh_token, placeholder: "Google Refresh Token Id",class: "form-control formInput"%>
+      </div>
+    </div>
+     <div class="form-group">  
+      <div class="col-sm-12">          
+        <%= f.text_field :google_account_name, placeholder: "Google Account Name",class: "form-control formInput"%>
+      </div>
+    </div>
+    <div class="form-group">  
+      <div class="col-sm-offset-6 col-sm-8 buttonsLocation">
+        <%= f.submit "Add Details",class: "btn btn-success addLocationbutton",id: "add_gmb_details_button" %>
+      </div>
+    </div>
+    </div>
+  </div>
+  <% end %>
+</div> 
+<script>
+//on add location submit button checks the validation of fields 
+ $(document).ready(function(){
+  $("#add_gmb_details_button").click(function(e){
+    $("#add_gmb_details_errors").text("");
+    $("#add_gmb_details_errors").fadeIn();
+    $("#add_gmb_details_errors").removeClass("alert alert-danger"); 
+    var client_google_client_id = $("#client_google_client_id").val();
+    var client_google_secret_key = $("#client_google_secret_key").val();
+    var client_google_refresh_token = $("#client_google_refresh_token").val();
+    var client_google_account_name = $("#client_google_account_name").val();
+    if (client_google_client_id == "") {
+      alert("Please enter google client id.");
+      e.preventDefault();
+      }else if (client_google_secret_key == "") {
+      alert("Please enter gogole secret key");
+      e.preventDefault();
+    }else if (client_google_refresh_token == "") {
+      alert("Please enter google refresh key");
+      e.preventDefault();
+    }else if (client_google_account_name == "") {
+      alert("Please enter gogole account name");
+      e.preventDefault();
+    }
+    $("#add_gmb_details_errors").delay(10000).fadeOut('slow');
+    });
+  });
+</script>
+<%= javascript_include_tag 'matrix.charts','excanvas.min','jquery.ui.custom','bootstrap.min','jquery.flot.min','jquery.flot.resize.min','jquery.peity.min','jquery.peity.min','fullcalendar.min','matrix','matrix.dashboard','matrix.dashboard','matrix.interface','matrix.chat','matrix.form_validation','jquery.wizard','jquery.uniform','select2.min','matrix.popover','jquery.dataTables.min','matrix.tables'%> 
+  <div class="row-fluid">
+    <div id="footer" class="span12"> </div>
+  </div>
+</body>
+</html>

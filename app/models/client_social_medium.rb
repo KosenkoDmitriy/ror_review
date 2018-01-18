@@ -1,0 +1,2 @@
+class ClientSocialMedium < ApplicationRecord
+end

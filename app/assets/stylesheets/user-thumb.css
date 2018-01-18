@@ -1,0 +1,48 @@
+/* Add a user thumb image */
+.userthumbimg{
+  position: relative;
+  top: -2px;
+  min-height: 67px;
+}
+/* Add a css for user image */
+.userimg{
+  border-radius: 50%;
+  position: relative;
+  top: -10px;
+  width: 46px;
+  left: 9px;
+}
+/* Add a css for user heading */
+.user-heading{
+  font-size: 9px;
+  position: absolute;
+  top: 24px;
+  right: 13px;
+}
+/* Add a css for user heading */
+.image-h1-tag {
+  font-size: 9px;
+  position: absolute;
+  top: 24px;
+  right: 13px;
+}
+/* Add a css for rating */
+.rating-img-h1-tag
+{
+  font-size: 9px;
+  position: absolute;
+  top: 45px;
+  right: 10px;
+}
+/* Add a css for user-thumb */
+.user-thumb {
+  background: none repeat scroll 0 0 #FFFFFF;
+  float: left;
+  height: 75px;
+  margin-right: 10px;
+  margin-top: 2px;
+  padding: 2px;
+  width: 66px;
+  background-color: #eee;
+  position: relative;
+}

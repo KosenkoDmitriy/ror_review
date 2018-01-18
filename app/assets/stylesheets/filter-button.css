@@ -1,0 +1,33 @@
+.weekclass
+{
+  background: transparent none repeat scroll 0% 0%;
+  border: 2px solid #10bbfe;
+  color:#10bbfe; 
+  border-radius: 5px;
+  width: 100px;
+} 
+.btn-info:hover
+{
+  color: #fff;
+  background-color: #10bbfe;
+}
+.btn-info:focus
+{
+  background-color: #10bbfe;
+}
+.filterdate{
+  width: 100px !important;
+  height: 15px !important;
+  margin-bottom: 0% !important;
+  border-radius: 5px !important;
+  border-color: #10bbfe !important;
+}
+.Pickdate{
+  height: 25px;
+  margin-left: -5%;
+  border-radius: 0px;
+}
+.scrolldiv{
+  overflow: scroll;
+  max-height: 600px;
+}

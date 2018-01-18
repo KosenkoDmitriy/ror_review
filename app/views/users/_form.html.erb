@@ -1,0 +1,551 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Review Maiden</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700,800' rel='stylesheet' type='text/css'>
+<%= stylesheet_link_tag 'bootstrap.min','fullcalendar','matrix-style','matrix-media','font-awesome','jquery.gritter', 'users' %>
+  <script type="text/javascript">
+    <%= country = ""%>
+    <%= state = ""%>
+  </script>
+<script src="https://cdn.jsdelivr.net/jquery/1.12.4/jquery.min.js"></script>
+ <!-- <script src="https://cdn.jsdelivr.net/jquery.validation/1.15.1/jquery.validate.min.js"></script>
+<script src="js/form-validation.js"></script> -->
+</head>
+<body>
+<!--close-top-serch-->
+<!--sidebar-menu-->
+<div id="sidebar"><a href="<%= home_index_path %>" class="visible-phone"><i class="icon icon-home"></i> Dashboard</a>
+    <ul>
+      <li ><a href="<%= home_index_path %>"><i class="icon icon-home"></i> <span>Dashboard</span></a> </li>
+      <li> <a href="<%= home_reviews_path %>"><i class="icon icon-signal"></i> 
+      <span>Reviews</span></a> </li>
+      <li> <a href="<%= home_location_listing_path %>"><i class="icon icon-inbox"></i> <span>Locations
+      </span></a> </li>
+      <!-- <li><a href="#"><i class="icon icon-th"></i>
+      <span>Reports  </span></a></li> -->
+        <li><a href="<%= home_requests_path %>"><i class="icon icon-fullscreen"></i>
+        <span>Requests</span></a>
+        </li>
+        <li class="signout settingsSignout"><a  href="<%= home_settings_user_path %>" ><i class="icon icon-cog"></i> <span>Settings</span> </a></li>
+      <li><a href="<%= destroy_user_session_path %>" method="delete" data="{confirm= 'Are you sure?'}"><i class="icon icon-signout"></i><span>Sign Out</span> </a>   
+      </li>
+    </ul>
+  </div>
+<!--sidebar-menu-->
+
+<!--main-container-part-->
+<div id="content">
+<!--breadcrumbs-->
+  <div id="content-header">
+  <!--   <div id="breadcrumb"> <a href="index.html" title="Go to Home" class="tip-bottom"><i class="icon-home"></i> Home</a></div> -->
+  </div>
+<!--End-breadcrumbs-->
+ 
+<div class="container">
+ 
+
+<!--End-Chart-box--> 
+
+
+  <% if current_user.has_role?(:superadmin) %>
+    <%if @user.id.blank?%>
+      <div class="formTittle">
+        <h4>Add new Client</h4>
+      </div>
+    <%else%>
+      <div class="formTittle">
+        <h4>Edit Client</h4>
+      </div>
+    <% end %>
+  <% end %>
+  <% if current_user.has_role?(:Client) %>
+    <%if @user.id.blank?%>
+      <div class="formTittle">
+        <h4>Add New User</h4>
+      </div>
+    <%else%>
+      <div class="formTittle">
+        <h4>Edit User</h4>
+      </div>
+    <% end %>
+  <% end %>
+  <div class="notice">
+    <%= flash[:error] %>
+  </div>
+  <%= flash[:notice] %>
+  <%= form_for @user do |f| %>
+    <% if current_user.has_role?(:superadmin) %>
+    <%= f.fields_for :clients, @client do |c| %>
+    <div class="form-group">
+     
+      <div class="col-sm-12">
+         <%= c.text_field :name,  placeholder:"Client Name", class: "form-control formInputclient"%>
+           
+      </div>
+    </div>
+    <% end %>
+
+    <div class="form-group">  
+      <div class="col-sm-12">  
+        <div class="col-sm-6 primaryName">        
+           <%= f.text_field :first_name,  placeholder:"Primary Contact First Name",class: "form-control formInputclient"%>
+              <span class="errorMassage" style="color:red;position:relative; bottom:20px;font-size: 10px;"><%= @user.errors.full_messages_for(:first_name).join("") %></span>
+        </div>
+        <div class="col-sm-6 primaryName">
+          <%= f.text_field :last_name,  placeholder:"Primary Contact Last Name",class: "form-control formInputclient"%>  
+        </div>
+      </div>
+    </div>
+    <div class="form-group">  
+      <div class="col-sm-12">          
+        <%= f.email_field :email,  placeholder:"Email", maxlength: "50",class: "form-control formInputclient"%>
+      </div>
+    </div>
+    <div class="form-group">  
+      <div class="col-sm-12">          
+        <%= select_tag(:roles_name, options_for_select([["Client", "Client"]]),class: "hidden")%>
+      </div>
+    </div>
+
+    <%= f.fields_for :address, @address do |s| %>
+      <div class="form-group">  
+        <div class="col-sm-12">          
+        <%= s.select :country, CS.countries.sort_by{|k, v| v.upcase}.collect {|code, country| [country, code] }, prompt: "Country", required: true %>
+        </div>
+      </div>
+    <% end %>
+
+    <div class="row coun">
+      <div class="col-md-2">
+        <input type="text" class="form-control cntry-code-clnt " name="country_code_mob" id="country_code_mob" label="false" placeholder="code" style="width: 57px; border-radius: 6px; height: 32px; background-color:white; margin-left: 20px;" readonly="true">
+      </div>
+    </div>
+
+    <div class="form-group phone_clnt">  
+      <div class="col-sm-12">          
+        <%= f.text_field :primary_mobile_no ,  placeholder:"Phone",class: "form-control formInput mob-width" %>       
+      </div>
+    </div>
+
+    <%= f.fields_for :clients, @client do |c| %>
+      <div class="form-group">  
+        <div class="col-sm-12">          
+        <%= c.text_field :website,  placeholder:"Website",class: "form-control formInputclient"%>      
+        </div>
+      </div>
+    <% end %>
+
+    <%= f.fields_for :address, @address do |s| %>
+      <div class="form-group">  
+        <div class="col-sm-12">          
+          <%= s.text_field :street, placeholder: "Street Address",class: "form-control formInputclient"%>  
+      </div>
+    </div>
+
+    <div class="form-group">  
+      <div class="col-sm-12">          
+        <%= s.select :state, "", prompt: "State" ,class: "form-control formInputclient"%>         
+      </div>
+    </div>
+      <div class="form-group">  
+      <div class="col-sm-12">          
+      <%= s.select :city, CS.cities(state,country), prompt: "City" ,class: "form-control formInputclient"%>
+        
+      </div>
+    </div>
+      <div class="form-group">  
+      <div class="col-sm-12">          
+        <%= s.text_field :zipcode, placeholder: "Postal Code",class: "form-control formInputclient"%>
+          
+      </div>
+    </div>
+    <% end %>
+    <%= f.fields_for :clients, @client do |c| %>
+      <div class="form-group">  
+        <div class="col-sm-12">
+        <% if @users==nil %>
+          <%= c.select :originator, options_for_select('no orignator present'),class: "form-control formInputclient", prompt: "Originator", required: false %>
+        <%else%>         
+          <%= c.select :originator, options_for_select(@users.pluck(:first_name)),class: "form-control formInputclient", prompt: "Originator", required: false %>
+        <%end%>
+        </div>
+      </div>
+      <div class="form-group">  
+        <div class="col-sm-12">          
+          <%= c.text_field :created_at,  placeholder:"Client Since",class: "form-control formInputclient datepicker"%>
+          
+        </div>
+      </div>
+    <% end %>
+     <%if !@user.id.blank?%>
+      <% if current_user.has_role?(:superadmin)  %>
+      <label id="label_active">Active<%= f.check_box :active, placeholder: "Postal Code",class: "form-control formInputclient", label: "Active", id: "chk-box-act"%></label>
+      <%end%>
+    <%end%>
+     <%= f.fields_for :subscriptions, @subscription do |s| %>
+      <div class="form-group">  
+        <div class="col-sm-12">          
+          <%= s.text_field :next_billing_date, class: "form-control formInputclient datepicker", placeholder:"Next Billing Date" %>
+          
+        </div>
+      </div>
+    <% end %>
+    <% end %>
+    <% if current_user.has_role?(:Client) %>
+    <div class="form-group">
+      <div class="col-sm-12">
+        <%= f.text_field :first_name,  placeholder:"First Name",class: "form-control formInputclient "%>
+          
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-sm-12">
+        <%= f.text_field :last_name,  placeholder:"Last Name",class: "form-control formInputclient "%>
+         
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-sm-12">
+        <%= f.email_field :email,  placeholder:"Email", maxlength: "50",class: "form-control formInputclient "%>
+          
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-sm-12">
+        <%= f.password_field :password, placeholder:"Password", maxlength: "50",class: "form-control formInputclient "%>
+          
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-sm-12">
+        <%= f.password_field :password_confirmation,  placeholder:"Confirm Password", maxlength: "50",class: "form-control formInputclient "%>
+          
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-sm-12 role-div">
+        <label class="roleForm">Role:</label>
+        <%= select_tag(:roles_name, options_for_user_role(params[:role]),class: "roleFor")%>    
+      </div>
+    </div>
+
+     <span class="sub_country_error " id="sub_country_error"></span>
+      <%= country_select("sub_cnrty_code", "country", include_blank: " Country") %>
+
+      <span class="mobile_blnk_error" id="mobile_blnk_error" ></span>
+      <span class="mobile_no_error" id="mobile_no_error" ></span>
+        <div class="row coun">
+          <div class="col-md-2">
+            <input type="text" class="form-control cntry-code " name="country_code_mob" id="country_code_mob" label="false" placeholder="code" style=" border-radius: 6px; height: 32px; background-color:white; margin-left: 22px;" readonly="true">
+            </div>
+          </div>
+
+    <div class="form-group phone_usr">
+      <div class="col-sm-12">
+        <%= f.text_field :primary_mobile_no,  placeholder:"Phone",class: "form-control formInput phone",id:"user_primary_mobile_number"%>  
+      </div>
+    </div>
+
+    <% end %>
+    <span class="col-sm-12 spanLine"></span>  
+    <div class="form-group">  
+      <div class="col-sm-offset-6 col-sm-8 buttonsClient">
+        <!-- button type="submit" class="btn btn-default clientCancelButton"><a href="<%= home_index_path %>" >Cancel</a></button> -->
+        <% if current_user.has_role?(:superadmin) %>
+          <%= link_to "CANCEL", home_settings_client_path, class: "btn btn-default clientCancelButton" , method: :get%>
+         <!--  <button type="submit" class="btn btn-success clientSaveButton clientButton" ><a class="clientAlgButton">Save Client</a></button> -->
+          <%= f.submit "Save Client",class: "btn btn-success addUserButton"%>
+        <% end %>
+        <% if current_user.has_role?(:Client) %>
+        <%= link_to "CANCEL", home_settings_user_path, class: "btn btn-default clientCancelButton" , method: :get%>
+         <!--  <button type="submit" class="btn btn-success clientSaveButton clientButton" ><a class="clientAlgButton">Save User</a></button> -->
+        <%= f.submit "Save User",class: "btn btn-success addUserButton"%>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>
+  
+</div> 
+
+<script type="text/javascript">
+  $(document).on('change', '#user_address_country', function(e) {
+        var input_country = $(this);
+         country = $(this).val();
+        $.getJSON('/states/' + $(this).val(), function (data) {
+          var input_state = $("#user_address_state");
+         // alert(input_state);
+          input_state.empty();
+          input_state.append('<option value="">Please Select state</option>');
+          $.each(data, function (i,j) {
+            opt1 = j.toString().split(",");
+            var opt = '<option value='+ opt1[1] +'>' + opt1[0] + '</option>';
+            input_state.append(opt);
+          });
+        });
+      });
+
+  $(document).on('change', '#sub_cnrty_code_country', function(e) {
+        var input_country = $(this);
+         country = $(this).val();
+        $.getJSON('/states/' + $(this).val(), function (data) {
+          var input_state = $("#user_address_state");
+         // alert(input_state);
+          input_state.empty();
+          input_state.append('<option value="">Please Select state</option>');
+          $.each(data, function (i,j) {
+            opt1 = j.toString().split(",");
+            var opt = '<option value='+ opt1[1] +'>' + opt1[0] + '</option>';
+            input_state.append(opt);
+          });
+        });
+      });
+
+
+      $(document).on('change', '#user_address_state', function(e) {
+        var input_country = $("#user_address_country");  
+        var input_state = $(this);
+        $.getJSON('/cities/' + input_country.val() + '/' + $(this).val(), function (data) {
+          var input_city = $("#user_address_city");
+          input_city.empty();
+          input_city.append('<option value="">Please Select city</option>');
+          $.each(data, function (i,j) {
+            var opt = '<option value='+ j +'>' + j + '</option>';
+            input_city.append(opt);
+            //alert(opt);
+          });
+        });
+      });   
+      
+      $(document).on('change', '#user_address_state', function(e) {
+        var input_country = $("#sub_cnrty_code_country");  
+        var input_state = $(this);
+        $.getJSON('/cities/' + input_country.val() + '/' + $(this).val(), function (data) {
+          var input_city = $("#user_address_city");
+          input_city.empty();
+          input_city.append('<option value="">Please Select city</option>');
+          $.each(data, function (i,j) {
+            var opt = '<option value='+ j +'>' + j + '</option>';
+            input_city.append(opt);
+            //alert(opt);
+          });
+        });
+      });   
+
+</script>
+
+
+<%= javascript_include_tag 'matrix.charts','excanvas.min','jquery.ui.custom','bootstrap.min','jquery.flot.min','jquery.flot.resize.min','jquery.peity.min','jquery.peity.min','fullcalendar.min','matrix','matrix.dashboard','matrix.dashboard','matrix.interface','matrix.chat','matrix.form_validation','jquery.wizard','jquery.uniform','select2.min','matrix.popover','jquery.dataTables.min','matrix.tables'%> 
+
+
+
+<!--end-main-container-part-->
+
+<!--Footer-part-->
+
+<div class="row-fluid">
+  <div id="footer" class="span12"> </div>
+</div>
+
+ <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="/resources/demos/style.css">
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.js"></script>
+
+
+<script type="text/javascript">
+ 
+
+  $(function() {
+    $(".datepicker").datepicker({
+         dateFormat: "yy-mm-dd"
+    });
+});
+</script>
+</body>
+</html>
+<script>
+
+$(function() {
+    // validate the form when it is submitted
+
+  $.validator.addMethod("pattern1", function(value, element) {
+    return this.optional(element) || value == value.match(/^\d{10}$/);
+  });
+  $.validator.addMethod("pattern3", function(value, element) {
+    return this.optional(element) || value == value.match(/^[a-zA-Z~^`']*$/);
+  });
+
+
+  $("#new_user").validate();
+  $("#user_clients_name").rules("add", {
+    required: true,
+    maxlength: 50,
+    messages: {
+      required: "Please provide Client name",
+      maxlength: "Client name must be less than 50 characters long",
+    }
+  });
+  $("#user_first_name").rules("add", {
+    required: true,
+    maxlength: 50,
+    pattern3: true,
+    messages: {
+      required: "Please provide first name",
+      maxlength: "First name must be less than 50 characters long",
+      pattern3: "Please enter valid first name",
+    }
+  });
+  $("#user_last_name").rules("add", {
+    required: true,
+    maxlength: 50,
+    pattern3: true,
+    messages: {
+      required: "Please provide last name",
+      maxlength: "Last name must be less than 50 characters long",
+      pattern3: "Please enter valid last name",
+    }
+  });
+  $("#user_address_street").rules("add", {
+    required:true,
+    messages: {
+      required: "Please enter street",
+    }
+  });
+  $("#user_address_country").rules("add", {
+    required:true,
+    messages: {
+      required: "Please select country",
+    }
+  }); 
+  $("#sub_cnrty_code_country").rules("add", {
+    required:true,
+    messages: {
+      required: "Please select country",
+    }
+  }); 
+  $("#user_address_state").rules("add", {
+    required:true,
+    messages: {
+      required: "Please select state",
+    }
+  }); 
+  $("#user_address_city").rules("add", {
+    required:true,
+    messages: {
+      required: "Please select city",
+    }
+  });
+  $("#user_address_zipcode").rules("add", {
+    required:true,
+    messages: {
+      required: "Please enter zipcode",
+    }
+  });
+  $("#user_clients_website").rules("add", {
+    required: true,
+    maxlength: 50,
+    messages: {
+      required: "Please provide Website",
+      maxlength: "Website must be less than 50 characters long",
+    }
+  });
+  // $("#user_clients_originator").rules("add", {
+  //   required: true,
+  //   maxlength: 50,
+  //   messages: {
+  //     required: "Please provide Originator",
+  //     maxlength: "Originator must be less than 50 characters long",
+  //    }
+  // });
+  $("#user_clients_created_at").rules("add", {
+    required:true,
+    messages: {
+      required: "Please provide Client since date",
+    }
+  });
+  $("#user_subscriptions_next_billing_date").rules("add", {
+    required:true,
+    messages: {
+      required: "Please provide Next Billing Date",
+    }
+  });
+
+ $("#user_primary_mobile_no").rules("add", {
+    required: true,
+    pattern1: true,
+    messages: {
+      required: "Please provide phone number",
+      pattern1: "Mobile number must be 10 digit number",
+    }
+  });
+  $("#user_primary_mobile_number").rules("add", {
+    required: true,
+    pattern1: true,
+    messages: {
+      required: "Please provide phone number",
+      pattern1: "Mobile number must be 10 digit number",
+    }
+  });
+ $("#user_email").rules("add", {
+    required:true,
+    email: true,
+    messages: {
+      required: "Please provide user name",
+    }
+  });
+ 
+ $("#user_password").rules("add", {
+    required:true,
+    minlength: 6,
+    messages: {
+      required: "Please provide password",
+      minlength: "Password length is minimum 6 characters",
+    }
+  });
+ $("#user_password_confirmation").rules("add", {
+    required: true,
+    minlength: 6,
+    equalTo: '#user_password',
+    messages: {
+      required: "Please provide confirmation password",
+      minlength: "Confirm Password length is minimum 6 characters",
+      equalTo: "password and confirm password does not match"
+    }
+  });
+});
+
+
+    $(document).on('change', '#sub_cnrty_code_country', function(e) {
+    country = $("#sub_cnrty_code_country").val();
+    $.ajax({
+      type:"GET",
+      url:"/change_country_code/"+country,
+      dataType:"json",
+      data: {},
+      success:function(result){
+
+          $("#country_code_mob").val("+"+result["country_code_mob"]);
+        }
+    }); 
+  });
+     $(document).on('change', '#user_address_country', function(e) {
+    country = $("#user_address_country").val();
+    $.ajax({
+      type:"GET",
+      url:"/change_country_code/"+country,
+      dataType:"json",
+      data: {},
+      success:function(result){
+
+          $("#country_code_mob").val("+"+result["country_code_mob"]);
+        }
+    }); 
+  });
+</script>
+

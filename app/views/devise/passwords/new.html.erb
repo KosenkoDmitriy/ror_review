@@ -1,0 +1,71 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+  <title>Review Maiden</title><meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700,800' rel='stylesheet' type='text/css'>
+  <style type="text/css">
+    .header
+    {
+      text-align: center;
+      color: white;
+    }
+    .container{
+      width: 92%!important;
+    }
+    #errordiv{
+      width: 78%!important;
+    }
+  </style>
+  <%= stylesheet_link_tag 'bootstrap.min', 'bootstrap-responsive.min', 'matrix-login', 'font-awesome' %>
+
+</head>
+  <body>
+    <div id="loginbox">
+    <%#= devise_error_messages! %>
+      <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
+        <div class="container">
+          <%= devise_error_messages! %>
+        </div>
+        <div class="", id="errordiv"> 
+          <p id="emailerrormsg"></p>
+        </div>
+        <form id="loginform" class="form-vertical">
+          <div class="control-group normal_text"> 
+            <!--  <h3>Forgot your password?</h3> -->
+            <h3><%= image_tag "logo1.png" , :alt => "Logo" %></h3>
+          </div>
+          <div class="control-group">
+            <div class="controls">
+              <div class="main_input_box">
+                <%= f.email_field :email, autocomplete: "off", autofocus: true, placeholder:"Enter Your Email Here" %>
+              </div>
+            </div>
+          </div>
+          <div class="form-actions">
+            <%= f.submit "Send Me Reset Password Instructions",id: "emailsubmit", class: "pull-center btn btn-success borrad"  %>
+          </div>
+        </form>
+      <% end %> 
+    </div>
+  </body>
+</html>
+<script src="/js/jquery.min.js"></script>  
+<script src="/js/matrix.login.js"></script>
+<%= javascript_include_tag "jquery.min", "matrix.login" %>
+<script type="text/javascript">
+  $('#user_email').on('input', function() {
+    var email = $("input#user_email").val();
+    var check = "superadmin@gmail.com";
+    if(email==check){
+      document.getElementById("emailerrormsg").innerHTML = "Reset Password doesnt available for this Email";      
+      document.getElementById("emailsubmit").disabled = true;
+      document.getElementById("errordiv").className = "alert alert-error container"; 
+    }
+    else{
+      document.getElementById("emailerrormsg").innerHTML = "";      
+      document.getElementById("emailsubmit").disabled = false; 
+      document.getElementById("errordiv").className = ""; 
+    }   
+  });
+</script>

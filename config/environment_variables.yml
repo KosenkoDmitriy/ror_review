@@ -1,0 +1,13 @@
+development:
+  SENDER_MAIL_USERNAME: ad091313@gmail.com
+  SENDER_MAIL_PASSWORD: Aka786sh!
+  TWILIO_ACC_SID : ACf9e8950fc76f7b90e9e80ee2776925d7
+  TWILIO_AUTH_TOKEN   :  AC502eb821bb89f52afe11cd3620ac7f99
+  TWILIO_NO  :  "+14159938508"  #twilio number is in string to avoid error of no implicit conversion of Integer into String (TypeError)
+
+production:
+  SENDER_MAIL_USERNAME: ad091313@gmail.com
+  SENDER_MAIL_PASSWORD: Aka786sh!
+  TWILIO_ACC_SID : ACf9e8950fc76f7b90e9e80ee2776925d7
+  TWILIO_AUTH_TOKEN   :  AC502eb821bb89f52afe11cd3620ac7f99
+  TWILIO_NO  :  "+14159938508"

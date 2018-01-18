@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  location_id: 1
+  api_key: MyString
+  url: MyString
+
+two:
+  location_id: 1
+  api_key: MyString
+  url: MyString

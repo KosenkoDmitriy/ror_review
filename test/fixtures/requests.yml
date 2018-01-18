@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  location_id: 1
+  email: MyString
+  phone_no: MyString
+  send_at: 2017-05-17 12:27:54
+  clicked: false
+  clicked_at: 2017-05-17 12:27:54
+  url: MyString
+
+two:
+  location_id: 1
+  email: MyString
+  phone_no: MyString
+  send_at: 2017-05-17 12:27:54
+  clicked: false
+  clicked_at: 2017-05-17 12:27:54
+  url: MyString

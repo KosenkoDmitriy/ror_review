@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Review Maiden</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700,800' rel='stylesheet' type='text/css'>
+    <%= stylesheet_link_tag 'bootstrap.min','fullcalendar','matrix-style','matrix-media','font-awesome','jquery.gritter', 'home' %>
+  </head>
+  <body>
+    <div id="sidebar">
+      <a href="<%= home_index_path %>" class="visible-phone"><i class="icon icon-home"></i> Dashboard</a>
+      <ul>
+        <li class="active"><a href="#"><i class="icon icon-home"></i> <span>Dashboard</span></a> </li>
+        <li><a href="<%= home_reviews_path %>"><i <i class="icon icon-comments"></i> 
+        <span>Reviews</span></a> </li>
+        <li><a  href="<%= home_location_listing_path %>" ><i class="icon icon-inbox"></i> <span>Locations
+        </span></a> </li>
+        <li><a href="#"><i class="icon icon-list-alt"></i>
+        <span>Reports  </span></a></li>
+        <li><a href="<%= home_requests_path %>"><i class="icon icon-edit"></i>
+        <span>Requests</span></a>
+        </li>
+        <li ><a  href="<%= home_settings_user_path %>" ><i class="icon icon-cog"></i> <span>Settings</span> </a></li>
+      </ul>
+    </div>
+    <div id="content">
+      <div id="content-header">
+      </div>
+      <p><h3><%= flash[:success] %></h3></p>
+      <div class="container-fluid">
+        <div class="row">
+          <div  class="quick-actions_homepage">
+            <div class="panel-body">   
+              <div class="boxcol-xs-8 col-md-8">
+
+                <a href="#" class="btn btn-default btn-lg panelstylefirst" role="button">
+                <span class="glyphicon glyphicon-list-alt"></span> <label style="color: green;"><div id="request_sent"><%= @count %></div></label>Request Sent
+                <label>(in the last month)</label></a>
+            
+                <a href="#" class="btn btn-default btn-lg panelstyle" role="button"><span class="glyphicon glyphicon-bookmark"></span><label style="color: red;"><div id="request"><%= @count %></div></label> Request Pending
+                <label>(for this month)</label></a>
+                 
+                <a href="#" class="btn btn-default btn-lg panelstyle" role="button" >
+                <span class="glyphicon glyphicon-list-alt"></span> <label style="color: green;">4.9+ </label>
+                Current Rating
+                <label>(increased from last month)</label></a>
+
+                <a href="#" class="btn btn-default btn-lg" role="button"><span class="glyphicon glyphicon-bookmark"></span><label style="color: red;"><%= @reviews.count %></label> Total # of Review
+                <label>(Overall)</label></a>
+                   
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <section id="contact-us">
+        <div class="container">
+          <div class="row"> 
+            <div class="col-md-8">
+              <div class="agent-p-form p-t-30" style="margin-top: 5%;">
+                <h2 class="text-uppercase">Send us<span class="color_red"> a message </span></h2>
+                <div class="row">
+                  
+                  <%= form_for :contact_sale, url: contact_sale_path, method: :post do %>
+                    <div class="col-md-12">
+                      <div class="single-query">
+                        <table width="100%">
+                          <tr>
+                            <td>   
+                              <span style="color:red;">*</span> 
+                            </td>
+                            <td>
+                              <input type="text" placeholder="Your Name"  class="keyword-input subForm" name="name" id="name" required="required" > 
+                            </td> 
+                          </tr> 
+                        </table>     
+                      </div>
+                    </div>
+
+                    <div class="col-md-12">
+                      <div class="single-query" >
+                        <table width="100%">
+                          <tr>
+                            <td>   
+                              <span style="color:red;">*</span> 
+                            </td>
+                            <td>
+                              <input type="text" placeholder="Phone Number EX. +919503804414" class="keyword-input subForm" name="phone" required="required" id="phone">
+                            </td> 
+                           
+                          </tr> 
+                        </table>     
+                      </div>
+                    </div>
+
+                    <div class="col-md-12">
+                      <div class="single-query" >
+                        <table width="100%">
+                          <tr>
+                            <td>   
+                              <span style="color:red;">*</span> 
+                            </td>
+
+                            <td>
+                              <input type="text" placeholder="Email Address" class="keyword-input subForm" id="email" name="email" required="required" maxlength="50" >
+                            </td> 
+                         </tr> 
+                        </table>     
+                      </div>
+                    </div>
+
+                    <div class="col-md-12" >
+                      <div class="single-query">
+                        <table width="100%">
+                          <tr>
+                            <td>   
+                              <span style="color:red;">*</span> 
+                            </td>
+
+                            <td>
+                              <textarea placeholder="Message" name="message" class="subForm" id="message" required="required"></textarea>
+                            </td> 
+                      
+                          </tr> 
+                        </table> 
+                      </div>
+                    </div>
+
+                    <div class="col-md-2 col-sm-2 col-xs-12 text-right">
+                      <div class="query-submit-button">
+                        <input type="submit" value="submit now" class="btn btn-success borrad1 colSub addSubscriptionButton" id="submit_button" required="required" >
+                      </div>
+                    </div> 
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <div class="row-fluid">
+        <div id="footer" class="span12"> </div>
+        </div>
+
+    <script type="text/javascript">
+      $(document).ready(function(){
+        var phoneReg =  /^\+(?:[0-9] ?){10,15}[0-9]$/;
+        var emailReg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
+        $('#txemail').first().keyup(function() {
+          var $email = this.value;
+          var emailReg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
+          if (!emailReg.test($email)) {
+              $("#txemail").css({"color": "RED"});
+          } else {
+              $("#txemail").css({"color": "GREEN"});
+          }
+        });  
+        $('#txphone').first().keyup(function() {
+          var $phone = this.value;
+          var phoneReg = /^\+(?:[0-9] ?){10,15}[0-9]$/;
+          if (!phoneReg.test($phone)) {
+              $("#txphone").css({"color": "RED"});
+          } else {
+              $("#txphone").css({"color": "GREEN"});
+          }
+        });
+
+        $("#btn_submit").click(function(e){
+          $("#contact_sales_in_errors").text("");
+          $("#contact_sales_in_errors").fadeIn();
+          $("#contact_sales_in_errors").removeClass("alert alert-danger");
+
+          if(!phoneReg.test($("#txphone").val())){
+             $("#contact_sales_in_errors").addClass("alert alert-danger");
+             $("#contact_sales_in_errors").append("<p>Invalid phone no.</p>");
+             e.preventDefault();
+          }    
+          if(!emailReg.test($("#txemail").val())){
+             $("#contact_sales_in_errors").addClass("alert alert-danger");
+             $("#contact_sales_in_errors").append("<p>Invalid email id.</p>");
+             e.preventDefault();
+          }    
+          
+          $("#contact_sales_in_errors").delay(3000).fadeOut('slow');   
+        });
+      });
+
+      
+    $('#location_address_id').on('change', function(event){
+      var selected_resource_id = $(this).val();
+      
+        $.ajax({ 
+        type: 'GET', 
+        url: "<%= home_request_pending_path %>",
+        data: { id: selected_resource_id }, 
+        success: function (data)
+          {
+          $("#request").empty();
+          var count=data["count"];
+          $("#request").append(''+count+'');
+          }
+        });
+      
+    });
+    </script>
+  </body>
+</html>

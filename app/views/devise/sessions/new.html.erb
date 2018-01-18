@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Review Maiden</title><meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700,800' rel='stylesheet' type='text/css'>
+  <style type="text/css">
+    .header
+    {
+      text-align: center;
+      color: white;
+    }
+    .flip-link{
+      width: 107px;
+    }
+    .pull-right{
+      margin-right: -5%;
+    }
+    #noticediv{
+      width: 25%!important;
+    }
+
+    #errordiv{
+      width: 25%!important;    
+    }
+      #errordivlost{
+        text-align: center;
+      width: 25%!important;    
+    }
+  </style>
+  <%= stylesheet_link_tag 'bootstrap.min', 'bootstrap-responsive.min', 'matrix-login', 'font-awesome' %>
+</head>
+<!-- form for sign in -->
+<body>
+  <div class="<%= "alert alert-success container" if !flash[:notice].nil? %> " id="noticediv" style="text-align:center"  >
+    <p><%= flash[:notice] %></p>
+  </div>
+  <div class="<%= "alert alert-success container" if !flash[:success].nil? %> " id="noticediv" style="text-align:center"  >
+    <p><%= flash[:success] %></p>
+  </div>
+  <div class="<%= "alert alert-error container" if !flash[:error].nil? %> " id="errordiv" style="text-align:center; width: 400px"  >
+    <p><%= flash[:error] %></p>
+  </div>
+  <div class="", id="errordivlost"> 
+    <p id="losterror"></p>
+  </div>
+  <div id="loginbox">
+    <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+      <form id="loginform" class="form-vertical">
+        <div class="control-group normal_text">
+          <h3><%= image_tag "logo1.png" , :alt => "Logo" %></h3>
+        </div>
+        <div class="control-group">
+          <div class="controls">
+            <div class="main_input_box">
+              <%= f.email_field :email, autofocus: true, required: true, placeholder:"Email", maxlength: "50" %>
+            </div>
+          </div>
+        </div>
+        <div class="control-group">
+          <div class="controls">
+            <div class="main_input_box">
+              <%= f.password_field :password, autofocus: true, required: true, placeholder:"Password", maxlength: "50" %>
+            </div>
+          </div>
+        </div>
+        <div class="form-actions">
+          <%if current_user.present?%>
+            <span class="pull-left"><%=link_to "Lost Password?", new_user_password_path, :class=> "flip-link btn btn-info borrad", :id => "lost_password_error" %></span>
+            <%else%>
+          <span class="pull-left"><%=link_to "Lost Password?", new_user_password_path, :class=> "flip-link btn btn-info borrad", :id => "to-recover" %></span>
+          <%end%>
+          <%= f.submit "Login", class: "pull-right btn btn-success borrad", :style => "width: 124px;" %>
+        </div>
+      </form>
+    <% end %> 
+  </div>
+</body>
+</html>
+<script src="/js/jquery.min.js"></script>  
+<script src="/js/matrix.login.js"></script>
+<%= javascript_include_tag "jquery.min", "matrix.login" %>
+
+<script type="text/javascript">
+  $().ready(function() {
+    history.pushState(null, null, '');
+    window.addEventListener('popstate', function () {
+      history.pushState(null, null, '');
+      window.reload();
+    });
+  });
+
+  $("#lost_password_error").click(function(){
+    document.getElementById("errordivlost").className = "alert alert-error container"; 
+    document.getElementById("losterror").innerHTML = "Please Logout First"; 
+    setTimeout(function(){
+      document.getElementById("errordivlost").className = ""; 
+      document.getElementById("losterror").innerHTML = ""; 
+    }, 5000);
+    return false;
+  }); 
+</script>

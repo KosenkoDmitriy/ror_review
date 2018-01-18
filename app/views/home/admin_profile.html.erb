@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Review Maiden</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <%= stylesheet_link_tag 'bootstrap.min','fullcalendar','matrix-style','matrix-media','font-awesome','jquery.gritter', 'home' %>
+  </head>
+  <body>
+    <div id="sidebar"><a href="#" class="visible-phone"><i class="icon icon-home"></i> Dashboard</a>
+      <ul>
+        <li ><a  href="<%= home_index_path %>"  ><i class="icon icon-home"></i> <span>Main Menu</span></a> </li>
+        <li ><a  href="<%= home_settings_user_path %>" ><i class="icon icon-signal"></i> 
+          <span>Users</span></a> </li>
+        <% if current_user.has_role?(:client) %>  
+          <li><a  href="<%= notification_settings_path %>" ><i class="icon icon-inbox"></i> <span>Notifications
+          </span></a> </li>
+        <%end%>  
+        <li><a href="<%= home_settings_subscription_path %>"><i class="icon icon-th"></i>
+         <span>Subscription  </span></a></li>
+        <li class="active"><a  href="<%= home_admin_profile_path %>"><i class="icon icon-fullscreen"></i>
+         <span>Profile</span></a>
+        </li>
+        <% if current_user.has_role?(:superadmin) %>
+        <li ><a  href="<%= home_settings_client_path %>" ><i class="fa fa-handshake-o"></i><span>Clients</span></a> </li>
+        <%end%>    
+        <li><a href="<%= clients_template_path %>"> <i class="fa fa-file"></i>
+        <span>Templates</span></a> 
+        </li>
+        <% if current_user.has_role?(:Client) %>
+        <li><a href="<%= clients_add_gmb_account_details_for_client_path %>"> <i class="fa fa-file"></i>
+          <span>Add GMB Details</span></a> 
+        </li>
+        <%end%>
+        <li class="settingsignout"><a  href="<%= home_settings_user_path %>" ><i class="icon icon-cog"></i> <span>Settings</span> </a></li>
+        <li><a href="<%= destroy_user_session_path %>" method="delete" data="{confirm= 'Are you sure?'}"><i class="icon icon-signout"></i><span>Sign Out</span> </a></li>
+      </ul>
+    </div>
+    <!-- form to update the user profile-->
+    <div id="content">
+      <div class="content-header-style" id="content-header">
+        <div class="<%= "alert alert-success container" if !flash[:notice].nil? %> " class="alert-style" id="">
+          <p><%= flash[:notice] %></p>
+        </div>
+    </div>
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span3">
+        </div> 
+        <div class="container-fluid">
+          <div class="row-fluid">
+            <div class="span6">
+              <div class="widget-box">
+                <div class="widget-title">
+                  <div class="user-profile-margin"> 
+                    <h5>User Profile</h5>
+                  </div>
+                </div>
+                <div class="widget-content nopadding">
+                  <form action="/update_user_profile" method="post">
+                    <div class="col-md-12 clearfix">
+                      <div class="single-query">
+                        <label>Primary Account Email:</label>
+                        <input type="text" placeholder="Primary Account Email" class="keyword-input" name="user[email]" value="<%= current_user.email %>">
+                        </div>
+                      </div>
+                      <% if current_user.has_role?(:Client) %>
+                      <div class="form-group">
+                        <label for="Username" class="labelcolor">Send Request Email:</label>
+                        <input type="text" placeholder="Enter send request email" class="keyword-input" name="user[send_request_email]" value="<%= current_user.client.send_request_email %>">
+                      </div>
+                      <div class="form-group">
+                        <label for="Username" class="labelcolor">Send Request Mobile No:</label>
+                        <input type="text" placeholder="Enter send request mobile no" class="keyword-input" name="user[send_request_mobile_no]" value="<%=current_user.client.send_request_mobile_no %>">
+                      </div>
+                      <% end %>
+                      <div class="form-actions">
+                        <button type="submit" class= "btn btn-success borrad1">Save Profile</button>
+                        <button type="submit" class="btn btn-default borrad1"><a  href="<%= home_index_path %>" >Cancel</a> </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row-fluid">
+            <div id="footer" class="span12"> </div>
+          </div>
+  </body>
+</html>

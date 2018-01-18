@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  description: MyText
+  notification_name: MyString
+  email_notification_type: false
+  push_notification_type: false
+
+two:
+  description: MyText
+  notification_name: MyString
+  email_notification_type: false
+  push_notification_type: false

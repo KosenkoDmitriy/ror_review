@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Review Maiden</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+ <%= stylesheet_link_tag 'clients' %>
+</head>
+<body>
+  <div class="<%= "alert alert-success container" if !flash[:success].nil? %> " id="noticediv" style="text-align:center"  >
+    <p><%= flash[:success] %></p>
+  </div>
+  <div class="container-fluid">
+    <div class="row-fluid">
+      <div class="span4">
+      </div>
+    <% if !device_name.is_mobile?  %> 
+    <div class="span4">
+      <div class="widget-box google-rev-container">
+        <%= form_for @response , url: google_request_path(@response.id) , method: :post do |f| %>
+          <div class="form-group google-rev-margin">
+            <div style="text-align: center">
+              <p for="Username" class="labelcolor google-rev-content">Would you like to leave a <br>Google Review</p>
+              <%= f.submit "YES", class:"btn btn-success borrad1 goodle-rev-submit"%>
+            <% end %>
+            <label for="Username" class="labelcolor rev-note">No use of Alternative sites </label>
+        </div>
+      </div>
+    </div>
+  </div>
+  <% else %>
+    <div class="span4">
+      <div class="widget-box google-rev">
+        <%= form_for @response , url: google_request_path(@response.id) , method: :post do |f| %>
+          <div class="form-group google-rev-margin">
+            <div style="text-align: center">
+              <p for="Username" class="labelcolor google-rev-content">Would you like to leave a <br>Google Review</p>
+              <%= f.submit "YES", class:"btn btn-success borrad1 goodle-rev-submit" %>
+            <% end %>
+            <label for="Username" class="labelcolor rev-note">No use of Alternative sites </label>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+  <div class="row-fluid">
+    <div id="footer" class="span12"> </div>
+  </div>
+</body>
+</html>

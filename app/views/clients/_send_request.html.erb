@@ -1,0 +1,401 @@
+
+<%= form_for :revws, url: clients_send_request_path, id: "review_request" do |k| %>
+  <%= k.select :country, countrie_codes.sort_by!{ |e| e.downcase}, prompt: "Please Select Country" %>
+  <%= k.text_field :phone_no,class: "text-field form-control", placeholder: "Client Phone or Email" , autocomplete: "off"%></br>
+  <input type="hidden" name="email" id="revw_email_mob_id" >
+  <%= k.text_field :name,class: "text-field form-control", placeholder: "Name", autocomplete: "off"%>
+  <div id="keysugList" class="send-div"></div>
+  <div>
+  </br><%= k.submit "Send Request",class: "btn btn-success btn-xs submitButton"%></br>
+  </div>
+  <center><button class="btn btn-link goBulk" data-target="#bulkrequestmodal" data-toggle="modal" />Send Bulk Request</button></center>
+<%end%>
+<script type="text/javascript">
+  nameData= '';
+  $("form" ).submit(function() {
+    data = $("#revws_phone_no").val();
+    // alert(data);
+    var mailfrmt = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    var mblfrmt = /^(\+\d{1,3}[-]?)?\d{10}$/ ; 
+    if(data.match(mailfrmt))  { 
+      $("#revw_email_mob_id").val("email");
+      // return true;
+    }
+    else if(data.match(mblfrmt)){
+      var country= $("#revws_country").val();
+      if (country=="") 
+      {
+        alert("Please select country code");
+        return false;
+      };
+      $("#revw_email_mob_id").val("phone_no");
+    }
+    else{
+      alert("Please Enter Valid Format"); 
+      return false;
+      // document.getElementById("sendError").innerHTML = "Error!"
+    }
+
+  });
+  $('#revws_phone_no').on('input', function() {
+    phone_no = $("#revws_phone_no").val(); 
+    console.log(phone_no);
+    $.ajax({
+      type: "POST",
+      url: '<%= clients_auto_generate_path%>',
+      data: {phone_no: phone_no},
+      success: function (data){
+        orgs = '';
+        nms = '';
+        nameData  = data;
+        console.log("======  ======");
+        console.log(nameData.names);
+        console.log(nameData.originators);
+        if(nameData.names.length==1){
+          $("#keysugList").hide();
+          document.getElementById("revws_name").value = nameData.names;
+         
+        }
+        else if(nameData.originators != undefined){
+          orgs = nameData.originators;
+          nms = nameData.names;
+          console.log(nms,orgs);
+          for (index = 0; index < orgs.length; ++index) {
+            console.log(index);
+            console.log(orgs[index]);
+            console.log(nms[index]);
+            console.log("-----");
+            console.log();
+            $("#keysugList").append("<p id="+nms[index]+" class=automanual onclick=selValue(id)>"+nms[index]+" - - "+orgs[index]+"</p>");
+          }
+          $("#keysugList").show();
+        }
+        else {
+          document.getElementById("revws_name").value = "";
+          $("#keysugList").hide();
+        }
+      }
+    });
+  });
+  a= '';
+  function selValue(a)
+  {
+    document.getElementById("revws_name").value = a;
+    $("#keysugList").hide();
+  }
+</script>
+<div id="bulkrequestmodal" class="modal fade" role="dialog" style="height: auto; display:none;">
+      
+
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title"><u><!-- Send Review Request --></u></h4>
+      </div>
+      <div class="modal-body">
+<!--================ 
+  step1
+ ================-->
+      <div id="step1">
+        <center> <h4>Add Clients</h4></center>
+        <div id="border">
+          <center><img src="/assets/File512.png" alt="file" class="img-upload"> <br> <p id="file_name" class="file-name"></p></center>
+          <div id="choose_file">
+            <span class="select-csv">Select CSV File</span>
+            <%= form_tag clients_bulk_send_request_path, multipart: true, id: "form_id" do %>
+                <%= file_field_tag :file, id:"checkExtension" %>
+            </div>
+            <%end%>
+          </div>
+          <button type="button" id="back_step1" class="btn btn-default">Cancel</button> 
+          <button type="button" id="goto_step2" class="btn btn-info" disabled="" >Continue</button> 
+        </div>
+<!--================ 
+  step2
+ ================-->
+        <div id="step2" style="display: none">
+          <center> <h4>Import From File</h4></center>
+          <div id="table">  
+          </div>
+          <button type="button" id="back_step2" class="btn btn-default">back</button> 
+          <button type="button" id="goto_step3" class="btn btn-info">Continue</button> 
+        </div>
+  <!--================ 
+  step3
+ ================-->
+     
+        <div id="step3" style="display: none; text-align:center">
+          <h4>Import From File</h4>
+          <div id="border1">
+          <% user = User.where(:client_id => current_user.client_id)%>
+          <% user1 = user.where("id != ?", current_user.client_id) %>
+            <div><h1 style="color:#00bfff"> # </h1><span style="font-weight:bold;">Reciepients</span> <br><br>
+              <p><%= select(:client, :id, options_for_select( user1.collect {|p| [ "#{p.first_name+' '+p.last_name}", "#{p.first_name+' '+p.last_name}"]})) %>   </p>
+                <label class="switch">  
+                  <input type="checkbox" id="skip_duplicates" name="skip_duplicates" checked>
+                  <div class="slider round"></div>
+                </label><span style="font-weight:bold;">Skip existing recipient</span>
+            </div>
+          </div>    
+          <button type="button" id="back_step3" class="btn btn-default" style="float: left;">back</button> 
+          <button type="button" id="goto_step4" class="btn btn-info step4">Import</button> 
+        </div>
+  <!--================ 
+  step4
+ ================-->
+        <div id="step4" style="display: none; text-align:center">
+          <center> <h4>Import Result</h4></center>
+          <div id="border1">
+            <div id="lastPage"> 
+              <h1> 0     0     0 </h1>
+              <p> Recipients Imported      Duplicates Skipped     Import Errors </p>
+            </div>
+          </div>
+          <button type="button" id="done" class="btn btn-info"  style="float: left;">Done</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<html>
+<script src="http://code.jquery.com/jquery-1.8.2.js"></script>
+<script type="text/javascript">
+  var dataError = '';
+  var csv_data_all = '';
+  var skiDuplicates = "yes";
+  var address_id_bulk = '';
+  var mailfrmt = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+  var mblfrmt = /^(\+\d{1,3}[-]?)?\d{10}$/ ; 
+
+  // $(window).load(function() {
+  //  var x = document.getElementById("client_client_id");
+  //     x.remove(0);
+  //   });
+   
+  $("#back_step1").click(function(){
+    $("#bulkrequestmodal").hide();
+  });
+
+  $('#done').click(function() {
+    $("#bulkrequestmodal").hide();
+    $("#myModal").hide();
+  });
+  
+  $(".goBulk").click(function() {
+    fileName ="";
+    document.getElementById("file_name").innerHTML = fileName;
+
+    address_id_bulk = $("#location_address_id").val();
+    if(address_id_bulk=="" || address_id_bulk==undefined || address_id_bulk==" " )
+    {
+      alert("Please select client location");
+    return false;}
+    else{ 
+    document.getElementById("goto_step2").disabled = true; 
+    $("#step1").show();
+    $("#step4").hide();
+    $("#step2").hide();
+    $("#step3").hide();}
+  });
+
+  $("#goto_step2").click(function() {
+    document.getElementById("goto_step4").disabled = false; 
+
+    console.log("=====--..FORM HEADINGS..--====");
+    var error = "yes";  //for showing error
+    $.ajax({
+      url: "<%=  clients_csv_heading_path %>",
+      type: "POST",
+      data: new FormData($('#form_id')[0]),
+      processData: false, //<-- important
+      contentType: false, //<-- important
+      success: function (data)
+      {
+        csv_data_all = data["csv_data_all"];
+        $("#table").empty();
+        count =0;
+        $.each(data["csv_data"], function(keys,values)
+        { 
+          count++;
+          console.log(keys,values);
+          console.log(values);
+          if(values.match(mblfrmt)||values.match(mailfrmt))
+          {
+            console.log("mathched----->>> "+values);
+            $("#step1").show();
+            $("#step2").hide();
+            alert("Proper heading not present in csv file");
+            return false;
+          }
+          else if(values =="" ||values ==" "){
+            $("#step1").show();
+            $("#step2").hide();
+            alert("Proper heading not present in csv file");
+            return false;
+          }
+    
+          else{ 
+            console.log("NOT mathched----->>> "+values);
+            $("#step2").show();
+            $("#step1").hide()
+          } 
+          if(count==1){
+          $("#table").append('<div class="well"><table> <tr><th style="width:40%;">CSV Column name </th><th>Example Value</th><th style="width: 40%;">Map to</th></tr></div>');
+             }
+          $("#table").append('<tr><td style="padding-right: 30px;"><input type="checkbox" id="'+count+'" name='+values+' class="chk" value='+values+'> '+values+'</td><td  style="padding-right: 30px;">mark@reviewmaiden.com</td><td><select id="'+count+'select" name="'+count+'" class="'+count+'"><option value="0">Select Field</option><option value="name">Name</option><option value="email">Email</option><option value="phone_no">Phone_no</option></select></td></tr>'); 
+          if(data["csv_data"].length == count){
+            $("#table").append('</table>');
+          }
+        })
+      }
+    });
+  });
+
+  $("#goto_step3").click(function() {
+    chkcount   = 0;
+    selcount = [] ; 
+    $("input:checkbox[class=chk]:checked").each(function () {
+      chkcount++;
+      console.log("Id: " + $(this).attr("id") + " Value: " + $(this).val());
+      selcount.push($(this).attr("id"));
+    }); 
+    if(chkcount!=3)
+    {
+      alert("Please Select 3 checkboxes. You select: "+chkcount);
+    }
+    else{
+      err = 0;
+      arr =[];
+      selcount.forEach(function(sel) {
+        console.log(sel);
+        select = $( "."+sel).val();
+        if(select=="0")
+        {
+        $("."+sel).css('border','2px solid red');
+        err++;
+        }
+        else{
+        $("."+sel).css('border','');
+        arr.push(select);
+        }
+      });
+
+      if(err==0){
+        dup =0;
+        //checking duplicates select   
+        var uniqOb = {};
+        for (var i in arr)
+          uniqOb[arr[i]] = "";
+        if (arr.length == Object.keys(uniqOb).length)
+          dup =0;//no duplicates
+        else
+          dup = 1;//has duplicates
+        if(dup==0)
+        {
+          $("#step3").show();
+          $("#step1").hide();
+          $("#step2").hide();
+        }
+        else{alert("Please select unique options in Map to");}
+      }     
+    }
+  });
+
+$("#goto_step4").click(function() {
+  console.log("=====--..FORM IMPORT..--====");
+  chkIds = [];
+  chkNames = [];
+  selects = [];
+  document.getElementById("goto_step4").disabled = true; 
+  $("input:checkbox[class=chk]:checked").each(function () {
+    console.log("Id: " + $(this).attr("id") + " Value: " + $(this).val());
+    chkIds.push($(this).attr("id") );   
+    chkNames.push($(this).val());  
+  }); 
+  console.log("------CHKIDS----------");
+  console.log(chkIds);
+  console.log("------CHKNAMES---------");
+  console.log(chkNames);
+  for (var i = 0; i < chkIds.length; i++) {
+    sel = document.getElementsByClassName(chkIds[i]);
+    sel = $( "."+chkIds[i] ).val();
+    console.log(sel);
+    selects.push(sel);
+  }
+  console.log("------selects----------");
+  console.log(selects);
+  console.log("------EXCISTING...?----------");
+  if($("#skip_duplicates").is(":checked")){ 
+  skipDuplicates="yes"}
+  else{
+  skipDuplicates="no";
+  }
+  clientId = $( "#client_id").val();
+    $.ajax({
+      url: "<%=  clients_bulk_send_request_path %>",
+      type: "POST",
+      data: {chkNames: chkNames, selects:selects, skipDuplicates:skipDuplicates,originator:clientId,address_id_bulk:address_id_bulk },
+      success: function (data)
+      {
+        document.getElementById("goto_step4").disabled = false; 
+        dataError = data;
+        console.log(dataError);
+        $("#lastPage").empty();
+        $("#lastPage").append('<table style="margin-top: 60px;width: 100%;"><tr><th style="font-size: xx-large;">'+dataError.sucessfully_import+'</th><th style="font-size: xx-large;">'+dataError.duplicates_skipped+'</th><th style="font-size: xx-large;">'+dataError.error_found+'</th></tr> <br><tr><td>Recipients Imported</td><td>Duplicate skipped</td><td>Import Errors</td></tr></table>'); 
+        $("#step4").show();
+        $("#step1").hide();
+        $("#step2").hide();
+        $("#step3").hide();
+      }
+    });
+  });
+
+  $("#back_step2").click(function() {
+    $("#step1").show();
+    $("#step4").hide();
+    $("#step2").hide();
+    $("#step3").hide();
+  });
+  $("#back_step3").click(function() {
+    $("#step2").show();
+    $("#step1").hide();
+    $("#step3").hide();
+    $("#step4").hide();
+  });
+  $(function() {
+    $('#checkExtension').change(function() { 
+      var fileExtension = ['csv'];
+      if ($.inArray($(this).val().split('.').pop().toLowerCase(), fileExtension) == -1) {
+        alert("Only '.csv' formats are allowed.");
+        document.getElementById("goto_step2").disabled = true; 
+      }
+      else
+      {
+        document.getElementById("goto_step2").disabled = false; 
+      }
+    })
+  })
+  $(document).ready(function(){
+    fileName = "";
+    $('input[type="file"]').change(function(e){
+        fileName = e.target.files[0].name;
+        // alert('The file "' + fileName +  '" has been selected.');
+        document.getElementById("file_name").innerHTML = fileName;
+
+    });
+  });
+
+  $(".sendReviewrequestButton").click(function() {
+    address_id_bulk = $("#location_address_id").val();
+    if(address_id_bulk=="" ||  address_id_bulk==undefined || address_id_bulk==" "){
+      alert("Please Add client location & template ");
+      return false;
+    }
+    else{ 
+      $("#mymodal").show();
+    }
+  });
+  
+</script>
+

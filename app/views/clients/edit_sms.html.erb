@@ -1,0 +1,56 @@
+<script src="https://cdn.ckeditor.com/4.7.1/standard/ckeditor.js"></script>
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    .cncl_page
+    {
+      color: none;
+      margin-left: 947px;
+      margin-right:12px;
+      font-size: initial;
+    }
+    .save_sms_sbmt
+    {
+      font-size: initial;
+      background-color: cyan;
+      border-radius: 6px;
+      height: 40px;
+    }
+    .bcolor{
+      background-color: white;
+    }
+    .hcolor{
+      color:black;
+    }
+    .ck_font{
+      font-size: large;
+      margin-left: 14px;
+    }
+    .articlesms {
+      float: left;
+      margin: 10px;
+      padding: 10px;
+      max-width: 3100px;
+      height: 400px;
+      border: 1px solid black;
+      margin-left:21px;
+    } 
+    #review_link_sms{
+      cursor: pointer
+    }
+  </style>
+  <div class = articlesms>
+  	<body class="bcolor">
+      <%= form_for @template.nil? ? :templates : @template , url:  @template.nil? ? clients_create_template_path : update_client_sms_path(@template) , method: :post do |k| %>
+  		  <h3 class="hcolor">
+  		  <label>SMS Body Text</label></h3>
+        <%= raw k.cktext_area :template_text, required: true, :id => "ckedtr"%>
+        <a class="ck_font" id="review_link_sms">Insert Review Link</a>
+        <a href="<%= clients_template_path %>" class = "cncl_page" >Cancel</a>
+        <%= k.submit "Save", :class => "save_sms_sbmt", :onclick => "alert('SMS Template is Saved')" %>
+      <% end %>
+    </body>
+  </div>
+  </head>
+</html>

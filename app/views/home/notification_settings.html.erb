@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Review Maiden</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="css/bootstrap.min.css" />
+<link rel="stylesheet" href="css/bootstrap-responsive.min.css" />
+<link rel="stylesheet" href="css/fullcalendar.css" />
+<link rel="stylesheet" href="css/matrix-style.css" />
+<link rel="stylesheet" href="css/matrix-media.css" />
+<link href="font-awesome/css/font-awesome.css" rel="stylesheet" />
+<link rel="stylesheet" href="css/jquery.gritter.css" />
+<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700,800' rel='stylesheet' type='text/css'>
+<%= stylesheet_link_tag 'home' %>
+</head>
+<body>
+<!--close-top-serch-->
+<!--sidebar-menu-->
+  <div id="sidebar"><a href="#" class="visible-phone"><i class="icon icon-home"></i> Dashboard</a>
+  <ul>
+    <li ><a  href="<%= home_index_path %>"  ><i class="icon icon-home"></i> <span>Main Menu</span></a> </li>
+    <li><a  href="<%= home_settings_user_path %>" ><i class="icon icon-signal"></i> 
+      <span>Users</span></a> </li>
+    <li  class="active"><a  href="<%= notification_settings_path %>" ><i class="icon icon-inbox"></i> <span>Notifications
+    </span></a> </li>
+    <li><a href="<%= home_settings_subscription_path %>"><i class="icon icon-th"></i>
+     <span>Subscription  </span></a></li>
+    <li><a  href="<%= home_admin_profile_path %>"><i class="icon icon-fullscreen"></i>
+     <span>Profile</span></a>
+    </li>
+    <% if current_user.has_role?(:superadmin) %>
+      <li ><a  href="<%= home_settings_client_path %>" ><i class="fa fa-handshake-o"></i><span>Clients</span></a> </li>
+     <%end%> 
+   
+      <li><a href="<%= clients_template_path %>"> <i class="fa fa-file"></i>
+     <span>Templates</span></a> 
+    </li>
+    <% if current_user.has_role?(:Client) %>
+      <li><a href="<%= clients_add_gmb_account_details_for_client_path %>"> <i class="fa fa-file"></i>
+        <span>Add GMB Details</span></a> 
+      </li>
+    <%end%>
+  
+      <li class="settingsignout-superadmin"><a  href="<%= home_settings_user_path %>" ><i class="icon icon-cog"></i> <span>Settings</span> </a></li>
+    <li><a href="<%= destroy_user_session_path %>" method="delete" data="{confirm= 'Are you sure?'}"><i class="icon icon-signout"></i><span>Sign Out</span> </a></li>
+  </ul>
+
+</div>
+<div id="content">
+  <div id="content-header">
+  </div>
+  <div class="container-fluid">
+    <div class="row-fluid">
+      <div class="span8">
+          <h4>Notification Settings</h4>
+      </div>
+    </div>
+    <div class="row-fluid">
+      <div class="span12">
+        <table class="table table-bordered table-striped">
+          <thead>
+             <tr>
+                <th>Notification Name</th>
+                <th>Notification Description</th>
+                <th>Email</th>
+                <th>Push</th>
+             </tr>
+          </thead>
+          <tbody>
+            <% @notifications.each do |nt| %>
+              <tr>
+                <td><%= nt.notification_name%></td>
+                <td><%= nt.description%></td>
+                <td><input type="checkbox" id="<%= nt.id %>" name="email" <%= setting_notification(nt.id)[0] ? 'checked' : '' %>></td>
+                <td><input type="checkbox" id="<%= nt.id %>" name="push" <%= setting_notification(nt.id)[1] ? 'checked' : '' %>></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </div>
+      </div>
+    </div>
+  <div class="row-fluid">
+   <div id="footer" class="span12"> </div>
+  </div>
+ <!--  < %= javascript_include_tag 'matrix.charts','excanvas.min','jquery.min','jquery.ui.custom','bootstrap.min','jquery.flot.min','jquery.flot.resize.min','jquery.peity.min','jquery.peity.min','fullcalendar.min','matrix','matrix.dashboard','matrix.dashboard','jquery.gritter.min','matrix.interface','matrix.chat','jquery.validate','matrix.form_validation','jquery.wizard','jquery.uniform','select2.min','matrix.popover','jquery.dataTables.min','matrix.tables'%> 
+  < %= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %> -->
+</body>
+</html>

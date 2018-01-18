@@ -1,0 +1,79 @@
+/* To fix box size */
+.panel-body .btn:not(.btn-block)
+{ 
+  width:185px;margin-bottom:10px;height: 100px; 
+}
+.boxcol-xs-8
+{
+  margin-right: -1093px;
+  margin-left: 66px;
+  font-weight: bolder;
+}
+.boxcol-xs-6
+{
+  margin-right: -500px;
+  margin-left: -562px;
+  margin-top: -10px;
+}
+.boxcol-xs-4
+{
+  margin-right: -250px;
+  margin-left: -30px;
+  margin-top: -10px;
+  font-weight: bolder;
+}
+.col-xs-8
+{
+  margin-top: -30px;  
+}
+.req-sent{
+  color: #26af26; 
+  font-size: 24px;
+  font-weight: bold;
+}
+.req-label{
+  font-size: 12px;
+}
+.req-pend{
+  color: orange; 
+  font-size: 24px;
+  font-weight: bold;
+}
+.pend-label{
+  font-size: 12px;
+}
+.rating-r{
+  color: #26af26; 
+  font-size: 24px;
+  font-weight: bold;
+}
+.label-r{
+  font-size: 12px;
+}
+.over-all{
+  color: #0c8cbf;
+  font-size: 24px;
+  font-weight: bold;
+}
+.label-over{
+  font-size: 12px;
+}
+.rating{
+  border-radius: 50%;
+  position: relative;
+  top: -16px;
+  width: 46px;
+  left: 10px;
+}
+.rating-h1{
+  font-size: 9px;
+  position: absolute;
+  top: 45px;
+  right: 10px;
+}
+.reviews-div{
+  border-color:rgba(128, 128, 128, 0.25);
+  border-width: 2px;
+  border-style: solid;
+  min-height: 82px;
+}

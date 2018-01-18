@@ -1,0 +1,36 @@
+<div class="csvData">
+  <%if actual_data != nil %> 
+      <%= form_for :requests, url: clients_bulk_send_request_data_path  do |k| %>
+        <div class="selectallcheckbox">
+          <input type="checkbox", id="selectall"/><lable class="selectlable">:Select all</lable>
+        </div>
+        <div class="listData">
+          <%actual_data.each do |csvdata| %>
+              <div class="checkbox">
+                <%=k.check_box :csvdata, { multiple: true, class: "case" }, csvdata, false%><%= csvdata %>
+              </div>
+          <%end%>
+        </div>
+          <%= k.submit  "Send" ,class: "btn btn-success borrad1 bulkSendButton"%>
+      <%end%>
+  <%end%>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+  // add multiple select / deselect functionality
+  $("#selectall").click(function () {
+      $('.case').attr('checked', this.checked);
+  });
+  // if all checkbox are selected, check the selectall checkbox
+  // and viceversa
+  $(".case").click(function(){
+    if($(".case").length == $(".case:checked").length) {
+      $("#selectall").attr("checked", "checked");
+    } else {
+      $("#selectall").removeAttr("checked");
+    }
+  });
+});
+</script>

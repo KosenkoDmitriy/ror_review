@@ -1,0 +1,1878 @@
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="/resources/demos/style.css">
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+<script type="text/javascript">
+  $(document).ready(function(){
+    $.datepicker.setDefaults({  
+      dateFormat: 'mm/dd/yy',
+    });
+   function Filter_reviews(id)
+   {
+    var client_id= $("#client_address_id").val();
+    if(client_id==1)
+    {
+      alert("Please select client");
+    }
+    var location= $("#location_address_id").val();
+    if((client_id!=1) && (location==null))
+    {
+      alert("Please select the location");
+    }
+    var filter = id;
+    var date=0;
+    if (filter=='filter_by_selected_date')
+    {
+      date = $('#filter_by_selected_date').val();
+      location_id=0;
+    }
+    if(filter=='view_all_new')
+    {
+      location_id=loc_id;
+    }
+    $.ajax({
+      url : "<%= home_filter_reviews_path %>",
+      type: "POST",
+      data : {filter : filter, data: location, date: date, location_id: location_id},
+      success: function (data)
+      {
+        isclient = data.isclient;
+        $("#collapseG9").empty();
+        $("#collapseG9").show(); 
+        $("#collapseG6").hide();
+        $("#collapseG8").hide();
+        $.each(data["addresses"], function(keys,values)
+        {
+          $("#location_address_id").append('<option value='+values.id+'>'+values.street+','+values.city+','+values.state+','+values.country+','+values.zipcode+'</option>');
+        })
+        var rg = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})\..*/g;
+        var monthShortNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        var google_data = data.filter_google_reviews;
+        // START: For google reviews BY TODAY
+        if(google_data!='')
+        {
+          googlecountgtoday = 0;
+          $.each(data["filter_google_reviews"], function(googlereviews,grl){
+            googlecountgtoday++;
+            var nameviewgtoday = grl.reviewer_name
+            var create_gtoday = grl.google_review_create_time.replace(rg,"$3-$2-$1");
+            var month_id = grl.google_review_create_time.replace(rg,"$2");
+            month_id = parseInt(month_id);
+            var month =  monthShortNames[month_id-1];
+            var gtoday = grl.google_review_create_time.replace(rg,"$3");
+            var create_time = grl.google_review_create_time.replace(rg,"$4:$5");
+            var nameviewgtoday = nameviewgtoday.split(' ');
+            if(grl.review_comment==null){grl.review_comment="";}
+            $("#collapseG9").append('<li style="list-style-type: none;"> <div style="border-color:rgba(128, 128, 128, 0.25);border-width: 2px;min-height: 80px;border-style: solid;height: auto;"><div class="user-thumb" style="position: relative;top: -2px;min-height: 67px;background: none repeat scroll 0 0 #FFFFFF;background-color: #eee;"><h3><img src="/assets/respond.png"  alt="User"  style="border-radius: 50%;position: relative;top: -10px;width: 46px;left: 9px;"><h1 style="font-size: 9px;position: absolute;top: 25px;right: 20px;">'+nameviewgtoday[0]+'</h1></h3><div class="rating-image-style_viewless" id="rating-image-style_viewmore_gtoday'+googlecountgtoday+'"> </div><h1 class="rating-img-h1-tag" style="font-size: 9px; position: relative; top: -46px; margin-left: 11px;">On '+gtoday+' '+month+' </h1></h3></div><div class="article-post" style="position: relative;left: 10px;"> <span style="margin-right: -46px;" > By: '+grl.reviewer_name+' / Date: '+create_gtoday+' / Time: '+create_time+' </span><p>'+grl.review_comment+'</p></div><div class="buttonmargin"><p style="margin-left:85px;"><a style="margin-left: 10px;background-color:#39393c;color: white;" class="btn btn-default btn-mini borrad" name="todayallrnote0r20'+grl.id +'" onClick="noteResponse(name)">Add Note</a> <button href="" style="margin-left: 10px;" class="btn btn-success btn-mini borrad" name="respondtodyrpositive'+grl.id +'" onClick="noteResponse(name)">Respond</button>   <button href="#" class="btn btn-warning btn-mini borrad" style="margin-left: 10px;" value="Share" data-toggle="modal" data-target="#modal23grgtoday'+grl.id +'">Share</button>  <div class="modal fade" id="modal23grgtoday'+grl.id +'" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="width:30%;"><div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" style="font-size:20px; text-align:center;" id="myModalLabel">Sharing This</h5><button type="button" style="margin-top: -30px;" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></div><div class="modal-body"><class="btn-social" style="padding-left:140px;"><a class="js-social-share facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://cryptextechnologies.com&description='+grl.review_comment+'" target="_blank" style="color:rgb(59, 89, 152);"><i class="fa fa-facebook-official" aria-hidden="true" style="font-size:50px"></i></a><class="btn-social" style="padding-left:20px;"><a class="js-social-share twitter" href="https://twitter.com/intent/tweet?&text='+grl.review_comment+'" target="_blank" style="color:rgb(85, 172, 238)"><i class="fa fa-twitter" aria-hidden="true" style="font-size:50px"></i></a></div></div></div></div></p><div></div></li><br>');
+            for(i=0;i< parseInt(grl.star_rating);i++)
+            { 
+              $("#rating-image-style_viewmore_gtoday"+googlecountgtoday).append('<img src="/assets/star.png" style ="height:12px;position: relative;margin-top: -34px;">')
+            }  
+            todayallrnamediv="#todayallrnote0r20"+grl.id;
+            todayallrarrowdiv = "#todayallrabc0r20"+grl.id;
+            todayallrarrowdiv38 = "#todayallrabc0440"+grl.id;
+            todayallrtextdiv= "#todayallrtextdivnote0r20"+grl.id;
+            $("#collapseG9").append('<div id="todayallrnote0r20'+grl.id+'" class="dadiv" style="display:none;"><div><div class="" id="todayallrabc0r20'+grl.id+'"></div><div id="todayallrabc0440'+grl.id+'" style="display:none;"></div><div id="todayallrtextdivnote0r20'+grl.id+'"</div></div></div>');
+            // alert(data["response_notes"]);
+            // console.log("=====================NOTES===============");
+            var inc = 0; 
+            var flag =0;
+            var count1=0;
+            $.each(data["response_notes"], function(response_notes,rn){
+              // alert()
+              console.log(rn.note_text);
+              inc++;
+              if(grl.id==rn.google_review_id)
+              {
+                count1++;
+                if(count1==3)
+                {
+                  return false;
+                }
+                else
+                {
+                  flag=1;
+                  $(todayallrarrowdiv).addClass('up-arrow');
+                  $(todayallrarrowdiv).append('<div class="user-thumb" style="position: relative;top:-20px;min-height:67px;background-color:#d6eff8;"><h3><img src="/assets/respond.png" alt="User" style="border-radius:50%;position:relative;top:-10px;width:46px;left:9px;"><h1 style="font-size:9px;position:absolute;top:24px;right: 13px;">John Doe</h1></h1><h1 style="font-size: 9px;position: absolute;top: 40px;right: 13px;">On July 17</h1></h3></div><div class="article-post" style="position:relative;left: 50px;"><p style="min-height: 85px">'+rn.note_text+'</p>');
+                }
+              }
+            });
+            if((flag==1) &&(count1 > 2))
+            {
+              $(todayallrarrowdiv).append('<button class="btn btn-warning btn-mini" style="width: 60px;margin-left: -20px;position: relative;top: 20px;font-size: 23px;" name="todayallrabc0440'+grl.id+'" id="todayallrabc0r20'+grl.id+'" onclick="Google_notes(name,id)">+</button>');
+            }
+            $.each(data["response_notes"], function(response_notes,rn){
+              console.log(rn.note_text);
+              inc++;
+              console.log("loop2--"+inc);
+              // console.log("appending to------>> "+arrowdiv);
+              if(grl.id==rn.google_review_id)
+              {
+                flag =1;
+                $(todayallrarrowdiv38).addClass('up-arrow');
+                $(todayallrarrowdiv38).append('<div class="user-thumb" style="position: relative;top:-21px;min-height:67px;background-color:#d6eff8;"><h3><img src="/assets/respond.png" alt="User" style="border-radius:50%;position:relative;top:-10px;width:46px;left:9px;"><h1 style="font-size:9px;position:absolute;top:24px;right: 13px;">John Doe</h1></h1><h1 style="font-size: 9px;position: absolute;top: 40px;right: 13px;">On July 17</h1></h3></div><div class="article-post" style="position:relative;left: 50px;"><p style="min-height: 85px">'+rn.note_text+'</p>');
+              }
+            });
+            if(isclient==true)
+            {
+              if(flag==1)
+              {
+                $(todayallrtextdiv).append('</div><br><button name="todayallrnote0r20'+grl.id+'Form" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%;float:right;" onclick="hideButton1(name)">Add Note</button><br><br>');
+              } 
+              else
+              {
+                $(todayallrtextdiv).append('<form action="/home/add_note_for_google_reviews"><input name="id" value="'+grl.id+'" type="hidden"><input type="text" name="review_note" placeholder="Enter note for review"  maxlength="1024" required style="padding-bottom: 55px;width: 917px;margin-left: 55px;margin-top: 10px;"><br/><input type="submit" value="Submit Note" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%; float:right;" ><br><br></form>');
+              }
+              $("#collapseG9").append('<div id="todayallrnote0r20'+grl.id+'Form" class="dadiv" style="display:none;"><form action="/home/add_note_for_google_reviews"><input name="id" value='+grl.id+' type="hidden"><input type="text" name="review_note" required placeholder="Enter note for review" maxlength="1024" style="padding-bottom: 55px;width: 917px;margin-left: 55px;margin-top: 10px;"><br/><input type="submit" value="Submit Note" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%; float:right;" ></form><br><br></div>'); 
+            } 
+
+              // START POSITIVE RESPOND IN FILTER and VIEW ALL
+
+              namedivrestodyrpositive="#respondtodyrpositive"+grl.id;
+              arrowdivrestodyrpositive = "#abcrestodyrpositive"+grl.id;
+              arrowdivrestodyrrespondpositive = "#abcrestodyrrespondpositive"+grl.id;
+              textdivrestodyrpositive= "#textdivtodyrpositive"+grl.id;
+              $("#collapseG9").append('<div id="respondtodyrpositive'+grl.id+'" class="dadiv" style="display:none;"><div><div class="" id="abcrestodyrpositive'+grl.id+'"></div><div class="" id="abcrestodyrrespondpositive'+grl.id+'" style="display:none;"></div><div id="textdivtodyrpositive'+grl.id+'"</div></div></div>');
+              // console.log("=====================responds===============");
+              flagtodyrrpositive =0;
+              count5todpositive=0;
+              $.each(data["client_response"], function(response_notes,rn)
+              {
+                console.log(rn.client_reply);
+                if(grl.id==rn.google_review_id)
+                {
+                  count5todpositive++;
+                  if (count5todpositive==3) {
+                    return false;
+                }
+                else
+                {
+                  // alert(grl.id+"--"+rn.google_review_id);
+                  flagtodyrrpositive =1;
+                  $(arrowdivrestodyrpositive).addClass('up-arrow up-arrow4');
+                  $(arrowdivrestodyrpositive).append('<div class="user-thumb" style="position: relative;top:-20px;min-height:67px;background-color:#d6eff8;"><h3><img src="/assets/respond.png" alt="User" style="border-radius:50%;position:relative;top:-10px;width:46px;left:9px;"><h1 style="font-size:9px;position:absolute;top:24px;right: 13px;">John Doe</h1></h1><h1 style="font-size: 9px;position: absolute;top: 45px;right: 10px;"><h1 style="font-size: 9px;position: absolute;top: 40px;right: 13px;">On July 17</h1></h3></div><div class="article-post" style="position:relative;left: 50px;"><p style="min-height: 85px">'+rn.client_reply+'</p>');
+                }
+              }
+            });
+            if((flagtodyrrpositive==1) && (count5todpositive > 2))
+            {
+              $(arrowdivrestodyrpositive).append('<button class="btn btn-warning btn-mini" style="width: 60px;margin-left: -20px;position: relative;top: 20px;font-size: 23px;" name="abcrestodyrrespondpositive'+grl.id+'" id="abcrestodyrpositive'+grl.id+'" onclick="Show_respond(name,id)">+</button>');
+            }
+            $.each(data["client_response"], function(response_notes,rn)
+            {
+              if(grl.id==rn.google_review_id){
+              $(arrowdivrestodyrrespondpositive).addClass('up-arrow up-arrow4');
+              $(arrowdivrestodyrrespondpositive).append('<div class="user-thumb" style="position: relative;top:-20px;min-height:67px;background-color:#d6eff8;"><h3><img src="/assets/respond.png" alt="User" style="border-radius:50%;position:relative;top:-10px;width:46px;left:9px;"><h1 style="font-size:9px;position:absolute;top:24px;right: 13px;">John Doe</h1></h1><h1 style="font-size: 9px;position: absolute;top: 45px;right: 10px;"><h1 style="font-size: 9px;position: absolute;top: 40px;right: 13px;">On July 17</h1></h3></div><div class="article-post" style="position:relative;left: 50px;"><p style="min-height: 85px">'+rn.client_reply+'</p>');
+            }
+          });
+          if(isclient==true)
+          {
+            if(flagtodyrrpositive==1)
+            {
+              $(textdivrestodyrpositive).append('</div><br><button name="respondtodyrpositive'+grl.id+'Form" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%;float:right;width:19%;" onclick="hideButton1(name)">Add Respond</button><br><br>');
+            }
+            else
+            {
+              $(textdivrestodyrpositive).append('<form action="/responses/google_review_reply"><input name="id" value="'+grl.id+'" type="hidden"> <input type="text" name="client_reply" required placeholder="Thanx for your support"  maxlength="1024" style="padding-bottom: 55px;width: 917px;margin-left: 55px;margin-top: 10px;"> <br/><input type="submit" value="Submit Reply" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%;float:right;width:19%;"<br></form><br>');  }
+              $("#collapseG9").append('<div id="respondtodyrpositive'+grl.id+'Form" class="drdiv" style="display:none; "><form action="/responses/google_review_reply"><input name="id" value="'+grl.id+'" type="hidden"> <input type="text" required name="client_reply" placeholder="Thanx for your support"  maxlength="1024" style="padding-bottom: 55px;width: 917px;margin-left: 55px;margin-top: 10px;"> <br/><input type="submit" value="Submit Reply" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%;float:right;width:19%;"<br></form> </div><br><br>'
+              );
+            }         
+           // END POSITIVE RESPOND IN FILTER and VIEW ALL
+          });
+        } 
+        // end of google reviews BY TODAY
+        $.each(data["responses"], function(keys,r)
+        {
+          var rg = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})\..*/g;
+          var dateStr = r.created_at.replace(rg,"$3-$2-$1");
+          var timeStr = r.created_at.replace(rg,"$4:$5");
+          console.log(keys,r);
+          $('collapseG9').append('<link rel="stylesheet" style="margin-right: -46px;" type="text/css" />');
+          $("#collapseG9").append('<li style="list-style-type: none;"> <div style="border-color:rgba(128, 128, 128, 0.25);border-width: 2px;min-height: 80px;border-style: solid;height: auto;"><div class="user-thumb" style="position: relative;top: -2px;min-height: 67px;background: none repeat scroll 0 0 #FFFFFF;background-color: #eee;"><h3><img src="/assets/respond.png" alt="User" style="border-radius:50%;position: relative;top: -10px;width: 46px;left: 9px;"><h1 style="font-size: 9px;position: absolute;top: 28px;right: 13px;">John Doe</h1></h3></div><div class="article-post" style="position: relative;left: 10px;"> <span style="margin-right: -46px;" > By: john Deo / Date: '+dateStr+' / Time: '+timeStr+' </span><p>'+r.feedback+'</p></div><div class="buttonmargin"><p style="margin-left:85px;"><a href="#" style="margin-left: 10px;background-color:#39393c;color: white;" class="btn btn-default btn-mini borrad" name="negtodnotetodyr'+r.id +'" onClick="noteResponse(name)">Add Note</a><button href="" style="margin-left: 10px;" class="btn btn-success btn-mini borrad" name="respondtodyr'+r.id +'" onClick="noteResponse(name)">Respond</button>  <button href="#" class="btn btn-warning btn-mini borrad" style="margin-left: 10px;" value="Share" data-toggle="modal" data-target="#modal23'+r.id +'">Share</button>  <div class="modal fade" id="modal23'+r.id +'" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="width:30%;"><div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" style="font-size:20px; text-align:center;"  id="myModalLabel">Sharing This</h5><button type="button" style="margin-top: -30px;" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></div><div class="modal-body"><class="btn-social" style="padding-left: 140px;"><a class="js-social-share facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://cryptextechnologies.com&description='+r.feedback+'" target="_blank" style="color:rgb(59, 89, 152);"><i class="fa fa-facebook-official" aria-hidden="true" style="font-size:50px;"></i></a><class="btn-social" style="padding-left: 20px;"><a class="js-social-share twitter" href="https://twitter.com/intent/tweet?&text='+r.feedback+'" target="_blank" style="color:rgb(85, 172, 238)"><i class="fa fa-twitter" aria-hidden="true" style="font-size:50px;"></i></a></div></div></div></div></p><div></div></li><br>'
+            );
+          negtodnamedivnotetodyr="#negtodnotetodyr"+r.id;
+          negtodarrowdivnotetodyr = "#negtodabcnotetodyr"+r.id;
+          negtodarrowdivnotetodyrnotes = "#negtodabcnotetodyrnotes"+r.id;
+          negtodtextdivnotetodyr= "#negtodtextdivnotetodyr"+r.id;
+          $("#collapseG9").append('<div id="negtodnotetodyr'+r.id+'" class="dadiv" style="display:none;"><div><div class="" id="negtodabcnotetodyr'+r.id+'"></div><div class="" id="negtodabcnotetodyrnotes'+r.id+'" style="display:none;"></div><div id="negtodtextdivnotetodyr'+r.id+'"</div></div></div>');
+          // console.log("=====================NOTES===============");
+          inctodyra = 0; 
+          flagtodyra =0;
+          counttoadyra=0;
+          $.each(data["response_notes"], function(response_notes,rn){
+            console.log(rn.note_text);
+            inctodyra++;          
+            if(r.id==rn.response_id){
+              counttoadyra++;
+              if(counttoadyra==3)
+              {
+                return false;
+              }
+              else
+              {
+                flagtodyra=1;
+                $(negtodarrowdivnotetodyr).addClass('up-arrow');
+                $(negtodarrowdivnotetodyr).append('<div class="user-thumb" style="position: relative;top:-20px;min-height:67px;background-color:#d6eff8;"><h3><img src="/assets/respond.png" alt="User" style="border-radius:50%;position:relative;top:-10px;width:46px;left:9px;"><h1 style="font-size:9px;position:absolute;top:24px;right: 13px;">John Doe</h1></h1><h1 style="font-size: 9px;position: absolute;top: 40px;right: 13px;">On July 17</h1></h3></div><div class="article-post" style="position:relative;left: 50px;"><p style="min-height: 85px">'+rn.note_text+'</p>');
+              }
+            }
+          });
+          if((flagtodyra==1) && (counttoadyra > 2))
+          {
+            $(negtodarrowdivnotetodyr).append('<button class="btn btn-warning btn-mini" style="width: 60px;margin-left: -20px;position: relative;top: 20px;font-size: 23px;" name="negtodabcnotetodyrnotes'+r.id+'" id="negtodabcnotetodyr'+r.id+'" onclick="Google_notes(name,id)">+</button>');
+          }
+          $.each(data["response_notes"], function(response_notes,rn){
+            if(r.id==rn.response_id)
+            {
+              flagtodyra =1;
+              $(negtodarrowdivnotetodyrnotes).addClass('up-arrow');
+              $(negtodarrowdivnotetodyrnotes).append('<div class="user-thumb" style="position: relative;top:-20px;min-height:67px;background-color:#d6eff8;"><h3><img src="/assets/respond.png" alt="User" style="border-radius:50%;position:relative;top:-10px;width:46px;left:9px;"><h1 style="font-size:9px;position:absolute;top:24px;right: 13px;">John Doe</h1></h1><h1 style="font-size: 9px;position: absolute;top: 40px;right: 13px;">On July 17</h1></h3></div><div class="article-post" style="position:relative;left: 50px;"><p style="min-height: 85px">'+rn.note_text+'</p>');
+            }
+          });
+          if(isclient==true)
+          {
+          if(flagtodyra==1){
+            $(negtodtextdivnotetodyr).append('</div><br><button name="negtodnotetodyr'+r.id+'Form" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%;float:right;" onclick="hideButton1(name)">Add Note</button><br><br>');
+          }
+          else
+          {
+            $(negtodtextdivnotetodyr).append('<form action="/home/add_note_for_reviews"><input name="id" value="'+r.id+'" type="hidden"><input type="text" name="review_note" required placeholder="Enter note for review"  maxlength="1024" style="padding-bottom: 55px;width: 917px;margin-left: 55px;margin-top: 10px;"><br/><input type="submit" value="Submit Note" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%; float:right;" ><br><br></form>');
+          }
+          $("#collapseG9").append('<div id="negtodnotetodyr'+r.id+'Form" class="dadiv" style="display:none;"><form action="/home/add_note_for_reviews"><input name="id" value='+r.id+' type="hidden"><input type="text" name="review_note" required placeholder="Enter note for review" maxlength="1024" style="padding-bottom: 55px;width: 917px;margin-left: 55px;margin-top: 10px;"><br/><input type="submit" value="Submit Note" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%; float:right;" ><br><br></form> </div></div>'); 
+        }
+        // Respond of today for negative reply
+        namedivrestodyr="#respondtodyr"+r.id;
+        arrowdivrestodyr = "#abcrestodyr"+r.id;
+        arrowdivrestodyrrespond = "#abcrestodyrrespond"+r.id;
+        textdivrestodyr= "#textdivtodyr"+r.id;
+        $("#collapseG9").append('<div id="respondtodyr'+r.id+'" class="dadiv" style="display:none;"><div><div class="" id="abcrestodyr'+r.id+'"></div><div class="" id="abcrestodyrrespond'+r.id+'" style="display:none;"></div><div id="textdivtodyr'+r.id+'"</div></div></div>');
+        // console.log("=====================responds===============");
+        flagtodyrr =0;
+        count5tod=0;
+        $.each(data["client_response"], function(response_notes,rn)
+        {
+          console.log(rn.client_reply);
+          // alert(inc);
+          // console.log("loop3--"+inc);
+          // console.log("appending to------>> "+arrowdiv1todyr);
+          if(r.id==rn.response_id)
+          {
+            count5tod++;
+            if (count5tod==3) {
+              return false;
+          }
+          else
+          {
+            // alert(r.id+"--"+rn.response_id);
+            flagtodyrr =1;
+            $(arrowdivrestodyr).addClass('up-arrow up-arrow4');
+            $(arrowdivrestodyr).append('<div class="user-thumb" style="position: relative;top:-20px;min-height:67px;background-color:#d6eff8;"><h3><img src="/assets/respond.png" alt="User" style="border-radius:50%;position:relative;top:-10px;width:46px;left:9px;"><h1 style="font-size:9px;position:absolute;top:24px;right: 13px;">John Doe</h1></h1><h1 style="font-size: 9px;position: absolute;top: 45px;right: 10px;"><h1 style="font-size: 9px;position: absolute;top: 40px;right: 13px;">On July 17</h1></h3></div><div class="article-post" style="position:relative;left: 50px;"><p style="min-height: 85px">'+rn.client_reply+'</p>');
+          }
+        }
+      });
+      if((flagtodyrr==1) && (count5tod > 2))
+      {
+        $(arrowdivrestodyr).append('<button class="btn btn-warning btn-mini" style="width: 60px;margin-left: -20px;position: relative;top: 20px;font-size: 23px;" name="abcrestodyrrespond'+r.id+'" id="abcrestodyr'+r.id+'" onclick="Show_respond(name,id)">+</button>');
+      }
+      $.each(data["client_response"], function(response_notes,rn)
+      {
+        // alert(inc);
+        // console.log("loop3--"+inc);
+        // console.log("appending to------>> "+arrowdiv1todyr);
+        if(r.id==rn.response_id){
+
+        // alert(r.id+"--"+rn.response_id);
+        $(arrowdivrestodyrrespond).addClass('up-arrow up-arrow4');
+        $(arrowdivrestodyrrespond).append('<div class="user-thumb" style="position: relative;top:-20px;min-height:67px;background-color:#d6eff8;"><h3><img src="/assets/respond.png" alt="User" style="border-radius:50%;position:relative;top:-10px;width:46px;left:9px;"><h1 style="font-size:9px;position:absolute;top:24px;right: 13px;">John Doe</h1></h1><h1 style="font-size: 9px;position: absolute;top: 45px;right: 10px;"><h1 style="font-size: 9px;position: absolute;top: 40px;right: 13px;">On July 17</h1></h3></div><div class="article-post" style="position:relative;left: 50px;"><p style="min-height: 85px">'+rn.client_reply+'</p>');
+      }
+    });
+    if(isclient==true)
+    {
+      if(flagtodyrr==1)
+      {
+        $(textdivrestodyr).append('</div><br><button name="respondtodyr'+r.id+'Form" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%;float:right;width:19%;" onclick="hideButton1(name)">Add Respond</button><br><br>');
+      }
+      else
+      {
+        $(textdivrestodyr).append('<form action="/responses/user_response"><input name="id" value="'+r.id+'" type="hidden"> <input type="text" name="client_reply" required placeholder="Thanx for your support"  maxlength="1024" style="padding-bottom: 55px;width: 917px;margin-left: 55px;margin-top: 10px;"> <br/><input type="submit" value="Submit Reply" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%;float:right;width:19%;"<br></form><br>');  }
+        $("#collapseG9").append('<div id="respondtodyr'+r.id+'Form" class="drdiv" style="display:none; "><form action="/responses/user_response"><input name="id" value="'+r.id+'" type="hidden"> <input type="text" required name="client_reply" placeholder="Thanx for your support"  maxlength="1024" style="padding-bottom: 55px;width: 917px;margin-left: 55px;margin-top: 10px;"> <br/><input type="submit" value="Submit Reply" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%;float:right;width:19%;"<br></form> </div><br>'
+        );
+      }
+
+      // End Respond of today for negative reply
+    });
+      if(id=='view_all_new')
+      {
+        $("#collapseG9").append('<li style="list-style-type: none;"><button class="btn btn-warning btn-mini" style="width: 66px;margin-left: 2px;" id="view_all" onClick="func_all8();">View Less</button></li>');
+      }
+  }
+});
+}
+$('#filter_by_day').on('click', function(e) {
+    location_id=0;
+    Filter_reviews(this.id);
+ });
+$('#filter_by_week').on('click', function(e) {
+    location_id=0;
+    Filter_reviews(this.id);
+  });
+// STARTS-->> FILTER BY MONTH
+$('#filter_by_month').on('click', function(e) {
+ Filter_reviews(this.id);
+});
+$('#view_all_new').on('click', function(e) {
+  loc_id='<%= loc_id = current_user.locations.first.id rescue nil%>'
+  Filter_reviews(this.id,loc_id);
+});
+// END-->> FILTER BY MONTH
+// STARTS-->> FILTER BY DATE
+  $("#filter_by_selected_date").datepicker({
+    onSelect: function(dateText, inst) {
+      date=dateText;
+      Filter_reviews(this.id);
+    }
+  });
+});
+// END-->> FILTER BY DATE
+function Reviews_location_change(selected_resource_id, client_id)
+{       
+$("#request_sent").empty();
+$("#collapseG3").empty();
+$("#collapseG2").empty();
+$("#collapseG6").empty();
+$("#collapseG8").empty();
+var req_count=0;
+$("#request_sent").append(''+req_count+'');
+// alert(selected_resource_id);
+var selected_resource_id=selected_resource_id;
+var infoModal = $('#modal22');
+$.ajax({ 
+  type: 'POST', 
+  url: "<%= home_reviews_location_path %>",
+  data: { id: selected_resource_id, client_id: client_id }, 
+  success: function (data)
+  {
+    isclient = data.isclient;
+    $("#collapseG6").empty();
+    $("#collapseG6").show();
+    $("#collapseG9").hide();
+    $("#collapseG8").hide();
+    $("#collapseG8").empty();
+    // $("#location_address_id").empty();  
+    $.each(data["addresses"], function(keys,values)
+    {
+      // console.log(keys,values);
+      $("#location_address_id").append('<option value='+values.id+'>'+values.street+','+values.city+','+values.state+','+values.country+','+values.zipcode+'</option>');
+    })
+    // START: For google reviews in viewless 
+    var google_data = '';
+    google_data = data.google_reviews;
+    console.log(google_data);
+    var googlecount=0;
+    var rg = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})\..*/g;
+    var monthShortNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+          "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    if(google_data!=''){
+      $.each(data["google_reviews"], function(googlereviews,grl){
+        googlecount++;
+        if(googlecount==11)
+        {
+          return false;
+        }
+        else
+        { 
+          var nameviewless = grl.reviewer_name
+          var create_date = grl.google_review_create_time.replace(rg,"$3-$2-$1");
+          var month_id = grl.google_review_create_time.replace(rg,"$2");
+          month_id = parseInt(month_id);
+          var month =  monthShortNames[month_id-1];
+          var date = grl.google_review_create_time.replace(rg,"$3");
+          var create_time = grl.google_review_create_time.replace(rg,"$4:$5");
+          var nameviewless = nameviewless.split(' ');
+          if(grl.review_comment==null){grl.review_comment="";}
+          $("#collapseG6").append('<li style="list-style-type: none;"> <div style="border-color:rgba(128, 128, 128, 0.25);border-width: 2px;min-height: 80px;border-style: solid;height: auto;"><div class="user-thumb" style="position: relative;top: -2px;min-height: 67px;background: none repeat scroll 0 0 #FFFFFF;background-color: #eee;"><h3><img src="/assets/respond.png"  alt="User"  style="border-radius: 50%;position: relative;top: -10px;width: 46px;left: 9px;"><h1 style="font-size: 9px;position: absolute;top: 25px;right: 20px;">'+nameviewless[0]+'</h1></h3><div class="rating-image-style_viewless" id="rating-image-style_viewless_loc'+googlecount+'"> </div><h1 class="rating-img-h1-tag" style="font-size: 9px; position: relative; top: -46px; margin-left: 11px;">On '+date+' '+month+' </h1></h3></div><div class="article-post" style="position: relative;left: 10px;"> <span style="margin-right: -46px;" > By: '+grl.reviewer_name+' / Date: '+create_date+' / Time: '+create_time+' </span><p>'+grl.review_comment+'</p></div><div class="buttonmargin"><p style="margin-left:85px;"><a style="margin-left: 10px;background-color:#39393c;color: white;" class="btn btn-default btn-mini borrad" name="note0r20'+grl.id +'" onClick="noteResponse(name)">Add Note</a>   <button href="" style="margin-left: 10px;" class="btn btn-success btn-mini borrad" name="respondtodyrposloc'+grl.id +'" onClick="noteResponse(name)">Respond</button> <button href="#" class="btn btn-warning btn-mini borrad" style="margin-left: 10px;" value="Share" data-toggle="modal" data-target="#modal23grless'+grl.id +'">Share</button>  <div class="modal fade" id="modal23grless'+grl.id +'" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="width:30%;"><div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" style="font-size:20px; text-align:center;" id="myModalLabel">Sharing This</h5><button type="button" style="margin-top: -30px;" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></div><div class="modal-body"><class="btn-social" style="padding-left:140px;"><a class="js-social-share facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://cryptextechnologies.com&description='+grl.review_comment+'" target="_blank" style="color:rgb(59, 89, 152);"><i class="fa fa-facebook-official" aria-hidden="true" style="font-size:50px"></i></a><class="btn-social" style="padding-left:20px;"><a class="js-social-share twitter" href="https://twitter.com/intent/tweet?&text='+grl.review_comment+'" target="_blank" style="color:rgb(85, 172, 238)"><i class="fa fa-twitter" aria-hidden="true" style="font-size:50px"></i></a></div></div></div></div></p><div></div></li><br>');
+            for(i=0;i< parseInt(grl.star_rating);i++)
+            { 
+              $("#rating-image-style_viewless_loc"+googlecount).append('<img src="/assets/star.png" style ="height:12px;position: relative;margin-top: -34px;">')
+            } 
+            namediv="#note0r20"+grl.id;
+            arrowdiv = "#abc0r20"+grl.id;
+            arrowdiv38 = "#abc0440"+grl.id;
+            textdiv= "#textdivnote0r20"+grl.id;
+            $("#collapseG6").append('<div id="note0r20'+grl.id+'" class="dadiv" style="display:none;"><div><div class="" id="abc0r20'+grl.id+'"></div><div id="abc0440'+grl.id+'" style="display:none;"></div><div id="textdivnote0r20'+grl.id+'"</div></div></div>');
+              // alert(data["response_notes"]);
+              // console.log("=====================NOTES===============");
+              inc = 0; 
+              flag =0;
+              count1=0;
+              $.each(data["response_notes"], function(response_notes,rn){
+                console.log(rn.note_text);
+                inc++;
+                if(grl.id==rn.google_review_id)
+                {
+                  count1++;
+                  if(count1==3)
+                  {
+                    return false;
+                  }
+                  else
+                  {
+                    flag =1;
+                    $(arrowdiv).addClass('up-arrow');
+                    $(arrowdiv).append('<div class="user-thumb" style="position: relative;top:-20px;min-height:67px;background-color:#d6eff8;"><h3><img src="/assets/respond.png" alt="User" style="border-radius:50%;position:relative;top:-10px;width:46px;left:9px;"><h1 style="font-size:9px;position:absolute;top:24px;right: 13px;">John Doe</h1></h1><h1 style="font-size: 9px;position: absolute;top: 40px;right: 13px;">On July 17</h1></h3></div><div class="article-post" style="position:relative;left: 50px;"><p style="min-height: 85px">'+rn.note_text+'</p>');
+                  }
+                }
+              });
+              if((flag==1) &&(count1 > 2))
+              {
+                $(arrowdiv).append('<button class="btn btn-warning btn-mini" style="width: 60px;margin-left: -20px;position: relative;top: 20px;font-size: 23px;" name="abc0440'+grl.id+'" id="abc0r20'+grl.id+'" onclick="Google_notes(name,id)">+</button>');
+              }
+              $.each(data["response_notes"], function(response_notes,rn){
+                console.log(rn.note_text);
+                // alert(inc);
+                inc++;
+                console.log("loop2--"+inc);
+                console.log("appending to------>> "+arrowdiv);
+                if(grl.id==rn.google_review_id)
+                {
+                  // alert(r.id+"--"+rn.response_id);
+                  flag =1;
+                  $(arrowdiv38).addClass('up-arrow');
+                  $(arrowdiv38).append('<div class="user-thumb" style="position: relative;top:-21px;min-height:67px;background-color:#d6eff8;"><h3><img src="/assets/respond.png" alt="User" style="border-radius:50%;position:relative;top:-10px;width:46px;left:9px;"><h1 style="font-size:9px;position:absolute;top:24px;right: 13px;">John Doe</h1></h1><h1 style="font-size: 9px;position: absolute;top: 40px;right: 13px;">On July 17</h1></h3></div><div class="article-post" style="position:relative;left: 50px;"><p style="min-height: 85px">'+rn.note_text+'</p>');
+                }
+              });
+              if(isclient==true)
+              {
+                if(flag==1)
+                {
+                  $(textdiv).append('</div><br><button name="note0r20'+grl.id+'Form" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%;float:right;" onclick="hideButton1(name)">Add Note</button><br><br>');
+                } else{
+                  $(textdiv).append('<form action="/home/add_note_for_google_reviews"><input name="id" value="'+grl.id+'" type="hidden"><input type="text" name="review_note" placeholder="Enter note for review"  maxlength="1024" required style="padding-bottom: 55px;width: 917px;margin-left: 55px;margin-top: 10px;"><br/><input type="submit" value="Submit Note" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%; float:right;" ><br><br></form>');
+                }
+                $("#collapseG6").append('<div id="note0r20'+grl.id+'Form" class="dadiv" style="display:none;"><form action="/home/add_note_for_google_reviews"><input name="id" value='+grl.id+' type="hidden"><input type="text" name="review_note" required placeholder="Enter note for review" maxlength="1024" style="padding-bottom: 55px;width: 917px;margin-left: 55px;margin-top: 10px;"><br/><input type="submit" value="Submit Note" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%; float:right;" ></form><br><br> </div>'); 
+              } 
+            }
+
+            // START POSITIVE RESPOND IN LOCATION CHANGE in VIEW LESS
+            namedivrestodyrposloc="#respondtodyrposloc"+grl.id;
+            arrowdivrestodyrposloc = "#abcrestodyrposloc"+grl.id;
+            arrowdivrestodyrrespondposloc = "#abcrestodyrrespondposloc"+grl.id;
+            textdivrestodyrposloc= "#textdivtodyrposloc"+grl.id;
+            $("#collapseG6").append('<div id="respondtodyrposloc'+grl.id+'" class="dadiv" style="display:none;"><div><div class="" id="abcrestodyrposloc'+grl.id+'"></div><div class="" id="abcrestodyrrespondposloc'+grl.id+'" style="display:none;"></div><div id="textdivtodyrposloc'+grl.id+'"</div></div></div>');
+            // console.log("=====================responds===============");
+            flagtodyrrposloc =0;
+            count5todposloc=0;
+            $.each(data["client_response"], function(response_notes,rn)
+            {
+              console.log(rn.client_reply);
+              if(grl.id==rn.google_review_id)
+              {
+                count5todposloc++;
+                if (count5todposloc==3) {
+                  return false;
+              }
+              else
+              {
+                // alert(grl.id+"--"+rn.google_review_id);
+                flagtodyrrposloc =1;
+                $(arrowdivrestodyrposloc).addClass('up-arrow up-arrow4');
+                $(arrowdivrestodyrposloc).append('<div class="user-thumb" style="position: relative;top:-20px;min-height:67px;background-color:#d6eff8;"><h3><img src="/assets/respond.png" alt="User" style="border-radius:50%;position:relative;top:-10px;width:46px;left:9px;"><h1 style="font-size:9px;position:absolute;top:24px;right: 13px;">John Doe</h1></h1><h1 style="font-size: 9px;position: absolute;top: 45px;right: 10px;"><h1 style="font-size: 9px;position: absolute;top: 40px;right: 13px;">On July 17</h1></h3></div><div class="article-post" style="position:relative;left: 50px;"><p style="min-height: 85px">'+rn.client_reply+'</p>');
+              }
+            }
+          });
+          if((flagtodyrrposloc==1) && (count5todposloc > 2))
+          {
+            $(arrowdivrestodyrposloc).append('<button class="btn btn-warning btn-mini" style="width: 60px;margin-left: -20px;position: relative;top: 20px;font-size: 23px;" name="abcrestodyrrespondposloc'+grl.id+'" id="abcrestodyrposloc'+grl.id+'" onclick="Show_respond(name,id)">+</button>');
+          }
+          $.each(data["client_response"], function(response_notes,rn)
+          {
+            if(grl.id==rn.google_review_id){
+            $(arrowdivrestodyrrespondposloc).addClass('up-arrow up-arrow4');
+            $(arrowdivrestodyrrespondposloc).append('<div class="user-thumb" style="position: relative;top:-20px;min-height:67px;background-color:#d6eff8;"><h3><img src="/assets/respond.png" alt="User" style="border-radius:50%;position:relative;top:-10px;width:46px;left:9px;"><h1 style="font-size:9px;position:absolute;top:24px;right: 13px;">John Doe</h1></h1><h1 style="font-size: 9px;position: absolute;top: 45px;right: 10px;"><h1 style="font-size: 9px;position: absolute;top: 40px;right: 13px;">On July 17</h1></h3></div><div class="article-post" style="position:relative;left: 50px;"><p style="min-height: 85px">'+rn.client_reply+'</p>');
+          }
+        });
+        if(isclient==true)
+        {
+          if(flagtodyrrposloc==1)
+          {
+            $(textdivrestodyrposloc).append('</div><br><button name="respondtodyrposloc'+grl.id+'Form" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%;float:right;width:19%;" onclick="hideButton1(name)">Add Respond</button><br><br>');
+          }
+          else
+          {
+            $(textdivrestodyrposloc).append('<form action="/responses/google_review_reply"><input name="id" value="'+grl.id+'" type="hidden"> <input type="text" name="client_reply" required placeholder="Thanx for your support"  maxlength="1024" style="padding-bottom: 55px;width: 917px;margin-left: 55px;margin-top: 10px;"> <br/><input type="submit" value="Submit Reply" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%;float:right;width:19%;"<br></form><br>');  }
+            $("#collapseG6").append('<div id="respondtodyrposloc'+grl.id+'Form" class="drdiv" style="display:none; "><form action="/responses/google_review_reply"><input name="id" value="'+grl.id+'" type="hidden"> <input type="text" required name="client_reply" placeholder="Thanx for your support"  maxlength="1024" style="padding-bottom: 55px;width: 917px;margin-left: 55px;margin-top: 10px;"> <br/><input type="submit" value="Submit Reply" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%;float:right;width:19%;"<br></form> </div><br><br>'
+              );
+            }  
+          // END POSITIVE RESPOND IN LOCATION CHANGE in VIEW LESS
+          });
+        }
+        // end of google reviews viewless
+        var count=0;
+        $.each(data["responses"], function(review,r)
+        {
+          var rg=/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})\..*/g;
+          var dateStr = r.created_at.replace(rg,"$3-$2-$1");
+          var timeStr = r.created_at.replace(rg,"$4:$5");
+          console.log(review,r);
+          console.log(r.created_at);
+          console.log(r.feedback);
+          count++;
+          if(count==11)
+          {
+            return false;
+          }
+          else
+          { 
+            $("#collapseG6").append('<li style="list-style-type: none;"> <div style="border-color:rgba(128, 128, 128, 0.25);border-width: 2px;border-style: solid;height: auto;"><div class="user-thumb" style="position: relative;top: -2px;min-height: 67px;background: none repeat scroll 0 0 #FFFFFF;background-color: #eee;"><h3><img src="/assets/respond.png" alt="User" style="border-radius:50%;position: relative;top: -10px;width: 46px;left: 9px;"><h1 style="font-size: 9px;position: absolute;top: 28px;right: 13px;">John Doe</h1></h3></div><div class="article-post" style="position: relative;left: 10px;"> <span style="margin-right: -46px;" > By: john Deo / Date: '+dateStr+' / Time: '+timeStr+' </span><p>'+r.feedback+'</p></div><div class="buttonmargin"><p style="margin-left:85px;"><a href="#" style="margin-left: 10px;background-color:#39393c;color: white;" class="btn btn-default btn-mini borrad" name="reviewnegmonthnotetodyr'+r.id +'" onClick="noteResponse(name)">Add Note</a>  <button href="" style="margin-left: 10px;" class="btn btn-success btn-mini borrad" name="respond0r210'+r.id +'" onClick="noteResponse(name)">Respond</button>  <button href="#" class="btn btn-warning btn-mini borrad" style="margin-left: 10px;" value="Share" data-toggle="modal" data-target="#modal23'+r.id +'">Share</button>  <div class="modal fade" id="modal23'+r.id +'" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="width:30%;"><div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" style="font-size:20px; text-align:center;" id="myModalLabel">Sharing This</h5><button type="button" style="margin-top: -30px;" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></div><div class="modal-body"><class="btn-social" style="padding-left:140px;"><a class="js-social-share facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://cryptextechnologies.com&description='+r.feedback+'" target="_blank" style="color:rgb(59, 89, 152);"><i class="fa fa-facebook-official" aria-hidden="true" style="font-size:50px"></i></a><class="btn-social" style="padding-left:20px;"><a class="js-social-share twitter" href="https://twitter.com/intent/tweet?&text='+r.feedback+'" target="_blank" style="color:rgb(85, 172, 238)"><i class="fa fa-twitter" aria-hidden="true" style="font-size:50px"></i></a></div></div></div></div></p><div></div></li><br>');
+              reviewnegmonthnamedivnotetodyr="#reviewnegmonthnotetodyr"+r.id;
+              reviewnegmontharrowdivnotetodyr = "#reviewnegmonthabcnotetodyr"+r.id;
+              reviewnegmontharrowdivnotetodyrnotes = "#reviewnegmonthabcnotetodyrnotes"+r.id;
+              reviewnegmonthtextdivnotetodyr= "#reviewnegmonthtextdivnotetodyr"+r.id;
+            $("#collapseG6").append('<div id="reviewnegmonthnotetodyr'+r.id+'" class="dadiv" style="display:none;"><div><div class="" id="reviewnegmonthabcnotetodyr'+r.id+'"></div><div class="" id="reviewnegmonthabcnotetodyrnotes'+r.id+'" style="display:none;"></div><div id="reviewnegmonthtextdivnotetodyr'+r.id+'"</div></div></div>');
+            inctodyra = 0; 
+            flagtodyra =0;
+            counttoadyra=0;
+            $.each(data["response_notes"], function(response_notes,rn){
+              console.log(rn.note_text);
+              inctodyra++;          
+              if(r.id==rn.response_id){
+                counttoadyra++;
+                if(counttoadyra==3)
+                {
+                  return false;
+                }
+                else
+                {
+                  flagtodyra=1;
+                  $(reviewnegmontharrowdivnotetodyr).addClass('up-arrow');
+                  $(reviewnegmontharrowdivnotetodyr).append('<div class="user-thumb" style="position: relative;top:-20px;min-height:67px;background-color:#d6eff8;"><h3><img src="/assets/respond.png" alt="User" style="border-radius:50%;position:relative;top:-10px;width:46px;left:9px;"><h1 style="font-size:9px;position:absolute;top:24px;right: 13px;">John Doe</h1></h1><h1 style="font-size: 9px;position: absolute;top: 40px;right: 13px;">On July 17</h1></h3></div><div class="article-post" style="position:relative;left: 50px;"><p style="min-height: 85px">'+rn.note_text+'</p>');
+                }
+              }
+            });
+            if((flagtodyra==1) && (counttoadyra > 2))
+            {
+              $(reviewnegmontharrowdivnotetodyr).append('<button class="btn btn-warning btn-mini" style="width: 60px;margin-left: -20px;position: relative;top: 20px;font-size: 23px;" name="reviewnegmonthabcnotetodyrnotes'+r.id+'" id="reviewnegmonthabcnotetodyr'+r.id+'" onclick="Google_notes(name,id)">+</button>');
+            }
+            $.each(data["response_notes"], function(response_notes,rn){
+              if(r.id==rn.response_id){
+                flagtodyra =1;
+                $(reviewnegmontharrowdivnotetodyrnotes).addClass('up-arrow');
+                $(reviewnegmontharrowdivnotetodyrnotes).append('<div class="user-thumb" style="position: relative;top:-20px;min-height:67px;background-color:#d6eff8;"><h3><img src="/assets/respond.png" alt="User" style="border-radius:50%;position:relative;top:-10px;width:46px;left:9px;"><h1 style="font-size:9px;position:absolute;top:24px;right: 13px;">John Doe</h1></h1><h1 style="font-size: 9px;position: absolute;top: 40px;right: 13px;">On July 17</h1></h3></div><div class="article-post" style="position:relative;left: 50px;"><p style="min-height: 85px">'+rn.note_text+'</p>');
+              }
+            });
+            if(isclient==true)
+            {
+              if(flagtodyra==1)
+              {
+                $(reviewnegmonthtextdivnotetodyr).append('</div><br><button name="reviewnegmonthnotetodyr'+r.id+'Form" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%;float:right;" onclick="hideButton1(name)">Add Note</button><br><br>');
+              }
+              else
+              {
+                $(reviewnegmonthtextdivnotetodyr).append('<form action="/home/add_note_for_reviews"><input name="id" value="'+r.id+'" type="hidden"><input type="text" name="review_note" required placeholder="Enter note for review"  maxlength="1024" style="padding-bottom: 55px;width: 917px;margin-left: 55px;margin-top: 10px;"><br/><input type="submit" value="Submit Note" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%; float:right;" ><br><br></form>');
+              }
+              $("#collapseG6").append('<div id="reviewnegmonthnotetodyr'+r.id+'Form" class="dadiv" style="display:none;"><form action="/home/add_note_for_reviews"><input name="id" value='+r.id+' type="hidden"><input type="text" name="review_note" required placeholder="Enter note for review" maxlength="1024" style="padding-bottom: 55px;width: 917px;margin-left: 55px;margin-top: 10px;"><br/><input type="submit" value="Submit Note" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%; float:right;" ><br><br></form> </div></div>'); 
+            }
+            //////start of respond on location chnge
+            namediv1="#respond0r210"+r.id;
+            arrowdiv1 = "#abcr0r210"+r.id;
+            arrowdiv10 = "#abcr0r2100"+r.id;
+            textdiv1= "#textdivrespond0r210"+r.id;
+            $("#collapseG6").append('<div id="respond0r210'+r.id+'" class="dadiv" style="display:none;"><div><div class="" id="abcr0r210'+r.id+'"></div><div class="" id="abcr0r2100'+r.id+'" style="display:none;"></div><div id="textdivrespond0r210'+r.id+'"</div></div></div>');
+            // console.log("=====================responds===============");
+            flag1 =0;
+            count2=0;
+            $.each(data["client_response"], function(response_notes,rn)
+            {
+              if(r.id==rn.response_id)
+              {
+                count2++;
+                if(count2==3)
+                {
+                  return false;
+                }
+                else
+                {
+                  flag1 =1;
+                  $(arrowdiv1).addClass('up-arrow up-arrow4');
+                  $(arrowdiv1).append('<div class="user-thumb" style="position: relative;top:-20px;min-height:67px;background-color:#d6eff8;"><h3><img src="/assets/respond.png" alt="User" style="border-radius:50%;position:relative;top:-10px;width:46px;left:9px;"><h1 style="font-size:9px;position:absolute;top:24px;right: 13px;">John Doe</h1></h1><h1 style="font-size: 9px;position: absolute;top: 45px;right: 10px;"><h1 style="font-size: 9px;position: absolute;top: 40px;right: 13px;">On July 17</h1></h3></div><div class="article-post" style="position:relative;left: 50px;"><p style="min-height: 85px">'+rn.client_reply+'</p>');
+                }
+              }
+            });
+            if((flag1==1) && (count2 > 2))
+            {
+              $(arrowdiv1).append('<button class="btn btn-warning btn-mini" style="width: 60px;margin-left: -20px;position: relative;top: 20px;font-size: 23px;" name="abcr0r2100'+r.id+'" id="abcr0r210'+r.id+'" onclick="Show_respond(name,id)">+</button>');
+            }
+            $.each(data["client_response"], function(response_notes,rn)
+            {
+              if(r.id==rn.response_id)
+              {
+                flag1 =1;
+                $(arrowdiv10).addClass('up-arrow up-arrow4');
+                $(arrowdiv10).append('<div class="user-thumb" style="position: relative;top:-20px;min-height:67px;background-color:#d6eff8;"><h3><img src="/assets/respond.png" alt="User" style="border-radius:50%;position:relative;top:-10px;width:46px;left:9px;"><h1 style="font-size:9px;position:absolute;top:24px;right: 13px;">John Doe</h1></h1><h1 style="font-size: 9px;position: absolute;top: 45px;right: 10px;"><h1 style="font-size: 9px;position: absolute;top: 40px;right: 13px;">On July 17</h1></h3></div><div class="article-post" style="position:relative;left: 50px;"><p style="min-height: 85px">'+rn.client_reply+'</p>');
+              }
+            });
+            if(isclient==true)
+            {
+
+              if(flag1==1)
+              {
+                $(textdiv1).append('</div><br><button name="respond0r210'+r.id+'Form" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%;float:right;width:19%;" onclick="hideButton1(name)">Add Respond</button><br><br>');
+              } 
+              else
+              {
+                $(textdiv1).append('<form action="/responses/user_response"><input name="id" value="'+r.id+'" type="hidden"> <input type="text" name="client_reply" placeholder="Thanx for your support" required  maxlength="1024" style="padding-bottom: 55px;width: 917px;margin-left: 55px;margin-top: 10px;"> <br/><input type="submit" value="Submit Reply" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%;float:right;width:19%;"><br></form><br>');  
+              }
+
+              $("#collapseG6").append('<div id="respond0r210'+r.id+'Form" class="drdiv" style="display:none; "><form action="/responses/user_response"><input name="id" value="'+r.id+'" type="hidden"> <input type="text" name="client_reply" placeholder="Thanx for your support" required  maxlength="1024" style="padding-bottom: 55px;width: 917px;margin-left: 55px;margin-top: 10px;"> <br/><input type="submit" value="Submit Reply" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%;float:right;width:19%;"><br></form> </div><br>'
+                );
+            }
+            //////End of respond on location chnge in lesss
+          }
+        });
+        $("#collapseG6").append('<li style="list-style-type: none;"><button class="btn btn-warning btn-mini" id="viewall6" onClick="Show_reviews();" style="width: 60px;margin-left: 2px;">View All</button></li>');
+        // START: For google reviews in viewmore 
+        if(google_data!='')
+        {
+          googlecountmore = 0;
+          $.each(data["google_reviews"], function(googlereviews,grl)
+          {
+            googlecountmore++;
+            var nameviewmore = grl.reviewer_name
+            var create_date = grl.google_review_create_time.replace(rg,"$3-$2-$1");
+            var month_id = grl.google_review_create_time.replace(rg,"$2");
+            month_id = parseInt(month_id);
+            var month =  monthShortNames[month_id-1];
+            var date = grl.google_review_create_time.replace(rg,"$3");
+            var create_time = grl.google_review_create_time.replace(rg,"$4:$5");
+            var nameviewmore = nameviewmore.split(' ');
+            if(grl.review_comment==null){grl.review_comment="";}
+            $("#collapseG8").append('<li style="list-style-type: none;"> <div style="border-color:rgba(128, 128, 128, 0.25);min-height: 80px;border-width: 2px;border-style: solid;height: auto;"><div class="user-thumb" style="position: relative;top: -2px;min-height: 67px;background: none repeat scroll 0 0 #FFFFFF;background-color: #eee;"><h3><img src="/assets/respond.png"  alt="User"  style="border-radius: 50%;position: relative;top: -10px;width: 46px;left: 9px;"><h1 style="font-size: 9px;position: absolute;top: 25px;right: 20px;">'+nameviewmore[0]+'</h1></h3><div class="rating-image-style_viewless" id="rating-image-style_viewless_loc123a'+grl.id+'"> </div><h1 class="rating-img-h1-tag" style="font-size: 9px; position: relative; top: -46px; margin-left: 11px;">On '+date+' '+month+' </h1></h3></div><div class="article-post" style="position: relative;left: 10px;"> <span style="margin-right: -46px;" > By: '+grl.reviewer_name+' / Date: '+create_date+' / Time: '+create_time+' </span><p>'+grl.review_comment+'</p></div><div class="buttonmargin"><p style="margin-left:85px;"><a style="margin-left: 10px;background-color:#39393c;color: white;" class="btn btn-default btn-mini borrad" name="allrnote0r20'+grl.id +'" onClick="noteResponse(name)">Add Note</a>  <button href="" style="margin-left: 10px;" class="btn btn-success btn-mini borrad" name="respondtodyrallposloc'+grl.id +'" onClick="noteResponse(name)">Respond</button>  <button href="#" class="btn btn-warning btn-mini borrad" style="margin-left: 10px;" value="Share" data-toggle="modal" data-target="#modal23gr'+grl.id +'">Share</button>  <div class="modal fade" id="modal23gr'+grl.id +'" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="width:30%;"><div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" style="font-size:20px; text-align:center;" id="myModalLabel">Sharing This</h5><button type="button" style="margin-top: -30px;" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></div><div class="modal-body"><class="btn-social" style="padding-left:140px;"><a class="js-social-share facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://cryptextechnologies.com&description='+grl.review_comment+'" target="_blank" style="color:rgb(59, 89, 152);"><i class="fa fa-facebook-official" aria-hidden="true" style="font-size:50px"></i></a><class="btn-social" style="padding-left:20px;"><a class="js-social-share twitter" href="https://twitter.com/intent/tweet?&text='+grl.review_comment+'" target="_blank" style="color:rgb(85, 172, 238)"><i class="fa fa-twitter" aria-hidden="true" style="font-size:50px"></i></a></div></div></div></div></p><div></div></li><br>');
+            for(i=0;i< parseInt(grl.star_rating);i++)
+            { 
+              $("#rating-image-style_viewless_loc123a"+grl.id).append('<img src="/assets/star.png" style ="height:12px;position: relative;margin-top: -34px;">')
+            } 
+            allrnamediv="#allrnote0r20"+grl.id;
+            allrarrowdiv = "#allrabc0r20"+grl.id;
+            allrarrowdiv38 = "#allrabc0440"+grl.id;
+            allrtextdiv= "#allrtextdivnote0r20"+grl.id;
+            $("#collapseG8").append('<div id="allrnote0r20'+grl.id+'" class="dadiv" style="display:none;"><div><div class="" id="allrabc0r20'+grl.id+'"></div><div id="allrabc0440'+grl.id+'" style="display:none;"></div><div id="allrtextdivnote0r20'+grl.id+'"</div></div></div>');
+                  // alert(data["response_notes"]);
+               // console.log("=====================NOTES===============");
+            inc = 0; 
+            flag =0;
+            count1=0;
+            $.each(data["response_notes"], function(response_notes,rn)
+            {
+              console.log(rn.note_text);
+              inc++;
+              if(grl.id==rn.google_review_id)
+              {
+                count1++;
+                if(count1==3)
+                {
+                  return false;
+                }
+                else
+                {
+                  flag =1;
+                  $(allrarrowdiv).addClass('up-arrow');
+                  $(allrarrowdiv).append('<div class="user-thumb" style="position: relative;top:-20px;min-height:67px;background-color:#d6eff8;"><h3><img src="/assets/respond.png" alt="User" style="border-radius:50%;position:relative;top:-10px;width:46px;left:9px;"><h1 style="font-size:9px;position:absolute;top:24px;right: 13px;">John Doe</h1></h1><h1 style="font-size: 9px;position: absolute;top: 40px;right: 13px;">On July 17</h1></h3></div><div class="article-post" style="position:relative;left: 50px;"><p style="min-height: 85px">'+rn.note_text+'</p>');
+                }
+              }
+            });
+            if((flag==1) &&(count1 > 2))
+            {
+              $(allrarrowdiv).append('<button class="btn btn-warning btn-mini" style="width: 60px;margin-left: -20px;position: relative;top: 20px;font-size: 23px;" name="allrabc0440'+grl.id+'" id="allrabc0r20'+grl.id+'" onclick="Google_notes(name,id)">+</button>');
+            }
+            $.each(data["response_notes"], function(response_notes,rn)
+            {
+              console.log(rn.note_text);
+              inc++;
+              console.log("loop2--"+inc);
+              console.log("appending to------>> "+arrowdiv);
+              if(grl.id==rn.google_review_id)
+              {
+                flag =1;
+                $(allrarrowdiv38).addClass('up-arrow');
+                $(allrarrowdiv38).append('<div class="user-thumb" style="position: relative;top:-21px;min-height:67px;background-color:#d6eff8;"><h3><img src="/assets/respond.png" alt="User" style="border-radius:50%;position:relative;top:-10px;width:46px;left:9px;"><h1 style="font-size:9px;position:absolute;top:24px;right: 13px;">John Doe</h1></h1><h1 style="font-size: 9px;position: absolute;top: 40px;right: 13px;">On July 17</h1></h3></div><div class="article-post" style="position:relative;left: 50px;"><p style="min-height: 85px">'+rn.note_text+'</p>');
+              }
+            });
+            if(isclient==true)
+            {
+              if(flag==1)
+              {
+                $(allrtextdiv).append('</div><br><button name="allrnote0r20'+grl.id+'Form" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%;float:right;" onclick="hideButton1(name)">Add Note</button><br><br>');
+              } 
+              else
+              {
+                $(allrtextdiv).append('<form action="/home/add_note_for_google_reviews"><input name="id" value="'+grl.id+'" type="hidden"><input type="text" name="review_note" placeholder="Enter note for review"  maxlength="1024" required style="padding-bottom: 55px;width: 917px;margin-left: 55px;margin-top: 10px;"><br/><input type="submit" value="Submit Note" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%; float:right;" ><br><br></form>');
+              }
+              $("#collapseG8").append('<div id="allrnote0r20'+grl.id+'Form" class="dadiv" style="display:none;"><form action="/home/add_note_for_google_reviews"><input name="id" value='+grl.id+' type="hidden"><input type="text" name="review_note" required placeholder="Enter note for review" maxlength="1024" style="padding-bottom: 55px;width: 917px;margin-left: 55px;margin-top: 10px;"><br/><input type="submit" value="Submit Note" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%; float:right;" ></form><br><br> </div>'); 
+            } 
+            // START POSITIVE RESPOND IN LOCATION CHANGE in VIEW ALL
+            namedivrestodyrallposloc="#respondtodyrallposloc"+grl.id;
+            arrowdivrestodyrallposloc = "#abcrestodyrallposloc"+grl.id;
+            arrowdivrestodyrrespondallposloc = "#abcrestodyrrespondallposloc"+grl.id;
+            textdivrestodyrallposloc= "#textdivtodyrallposloc"+grl.id;
+            $("#collapseG8").append('<div id="respondtodyrallposloc'+grl.id+'" class="dadiv" style="display:none;"><div><div class="" id="abcrestodyrallposloc'+grl.id+'"></div><div class="" id="abcrestodyrrespondallposloc'+grl.id+'" style="display:none;"></div><div id="textdivtodyrallposloc'+grl.id+'"</div></div></div>');
+            // console.log("=====================responds===============");
+            flagtodyrrallposloc =0;
+            count5todallposloc=0;
+            $.each(data["client_response"], function(response_notes,rn)
+            {
+              console.log(rn.client_reply);
+              if(grl.id==rn.google_review_id)
+              {
+                count5todallposloc++;
+                if (count5todallposloc==3) {
+                  return false;
+              }
+              else
+              {
+                // alert(grl.id+"--"+rn.google_review_id);
+                flagtodyrrallposloc =1;
+                $(arrowdivrestodyrallposloc).addClass('up-arrow up-arrow4');
+                $(arrowdivrestodyrallposloc).append('<div class="user-thumb" style="position: relative;top:-20px;min-height:67px;background-color:#d6eff8;"><h3><img src="/assets/respond.png" alt="User" style="border-radius:50%;position:relative;top:-10px;width:46px;left:9px;"><h1 style="font-size:9px;position:absolute;top:24px;right: 13px;">John Doe</h1></h1><h1 style="font-size: 9px;position: absolute;top: 45px;right: 10px;"><h1 style="font-size: 9px;position: absolute;top: 40px;right: 13px;">On July 17</h1></h3></div><div class="article-post" style="position:relative;left: 50px;"><p style="min-height: 85px">'+rn.client_reply+'</p>');
+              }
+            }
+          });
+          if((flagtodyrrallposloc==1) && (count5todallposloc > 2))
+          {
+            $(arrowdivrestodyrallposloc).append('<button class="btn btn-warning btn-mini" style="width: 60px;margin-left: -20px;position: relative;top: 20px;font-size: 23px;" name="abcrestodyrrespondallposloc'+grl.id+'" id="abcrestodyrallposloc'+grl.id+'" onclick="Show_respond(name,id)">+</button>');
+          }
+          $.each(data["client_response"], function(response_notes,rn)
+          {
+            if(grl.id==rn.google_review_id){
+            $(arrowdivrestodyrrespondallposloc).addClass('up-arrow up-arrow4');
+            $(arrowdivrestodyrrespondallposloc).append('<div class="user-thumb" style="position: relative;top:-20px;min-height:67px;background-color:#d6eff8;"><h3><img src="/assets/respond.png" alt="User" style="border-radius:50%;position:relative;top:-10px;width:46px;left:9px;"><h1 style="font-size:9px;position:absolute;top:24px;right: 13px;">John Doe</h1></h1><h1 style="font-size: 9px;position: absolute;top: 45px;right: 10px;"><h1 style="font-size: 9px;position: absolute;top: 40px;right: 13px;">On July 17</h1></h3></div><div class="article-post" style="position:relative;left: 50px;"><p style="min-height: 85px">'+rn.client_reply+'</p>');
+          }
+        });
+        if(isclient==true)
+        {
+          if(flagtodyrrallposloc==1)
+          {
+            $(textdivrestodyrallposloc).append('</div><br><button name="respondtodyrallposloc'+grl.id+'Form" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%;float:right;width:19%;" onclick="hideButton1(name)">Add Respond</button><br><br>');
+          }
+          else
+          {
+            $(textdivrestodyrallposloc).append('<form action="/responses/google_review_reply"><input name="id" value="'+grl.id+'" type="hidden"> <input type="text" name="client_reply" required placeholder="Thanx for your support"  maxlength="1024" style="padding-bottom: 55px;width: 917px;margin-left: 55px;margin-top: 10px;"> <br/><input type="submit" value="Submit Reply" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%;float:right;width:19%;"<br></form><br>');  }
+            $("#collapseG8").append('<div id="respondtodyrallposloc'+grl.id+'Form" class="drdiv" style="display:none; "><form action="/responses/google_review_reply"><input name="id" value="'+grl.id+'" type="hidden"> <input type="text" required name="client_reply" placeholder="Thanx for your support"  maxlength="1024" style="padding-bottom: 55px;width: 917px;margin-left: 55px;margin-top: 10px;"> <br/><input type="submit" value="Submit Reply" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%;float:right;width:19%;"<br></form> </div><br><br>'
+              );
+            }   
+          // END POSITIVE RESPOND IN LOCATION CHANGE in VIEW ALL
+          });
+        }
+        // end of google reviews viewmore
+        $.each(data["responses"], function(review,r)
+        {
+          var rg=/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})\..*/g;
+          var dateStr = r.created_at.replace(rg,"$3-$2-$1");
+          var timeStr = r.created_at.replace(rg,"$4:$5");
+          console.log(review,r);
+          console.log(r.created_at);
+          console.log(r.feedback);
+          // alert(JSON.stringify(r.feedback));          
+          $("#collapseG8").append('<li style="list-style-type: none;"> <div style="border-color:rgba(128, 128, 128, 0.25);border-width: 2px;border-style: solid;height: auto;"><div class="user-thumb" style="position: relative;top: -2px;min-height: 67px;background: none repeat scroll 0 0 #FFFFFF;background-color: #eee;"><h3><img src="/assets/respond.png" alt="User" style="border-radius:50%;position: relative;top: -10px;width: 46px;left: 9px;"><h1 style="font-size: 9px;position: absolute;top: 28px;right: 13px;">John Doe</h1></h3></div><div class="article-post" style="position: relative;left: 10px;"> <span style="margin-right: -46px;" > By: john Deo / Date: '+dateStr+' / Time: '+timeStr+' </span><p>'+r.feedback+'</p></div><div class="buttonmargin"><p style="margin-left:85px;"><a style="margin-left: 10px;background-color:#39393c;color: white;" class="btn btn-default btn-mini borrad" name="allNnegtodnotetodyr'+r.id +'" onClick="noteResponse(name)">Add Note</a> <button  href="" class="btn btn-success btn-mini borrad"  style="margin-left: 10px;" name="respond0r770'+r.id +'" onClick="noteResponse(name)">Respond</button>   <button href="#" class="btn btn-warning btn-mini borrad" style="margin-left: 10px;" value="Share" data-toggle="modal" data-target="#modal22'+r.id +'">Share</button>   <div class="modal fade" id="modal22'+r.id +'" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"><div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-header"><h5 class="modView Lessal-title" id="myModalLabel">Sharing This</h5><button type="button" style="margin-top: -30px;" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></div><div class="modal-body"><class="btn-social" style="padding-left:140px;"><a class="js-social-share facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://cryptextechnologies.com&description='+r.feedback+'" target="_blank" style="color:rgb(59, 89, 152);"><i class="fa fa-facebook-official" aria-hidden="true" style="font-size:50px"></i></a><class="btn-social" style="padding-left:20px;"><a class="js-social-share  href="https://twitter.com/intent/tweet?&text='+r.feedback+'" target="_blank" style="color:rgb(85, 172, 238)"><i class="fa fa-twitter" aria-hidden="true" style="font-size:50px"></i></a></div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button></div></div></div></div></p></div></div></li><br>');
+
+          allNnegtodnamedivnotetodyr="#allNnegtodnotetodyr"+r.id;
+          allNnegtodarrowdivnotetodyr = "#allNnegtodabcnotetodyr"+r.id;
+          allNnegtodarrowdivnotetodyrnotes = "#allNnegtodabcnotetodyrnotes"+r.id;
+          allNnegtodtextdivnotetodyr= "#allNnegtodtextdivnotetodyr"+r.id;
+          $("#collapseG8").append('<div id="allNnegtodnotetodyr'+r.id+'" class="dadiv" style="display:none;"><div><div class="" id="allNnegtodabcnotetodyr'+r.id+'"></div><div class="" id="allNnegtodabcnotetodyrnotes'+r.id+'" style="display:none;"></div><div id="allNnegtodtextdivnotetodyr'+r.id+'"</div></div></div>');
+          // console.log("=====================NOTES===============");
+          inctodyra = 0; 
+          flagtodyra =0;
+          counttoadyra=0;
+          $.each(data["response_notes"], function(response_notes,rn)
+          {
+            console.log(rn.note_text);
+            inctodyra++;          
+            if(r.id==rn.response_id){
+              counttoadyra++;
+              if(counttoadyra==3)
+              {
+                return false;
+              }
+              else
+              {
+                flagtodyra=1;
+                $(allNnegtodarrowdivnotetodyr).addClass('up-arrow');
+                $(allNnegtodarrowdivnotetodyr).append('<div class="user-thumb" style="position: relative;top:-20px;min-height:67px;background-color:#d6eff8;"><h3><img src="/assets/respond.png" alt="User" style="border-radius:50%;position:relative;top:-10px;width:46px;left:9px;"><h1 style="font-size:9px;position:absolute;top:24px;right: 13px;">John Doe</h1></h1><h1 style="font-size: 9px;position: absolute;top: 40px;right: 13px;">On July 17</h1></h3></div><div class="article-post" style="position:relative;left: 50px;"><p style="min-height: 85px">'+rn.note_text+'</p>');
+              }
+            }
+          });
+          if((flagtodyra==1) && (counttoadyra > 2))
+          {
+            $(allNnegtodarrowdivnotetodyr).append('<button class="btn btn-warning btn-mini" style="width: 60px;margin-left: -20px;position: relative;top: 20px;font-size: 23px;" name="allNnegtodabcnotetodyrnotes'+r.id+'" id="allNnegtodabcnotetodyr'+r.id+'" onclick="Google_notes(name,id)">+</button>');
+          }
+          $.each(data["response_notes"], function(response_notes,rn)
+          {
+            if(r.id==rn.response_id)
+            {
+              flagtodyra =1;
+              $(allNnegtodarrowdivnotetodyrnotes).addClass('up-arrow');
+              $(allNnegtodarrowdivnotetodyrnotes).append('<div class="user-thumb" style="position: relative;top:-20px;min-height:67px;background-color:#d6eff8;"><h3><img src="/assets/respond.png" alt="User" style="border-radius:50%;position:relative;top:-10px;width:46px;left:9px;"><h1 style="font-size:9px;position:absolute;top:24px;right: 13px;">John Doe</h1></h1><h1 style="font-size: 9px;position: absolute;top: 40px;right: 13px;">On July 17</h1></h3></div><div class="article-post" style="position:relative;left: 50px;"><p style="min-height: 85px">'+rn.note_text+'</p>');
+            }
+          });
+          if(isclient==true)
+          {
+          if(flagtodyra==1)
+          {
+            $(allNnegtodtextdivnotetodyr).append('</div><br><button name="allNnegtodnotetodyr'+r.id+'Form" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%;float:right;" onclick="hideButton1(name)">Add Note</button><br><br>');
+          }
+          else
+          {
+            $(allNnegtodtextdivnotetodyr).append('<form action="/home/add_note_for_reviews"><input name="id" value="'+r.id+'" type="hidden"><input type="text" name="review_note" required placeholder="Enter note for review"  maxlength="1024" style="padding-bottom: 55px;width: 917px;margin-left: 55px;margin-top: 10px;"><br/><input type="submit" value="Submit Note" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%; float:right;" ><br><br></form>');
+          }
+          $("#collapseG8").append('<div id="allNnegtodnotetodyr'+r.id+'Form" class="dadiv" style="display:none;"><form action="/home/add_note_for_reviews"><input name="id" value='+r.id+' type="hidden"><input type="text" name="review_note" required placeholder="Enter note for review" maxlength="1024" style="padding-bottom: 55px;width: 917px;margin-left: 55px;margin-top: 10px;"><br/><input type="submit" value="Submit Note" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%; float:right;" ><br><br></form> </div></div>'); 
+        }
+        ///////////////Respond in loctaion change In view All
+        namediv177="#respond0r770"+r.id;
+        arrowdiv177 = "#abcr0r770"+r.id;
+        arrowdiv1778 = "#abcr0r7780"+r.id;
+        textdiv177= "#textdivrespond0r770"+r.id;
+        $("#collapseG8").append('<div id="respond0r770'+r.id+'" class="dadiv" style="display:none;"><div><div class="" id="abcr0r770'+r.id+'"></div><div class="" id="abcr0r7780'+r.id+'" style="display:none;"></div><div id="textdivrespond0r770'+r.id+'"</div></div></div>');
+        // console.log("=====================responds===============");
+        flag1 =0;
+        count4=0;
+        $.each(data["client_response"], function(response_notes,rn)
+        {
+          // console.log(rn.client_reply);
+          // // alert(inc);
+          // console.log("loop3--"+inc);
+          // console.log("appending to------>> "+arrowdiv1);
+          if(r.id==rn.response_id)
+          {
+            count4++;
+            if(count4==3)
+            {
+              return false;
+            }
+            else
+            {
+              flag1 =1;
+              $(arrowdiv177).addClass('up-arrow up-arrow4');
+              $(arrowdiv177).append('<div class="user-thumb" style="position: relative;top:-20px;min-height:67px;background-color:#d6eff8;"><h3><img src="/assets/respond.png" alt="User" style="border-radius:50%;position:relative;top:-10px;width:46px;left:9px;"><h1 style="font-size:9px;position:absolute;top:24px;right: 13px;">John Doe</h1></h1><h1 style="font-size: 9px;position: absolute;top: 45px;right: 10px;"><h1 style="font-size: 9px;position: absolute;top: 40px;right: 13px;">On July 17</h1></h3></div><div class="article-post" style="position:relative;left: 50px;"><p style="min-height: 85px">'+rn.client_reply+'</p>');
+            }
+          }
+        });
+        if ((flag1==1) && (count4 > 2)) 
+        {
+          $(arrowdiv177).append('<button class="btn btn-warning btn-mini" style="width: 60px;margin-left: -20px;position: relative;top: 20px;font-size: 23px;" name="abcr0r7780'+r.id+'" id="abcr0r770'+r.id+'" onclick="Show_respond(name,id)">+</button>');
+        }
+        $.each(data["client_response"], function(response_notes,rn){
+          if(r.id==rn.response_id)
+          {
+            flag1 =1;
+            $(arrowdiv1778).addClass('up-arrow up-arrow4');
+            $(arrowdiv1778).append('<div class="user-thumb" style="position: relative;top:-20px;min-height:67px;background-color:#d6eff8;"><h3><img src="/assets/respond.png" alt="User" style="border-radius:50%;position:relative;top:-10px;width:46px;left:9px;"><h1 style="font-size:9px;position:absolute;top:24px;right: 13px;">John Doe</h1></h1><h1 style="font-size: 9px;position: absolute;top: 45px;right: 10px;"><h1 style="font-size: 9px;position: absolute;top: 40px;right: 13px;">On July 17</h1></h3></div><div class="article-post" style="position:relative;left: 50px;"><p style="min-height: 85px">'+rn.client_reply+'</p>');
+          }
+        });
+        if(isclient==true)
+        {
+          if(flag1==1)
+          {
+            $(textdiv177).append('</div><br><button name="respond0r770'+r.id+'Form" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%;float:right;width:19%;" onclick="hideButton1(name)">Add Respond</button><br><br>');
+          } 
+          else
+          {
+            $(textdiv177).append('<form action="/responses/user_response"><input name="id" value="'+r.id+'" type="hidden"> <input type="text" required name="client_reply" placeholder="Thanx for your support"  maxlength="1024" style="padding-bottom: 55px;width: 917px;margin-left: 55px;margin-top: 10px;"> <br/><input type="submit" value="Submit Reply" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%;float:right;width:19%;"><br></form><br>');  
+          }
+
+          $("#collapseG8").append('<div id="respond0r770'+r.id+'Form" class="drdiv" style="display:none; "><form action="/responses/user_response"><input name="id" value="'+r.id+'" type="hidden"> <input type="text" name="client_reply" placeholder="Thanx for your support" required   maxlength="1024" style="padding-bottom: 55px;width: 917px;margin-left: 55px;margin-top: 10px;"> <br/><input type="submit" value="Submit Reply" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%;float:right;width:19%;"><br></form> </div><br>'
+          );
+        }
+          /////////////End of respond in Reviews page View all
+      });
+      $("#collapseG8").append('<li style="list-style-type: none;"><button class="btn btn-warning btn-mini" style="width: 66px;margin-left: 2px;" id="viewall8" onClick="func_les8();">View Less</button></li>');
+    } 
+  });
+}
+</script>
+<script>
+  $('#location_address_id,#client_address_id').on('change', function(event) {
+    var selected_resource_id = $(this).val();
+    if(this.id=='client_address_id')
+    {
+      $("#location_address_id").empty();  
+      var client_id = this.value;
+      client_id=client_id;
+    }
+    Reviews_location_change(selected_resource_id,client_id);
+    });
+</script>
+
+<script type="text/javascript">
+  $(function() {
+    $('#filter_by_selected_date').datepicker({
+   $("#filter_by_selected_date").datepicker({ 
+              minDate: 0,
+            });
+    });
+    $('#pickDate').click(function (e) {
+        $('#filter_by_selected_date').datepicker("show");
+        e.preventDefault();
+    });
+});
+</script>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Review Maiden</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style type="text/css">
+    .image-style
+      {
+        position: relative;
+        top: -10px;
+        width: 46px;
+        left: 9px;
+      }
+
+      .image-h1-tag
+      {
+       
+        font-size: 9px;
+        position: absolute;
+        top: 27px;
+        right: 17px;
+      }
+      .rating-image-style
+      {
+        position: relative;
+        top: -14px;
+        width: 75px;
+        left: 5px;
+
+      }
+     .rating-img-h1-tag
+      {
+        font-size: 9px;
+        position: absolute;
+        top: 52px;
+        right: 10px;
+      }
+      .article-post-style
+      {
+         position: relative;left: 50px;
+      }
+      .google_article-post-style
+      {
+         position: relative;left: 1px;
+      }
+      .google_buttonmargin-style
+      {
+        margin-left: 80px;
+      } 
+      .buttonmargin-style
+      {
+        margin-left: 147px;
+      }
+    .panel-body .btn:not(.btn-block)
+    { 
+      width:185px;margin-bottom:10px;height: 100px; 
+    }
+    .labelstyle
+    {
+      margin-top: 11%; margin-left: -3%;
+    }
+    .panelstylefirst
+    {
+      margin-left: 2%;
+      cursor: none;
+      pointer-events: none;
+    }
+    .boxcol-xs-8
+    {
+      margin-right: -500px;
+      margin-left: -562px;
+      margin-top: -30px;
+      font-weight: bolder;
+    }
+    .panelstyle
+    {
+      margin-left: 10%;
+      cursor: none;
+      pointer-events: none;
+    }
+    .tabwidth
+    {
+      border-top: none;
+      background-color: #EEEEEE;
+    }
+
+    .faback
+    {
+      background-color: rgb(59, 89, 152);
+      color: white;
+     /* width: 30%;*/
+      background-image: none !important;
+      margin-left: 7px;
+      width: 116px;
+      height: 28px;
+      border-radius: 5px;
+    }
+    .twiback
+    {
+      background-color: rgb(0, 183, 255);
+      color: white;
+      width: 32%;
+      background-image: none !important;
+      margin-left:58px;;
+      width: 116px;
+      height: 28px;
+      border-radius: 5px
+    }
+    .weekclass
+    {
+      background: transparent none repeat scroll 0% 0%;
+      border: 2px solid #10bbfe;
+      color:#10bbfe; 
+      border-radius: 5px;
+      width: 100px;
+      margin-left: 8px;
+    } .btn-info:hover
+    {
+      color: #fff;
+      background-color: #10bbfe;
+    }
+
+      .btn-info:focus
+       {
+         background-color: #10bbfe;
+       }
+    #txtDate
+    {
+      background-image: url(http://i988.photobucket.com/albums/af3/mudassarkhan/calender.png);
+      background-repeat: no-repeat;
+      padding-left: 25px;
+      width: 50px;
+      height: 15px;
+      margin-top: 1%;
+    }
+
+  .req-sent{
+    color: #26af26; 
+    font-size: 24px;
+    font-weight: bold;
+
+  }
+  .req-label{
+    font-size: 12px;
+  }
+  .req-pend{
+    color: orange; 
+    font-size: 24px;
+    font-weight: bold;
+  }
+  .pend-label{
+    font-size: 12px;
+  }
+  .rating-r{
+    color: #26af26; 
+    font-size: 24px;
+    font-weight: bold;
+
+  }
+  .label-r{
+    font-size: 12px;
+  }
+  .over-all{
+    color: #0c8cbf;
+    font-size: 24px;
+    font-weight: bold;
+
+  }
+  .label-over{
+    font-size: 12px;
+  }
+  .twi{
+    margin-left:58px;
+
+  }
+  .fbb{
+    margin-left:58px;
+  }
+  .filterdate{
+    width: 100px !important;
+    height: 15px !important;
+    margin-left: 7px !important;
+    margin-bottom: 0% !important;
+    border-radius: 5px !important;
+    border-color: #10bbfe !important;
+  }
+  .Pickdate{
+    height: 25px;
+    margin-left: -5%;
+    border-radius: 0px;
+  }
+  .fbtwifont{
+    font-size: 17px;
+  }
+  .scrolldiv{
+    overflow: scroll;
+    max-height: 600px;
+  }
+  .reviews-div{
+    border-color:rgba(128, 128, 128, 0.25);
+    border-width: 2px;
+    border-style: solid;
+    min-height: 100px;
+  }
+  .userthumbimg{
+    position: relative;
+    top: -2px;
+    min-height: 94px;
+  }
+  .userimg{
+    border-radius: 50%;
+    position: relative;
+    top: -10px;
+    width: 46px;
+    left: 9px;
+  }
+  .user-h1{
+    font-size: 9px;
+    position: absolute;
+    top: 24px;
+    right: 13px;
+  }
+  .rating{
+    border-radius: 50%;
+    position: relative;
+    top: -16px;
+    width: 46px;
+    left: 10px;
+  }
+  .rating-h1{
+    font-size: 9px;
+    position: absolute;
+    top: 45px;
+    right: 10px;
+  }
+  .parastyle{
+    margin-left:85px !important;
+  }
+  .addnote{
+    background-color:#39393c;
+    color: white;
+  }
+  .respond{
+    margin-left: 10px;
+  }
+  .share{
+    margin-left: 10px;
+  }
+  .modalfade{
+    display:none;
+    width:30%;
+  }
+  .sharetitle{
+    font-size:20px;
+    text-align:center;
+  }
+  .closebutn{
+    margin-top: -30px !important;
+  }
+  .fbmodal{
+    padding-left:140px !important;
+  }
+  .fbcolor{
+    color:rgb(59, 89, 152);
+    font-size:50px;
+  }
+  .twicolor{
+    color:rgb(85, 172, 238);
+    font-size:50px;
+    padding-left:20px;
+  }
+  .fbcolor:hover{
+    color:rgb(59, 89, 152);
+  }
+  .twicolor:hover{
+    color:rgb(85, 172, 238);
+  }
+  .panel-body .btn:not(.btn-block)
+    { 
+      width:185px;margin-bottom:10px;height: 100px; 
+    }
+    .labelstyle
+    {
+      margin-top: 11%; margin-left: -3%;
+    }
+    .panelstylefirst
+    {
+      margin-left: 2%;
+      cursor: none;
+      pointer-events: none;
+    }
+    .panelstyle
+    {
+      margin-left: 10%;
+      cursor: none;
+      pointer-events: none;
+    }
+    .user-thumb {
+      background: none repeat scroll 0 0 #FFFFFF;
+      float: left;
+      /*height: 40px;*/
+      height: 75px;
+      margin-right: 10px;
+      /*margin-top: 5px;*/
+      margin-top: 2px;
+      padding: 2px;
+      width: 66px;
+     background-color: #eee;
+    }
+    .user-reviews{
+      position: relative;
+      top: -2px;
+      min-height: 81px;
+      background-color: #eee;"
+    }
+    .btn-lg
+    {
+      margin-left: 2%;
+      cursor: none;
+      pointer-events: none;
+    }
+    .tabwidth
+    {
+      border-top: none;
+      background-color: #EEEEEE;
+    }
+  
+    .response_show
+    {
+     border-color:rgba(128, 128, 128, 0.25);
+    border-width: 2px;
+    border-style: solid;
+    min-height: 87px;
+    margin-top: 30px;
+    }
+  .img-res{
+    border-radius:50%;
+    position: relative;
+    top: -10px;
+    width: 46px;
+    left: 9px;
+   }
+  .client-name{
+    font-size: 9px;
+    position: absolute;
+    top: 28px;
+    right: 13px;"
+  }
+  .rating-image{
+    border-radius:50%;
+    position: relative;
+    top: -13px;
+    width: 46px;
+    left: 9px;"
+  }
+  .respond-date{
+  font-size: 9px;
+  position: absolute;
+  top: 49px;
+  right: 10px;"
+  }
+
+  .add-note-btn{
+  height: 70%;
+  float:right;
+  position: relative;
+  top: 15px;
+  width: 90px !important;
+  color:white !important;
+  left:-40px;
+  background-color: #00bfff !important;
+  }
+  #txtDate
+  {
+    background-image: url(http://i988.photobucket.com/albums/af3/mudassarkhan/calender.png);
+    background-repeat: no-repeat;
+    padding-left: 25px;
+    width: 50px;
+    height: 15px;
+    margin-top: 1%;
+  }
+  div.up-arrow {
+    display: inline-block;
+    position: relative;
+    background-color: rgba(165, 223, 246, 0.42);
+    color: #FFF;
+    text-decoration: none;
+    padding: 20px;
+    border-width: 2px;
+    border-style: solid;
+    border-color :rgb(165, 223, 246);
+    color: black;
+    height: 147%;
+    width: 90%;
+    margin-left: 56px;
+    margin-top: 4px;
+
+  }
+  div:hover.up-arrow {
+    background: #ccefff;
+  }
+  div.up-arrow:after {
+    content: '';
+    display: block;  
+    position: absolute;
+    left: 55px; 
+    bottom: 100%;
+    width: 0;
+    height: 0;
+    border-bottom: 25px solid #ccefff;
+    border-top: 10px solid transparent;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+  }
+  div.up-arrow4:after {
+    content: '';
+    display: block;  
+    position: absolute;
+    left: 175px; 
+    bottom: 100%;
+    width: 0;
+    height: 0;
+    border-bottom: 25px solid #ccefff;
+    border-top: 10px solid transparent;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+  }
+  div:hover.up-arrow:after {
+    border-bottom-color: #ccefff80;
+  }
+  .borrad {
+    border-radius: 5px;
+    width: 80px;
+    background-image: none;
+    font-weight: bold;
+  }
+  li{
+      border-bottom: 0px !important;
+  }
+  .settingsignout{
+    margin-top: 169%;
+  }
+  .signout{
+    margin-top: 120%;
+  }
+</style>
+</head>
+<body>
+  <!--sidebar-menu-->
+  <div id="sidebar">
+    <a href="<%= home_index_path %>" class="visible-phone"><i class="icon icon-home"></i> Dashboard</a>
+    <ul>
+      <li ><a href="<%= home_index_path %>"><i class="icon icon-home"></i> <span>Dashboard</span></a> </li>
+      <li class="active"><a href="<%= home_reviews_path %>"><i <i class="icon icon-comments"></i> 
+        <span>Reviews</span></a> </li>
+        <li><a  href="<%= home_location_listing_path %>" ><i class="icon icon-inbox"></i> <span>Locations
+        </span></a> </li>
+        <!-- <li><a href="#"><i class="icon icon-list-alt"></i>
+          <span>Reports  </span></a></li> -->
+          <% if current_user.has_role?(:Client) || current_user.has_role?(:superadmin) %>
+            <li><a href="<%= home_requests_path %>"><i class="icon icon-edit"></i>
+              <span>Requests</span></a>
+            </li>
+            <li class="signout"><a  href="<%= home_settings_user_path %>" ><i class="icon icon-cog"></i> <span>Settings</span> </a></li>
+        <li><a href="<%= destroy_user_session_path %>" method="delete" data="{confirm= 'Are you sure?'}"><i class="icon icon-signout"></i><span>Sign Out</span> </a>
+        </li>
+        <%end%>
+        <li class="settingsignout"><a href="<%= destroy_user_session_path %>" method="delete" data="{confirm= 'Are you sure?'}"><i class="icon icon-signout"></i><span>Sign Out</span> </a></li>
+        </ul>
+      </div>
+     <!--main-container-part-->
+      <div id="content">
+        <!--breadcrumbs-->
+        <!-- <div id="content-header">
+          <div id="breadcrumb"> <a href="index.html" title="Go to Home" class="tip-bottom"><i class="icon-home"></i> Home</a></div>
+        </div> -->
+        <!--End-breadcrumbs-->
+        <div class="container-fluid">
+          <div align="center">
+           <div class="row">
+            <div class="quick-actions_homepage">
+              <div class="panel-body">   
+                <div class="boxcol-xs-8 col-md-8">
+                  <a href="UserListing.html" class="btn btn-default btn-lg" role="button">
+                    <span class="glyphicon glyphicon-list-alt"></span> <label class="req-sent"><div id="request_sent"><%= @request_count %></div> </label> Requests Sent
+                    <label class="req-label">(in the last month)</label></a>
+                    <a href="StudentListing.html" class="btn btn-default btn-lg" role="button"><span class="glyphicon glyphicon-bookmark"></span><label class="req-pend"><div id="request"><%= @count %></div></label> Requests Pending
+                      <label class="pend-label">(for this month)</label></a>
+                      <a href="UserListing.html" class="btn btn-default btn-lg" role="button">
+                        <span class="glyphicon glyphicon-list-alt"></span> <label class="rating-r">4.9+ </label> Current Rating
+                        <label class="label-r">(increased from last month)</label></a>
+                        <a href="#" class="btn btn-default btn-lg" role="button"><span class="glyphicon glyphicon-bookmark"></span><label class="over-all"><div id="reviews"><%= reviews %></div></label> Total # of Review
+                          <label class="label-over">(Overall)</label></a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                 </div>
+                </div>
+                <div  class="shadow-box"></div>
+                <div class="container-fluid">
+                  <div class="row-fluid">
+                    <div class="span4">
+                      <h5>Filter Reviews:</h5>
+                    </div>
+                  </div>
+                  <div class="row-fluid">
+                    <div class="span8">
+                      <button class="btn btn-info btn-mini weekclass" id="filter_by_day" >Today</button>
+                      <button class="btn btn-info btn-mini weekclass" id="filter_by_week">This Week</button>
+                      <button class="btn btn-info btn-mini weekclass" id="filter_by_month">This Month</button>
+                      <input type="text" class= "filterdate" id="filter_by_selected_date" placeholder="Date"/>
+                      <button class="btn btn-default Pickdate" id="pickDate"><i class="icon-calendar"></i></button>
+                    </div>
+                    <div class="span4">
+                      <button class="btn btn-twitter twiback" ><i class="icon-twitter fbtwifont"></i> CONNECT</button>
+                      <button class="btn btn-facebook faback"><i class="icon-facebook fbtwifont"></i>  CONNECT</button>
+                    </div>
+                  </div>
+                  <div class="row-fluid">
+                   <div class="span12">
+                    <div class="widget-box">
+                      <div class="widget-title bg_ly" data-toggle="collapse" href="#collapseG9"><span class="icon"><i class="icon-chevron-down"></i></span>
+                        <h5>Recent Reviews</h5>
+                      </div>
+                      <div class="widget-content nopadding collapse in" id="collapseG8">
+                      </div>
+                      <div class="widget-content nopadding collapse in scrolldiv collapseG9" id="collapseG9">
+                      </div>
+                      <div class="widget-content nopadding collapse in" id="collapseG6">
+                        <div id="less">
+                          <ul class="recent-posts">
+                      <!-- 
+                   GOOGLE REVIEWS
+                   -->
+                   <% @loc_google_reviews.take(10).each do |gr| %>
+                    <li>
+                      <li>
+                        <div class="reviews-div">
+                          <div class="user-thumb userthumbimg">
+                          <h3>
+                            <div class="image-style"> <%= image_tag "respond.png" , :alt => "User", :style => "border-radius: 50%" %>
+                            </div> 
+                            <h1 class="image-h1-tag"><%= gr.reviewer_name.split(" ")[0]%></h1></h1><div class="rating-image-style">
+                            <% for star in 1..gr.star_rating.to_i  %>
+                            <%= image_tag "star.png" , :alt => "User#{star}", :style =>" height: 12px;    margin-left: -2px;" %>
+                            <%end%>
+                          </div>
+                          <h1 class="rating-img-h1-tag" >On<%= gr.google_review_create_time.strftime(" %b %d") %>
+                          </h1>
+                        </h3>
+                      </div>
+                    <div class="article-post"> 
+                      <span class="user-info"> By: <%= gr.reviewer_name%> / Date: <%= gr.google_review_create_time.strftime("%d-%m-%Y") %> /   Time: <%= gr.google_review_create_time.strftime('%H:%M') %> </span>
+                        <p style="max-width:80%;"><%= gr.review_comment %></p>
+                    </div>
+                    <div class="buttonmargin">
+                      <p class="parastyle">
+                      <button type="button" class="btn btn-default btn-mini borrad addnote" name= 'reviewnotegoogle<%=gr.id%>' onclick="noteResponse(name)"/> Add note </button>
+                      <% if current_user.has_role? :Client || :Demo %>
+                        <button type="button"  name="googlereviewrespond_reviewspage<%=gr.id%>" class="btn btn-success btn-mini borrad respond" onClick="noteResponse(name)"> Respond </button>
+                        <button type="button" class="btn btn-warning btn-mini borrad share" data-toggle="modal" data-target="#<%=gr.id%>"> Share </button>
+                      <%end%>
+                      <div class="modal fade modalfade" id='<%=gr.id%>' tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title sharetitle" id="myModalLabel">Sharing This</h5>
+                              <button type="button" class="close closebutn" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body fbmodal">
+                            <class="btn-social"><a class="js-social-share facebook fbcolor" href="https://www.facebook.com/sharer/sharer.php?u=http://cryptextechnologies.com&description=<%= gr.review_comment %>" target="_blank" ><i class="fa fa-facebook-official" aria-hidden="true"></i></a>
+                            <class="btn-social"><a class="js-social-share twitter twicolor" href="https://twitter.com/intent/tweet?&text=“<%= gr.review_comment %>”" target="_blank"><i class="fa fa-twitter" aria-hidden="true"></i></a>
+                          </div>
+                        </div>
+                      </div>
+                    </div> 
+                    </p>
+                    </div>  
+                    </div>
+                    <!--   Add note DIV -->   
+                    <div id="reviewnotegoogle<%=gr.id%>"  class="dadiv"   style="display:none;" >        
+                      <%  a = gr.id %>
+                      <%  notes = ResponseNote.where(:google_review_id => a).order("created_at DESC") %>
+                      <% if notes.exists? %>
+                     <div id="noteless<%=gr.id%>">
+                      <div class="up-arrow up-arrow1" style="margin-top: 15px;" >
+                        <% notes.take(2).each do |r| %>
+                          <div class="user-thumb" style="position: relative;top: -21px;min-height: 67px; background-color: #d6eff8;">
+                            <h3><%= image_tag "respond.png" , :alt => "User" , :style => "border-radius: 50%;position: relative;top: -10px;width: 46px;left: 9px;" %><h1 style="font-size: 9px;position: absolute;top: 24px;right: 13px;">John Doe</h1></h1><h1 style="font-size: 9px;position: absolute;top: 45px;right: 10px;">On <%= r.created_at.strftime("%B %d") %></h1></h3>
+                          </div>
+                          <div class="article-post" style="position: relative;left: 50px;"> 
+                            <p style="min-height: 85px"><%= r.note_text %></p>
+                          </div>
+                          <br/>
+                        <%end%>
+                        <%if notes.length > 2 %>
+                          <button class="btn btn-warning btn-mini" style="width: 60px;margin-left: -20px;position: relative;top: 20px;font-size: 23px;" name="reviewnotegooglemore<%=gr.id%>" id="noteless<%=gr.id%>" onclick="Google_notes(name,id)">+</button>
+                          <!-- <button class="btn btn-warning btn-mini" style="width: 60px;margin-left: -20px;position: relative;top: 20px;font-size: 23px;" name="<#%=r.id%>" onclick="ShowNotes(name)">+</button> -->
+                        <%end%>
+                      </div>
+                    </div>
+                    <div id="reviewnotegooglemore<%=gr.id%>" style="display:none;">
+                      <div class="up-arrow" style="margin-top: 15px;">
+                        <% notes.each do |r| %>
+                          <div class="user-thumb" style="position: relative;top: -21px;min-height: 67px; background-color: #d6eff8;">
+                            <h3><%= image_tag "respond.png" , :alt => "User" , :style => "border-radius: 50%;position: relative;top: -10px;width: 46px;left: 9px;" %><h1 style="font-size: 9px;position: absolute;top: 24px;right: 13px;">John Doe</h1></h1><h1 style="font-size: 9px;position: absolute;top: 45px;right: 10px;">On <%= r.created_at.strftime("%B %d") %></h1></h3>
+                          </div>
+                          <div class="article-post" style="position: relative;left: 50px;"> 
+                            <p style="min-height: 85px"><%= r.note_text %></p>
+                          </div>
+                          <br/>
+                        <%end%> 
+                      </div>
+                    </div>
+                    <%if current_user.has_role?(:Client) %>
+                      <button name="note<%=gr.id%>googleadd" class="btn btn-success btn-mini borrad btn-info add-note-btn" onclick="hideButton(name)">Add Note</button><br><br>
+                    <%end%>
+                  </br>
+                    <!--   Add note TEXTBOX -->
+                  <%else%>
+                    <div>
+                      <%if current_user.has_role?(:Client) %>
+                        <form action="/home/add_note_for_google_reviews">
+                          <input name="id" value="<%= gr.id %>" type="hidden">
+                          <input type="text" name="review_note" placeholder="Enter note for review"  required maxlength="1024" style="padding-bottom: 55px;width: 917px;margin-left: 55px;margin-top: 10px;">
+                          <br/>
+                          <input type="submit" value="Submit Note" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%; float:right;    position: relative;top: 0px;" ></br></br>
+                        </form>
+                      <%end%> 
+                    </div>
+                  <%end%>
+                  <!-- add note form  -->
+                </div>
+                <%if current_user.has_role?(:Client) %>
+                  <div id="note<%=gr.id%>googleadd" class="dadiv" style="display:none; ">
+                    <form action="/home/add_note_for_google_reviews">
+                      <input name="id" value="<%= gr.id %>" type="hidden">
+                      <input type="text" name="review_note" placeholder="Enter note for review"  required maxlength="1024" style="padding-bottom: 55px;width: 917px;margin-left: 55px;margin-top: 10px;">
+                      <br/>
+                      <input type="submit" value="Submit Note" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%; float:right;    position: relative;top: 0px;" ></br></br>
+                      <br>
+                    </form>
+                  </div>
+                <%end%>
+                <!--START: GOOGLE RESPOND DIV FOR REVIEWS PAGE --> 
+                  <div id="googlereviewrespond_reviewspage<%=gr.id%>" class="drdiv" style="display:none; margin-bottom: 10px;" >
+                    <%  a = gr.id  %>
+                    <%  responds = ClientResponse.where(:google_review_id => a).order("created_at DESC")  %>
+                    <% if responds.exists? %>
+                      <div id="respondlessreviewplus<%=gr.id%>">
+                        <div class="up-arrow up-arrow4" style="margin-top:20px;">
+                          <% responds.take(2).each do |r| %>
+                          <br>
+                            <div class="user-thumb" style="position: relative;top: -15px;min-height: 67px; background-color: #d6eff8;" >
+                              <h3><%= image_tag "respond.png" , :alt => "User" , :style => "border-radius: 50%;position: relative;top: -10px;width: 46px;left: 9px;" %><h1 style="font-size: 9px;position: absolute;top: 24px;right: 13px;">John Doe</h1></h1><h1 style="font-size: 9px;position: absolute;top: 35px;right: 10px;">On <%= r.created_at.strftime("%B %d") %></h1></h3>
+                            </div>
+                            <div class="article-post" style="position: relative;left: 50px;"> 
+                              <p><%= r.client_reply %></p>
+                              <p>On <%= r.created_at.strftime("%B %d %I:%M %p")%></p><br/></br>
+                            </div>
+                          <% end %>
+                        </div>
+                        <% if responds.length > 2 %>
+                          <button class="btn btn-warning btn-mini" style="width: 60px;margin-left: 58px;position: relative;top: -25px;font-size: 23px;" name="respondmorereviewplus<%=gr.id%>" id="respondlessreviewplus<%=gr.id%>" onclick="Show_respond(name,id)">+</button>
+                        <% end %>
+                      <!-- ShowRespondReview -->
+                      </div>
+                      <div id="respondmorereviewplus<%=gr.id%>" style="display:none;">
+                        <div class="up-arrow up-arrow4"  style="margin-top: 20px;" >
+                          <% responds.each do |r| %>
+                            <br>
+                            <div class="user-thumb" style="position: relative;top: -15px;min-height: 67px; background-color: #d6eff8;" >
+                              <h3><%= image_tag "respond.png" , :alt => "User" , :style => "border-radius: 50%;position: relative;top: -10px;width: 46px;left: 9px;" %><h1 style="font-size: 9px;position: absolute;top: 24px;right: 13px;">John Doe</h1></h1><h1 style="font-size: 9px;position: absolute;top: 35px;right: 10px;">On <%= r.created_at.strftime("%B %d") %></h1></h3>
+                            </div>
+                            <div class="article-post" style="position: relative;left: 50px;"> 
+                              <p><%= r.client_reply %></p>
+                              <p>On <%= r.created_at.strftime("%B %d %I:%M %p")%></p><br/></br>
+                          </div>
+                        <% end %>
+                      </div>
+                    </div>
+                    <%if current_user.has_role?(:Client) %>
+                      <button name="respond1<%=gr.id%>Form" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%;float:right;width:19%;" onclick="hideButton(name)" >Add Respond</button><br>
+                    <%end%>   
+                    </br>
+                  <%else%>
+                    <!--   RESPOND TEXTBOX-->
+                      <div>
+                        <%if current_user.has_role?(:Client) %>
+                          <form action="/responses/google_review_reply">
+                            <input name="id" value="<%= gr.id %>" type="hidden">
+                            <input type="text" name="client_reply" required placeholder="Thanx for your support"  maxlength="1024" style="padding-bottom: 55px;width: 917px;margin-left: 55px;margin-top: 10px;">
+                            <br/>
+                            <input type="submit" value="Submit Reply" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%;float:right;width:19%;"></br></br>
+                          </form>
+                        <%end%>  
+                      </div>
+                    <%end%>
+                  </div>
+                <!-- FORM RESPOND -->
+                  <%if current_user.has_role?(:Client) %>
+ 
+                    <div id="respond1<%=gr.id%>Form" class="drdiv" style="display:none; ">
+                      <form action="/responses/google_review_reply">
+                        <input name="id" value="<%= gr.id %>" type="hidden">
+                        <input type="text" name="client_reply" required placeholder="Thanx for your support"  maxlength="1024" style="padding-bottom: 55px;width: 917px;;margin-left: 55px;margin-top: 10px;">
+                        <br/>
+                        <input type="submit" value="Submit Reply" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%;float:right;width:19%;"></br></br>
+                      </form>
+                    </div>
+                  <%end%>
+                <!--END: GOOGLE RESPOND DIV FOR REVIEWS PAGE --> 
+                <%end%>
+                <!--  END OF GOOGLE REVIEWS for View Less-->
+                <% @responses.take(10).each do |f| %>
+                  <li>
+                    <div class="reviews-div">
+                      <div class="user-thumb userthumbimg">
+                        <h3><%= image_tag "respond.png" , :alt => "User", :class=> "userimg" %><h1 class="user-h1">John Doe</h1><%#= image_tag "rating.png" , :alt => "User" , :class=> "rating"%><h1 class= "rating-h1">On <%= f.created_at.strftime("%B %d") %></h1></h3>           
+                    </div>
+                    <% req_id = f.request_id %>
+                    <div class="article-post"> 
+                      <span class="user-info">
+                        By: john Deo / Date: <%= f.created_at.strftime("%d-%m-%Y") %> / Time: <%= f.created_at.strftime('%H:%M')%>
+                      </span>
+                      <p><%= f.feedback %></p>
+                    </div>
+                    <p class="parastyle">
+                      <button type="button" class="btn btn-default btn-mini borrad addnote" name="note<%=f.id%>" onClick="noteResponse(name)"/> Add note </button>
+                      <% if current_user.has_role? :Client || :Demo %>
+                        <button type="button"  name="respond1<%=f.id%>" class="btn btn-success btn-mini borrad respond" onClick="noteResponse(name)"> Respond </button>
+                        <button type="button" class="btn btn-warning btn-mini borrad share" data-toggle="modal" data-target="#<%=f.id%>"> Share </button>
+                      <%end%> 
+                      <div class="modal fade modalfade" id='<%=f.id%>' tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title sharetitle" id="myModalLabel">Sharing This</h5>
+                              <button type="button" class="close closebutn" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body fbmodal">
+                            <class="btn-social"><a class="js-social-share facebook fbcolor" href="https://www.facebook.com/sharer/sharer.php?u=http://cryptextechnologies.com&description=<%= f.feedback %>" target="_blank" ><i class="fa fa-facebook-official" aria-hidden="true"></i></a>
+                            <class="btn-social"><a class="js-social-share twitter twicolor" href="https://twitter.com/intent/tweet?&text=“<%= f.feedback %>”" target="_blank"><i class="fa fa-twitter" aria-hidden="true"></i></a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    </p>
+                  </div>
+                  <div id="note<%=f.id%>"  class="dadiv"   style="display:none;" >        
+                  <%  a = f.id %>
+                  <%  notes = ResponseNote.where(:response_id => a).order("created_at DESC") %>
+                  <% if notes.exists? %>
+                    <div id="notelessreviwes<%=f.id%>">
+                    <div class="up-arrow" style="margin-top: 20px;">
+                    <% notes.take(2).each do |r| %>
+                      <div class="user-thumb" style="position: relative;top: -21px;min-height: 67px; background-color: #d6eff8;">
+                        <h3><%= image_tag "respond.png" , :alt => "User" , :style => "border-radius: 50%;position: relative;top: -10px;width: 46px;left: 9px;" %><h1 style="font-size: 9px;position: absolute;top: 24px;right: 13px;">John Doe</h1></h1><h1 style="font-size: 9px;position: absolute;top: 35px;;right: 10px;">On <%= r.created_at.strftime("%B %d") %></h1></h3>
+                      </div>
+                      <div class="article-post" style="position: relative;left: 50px;"> 
+                        <p style="min-height: 85px"><%= r.note_text %></p>
+                      </div>
+                    <%end%> 
+                    </div>
+                    <% if notes.length > 2 %>
+                      <button class="btn btn-warning btn-mini" style="width: 60px;margin-left: 58px;position: relative;top: -25px;font-size: 23px;" name="notemorereviews<%=f.id%>" id="notelessreviwes<%=f.id%>" onclick="Google_notes(name,id)">+</button>
+                    <% end %>
+                    </div>
+                     <div id="notemorereviews<%=f.id%>" style="display:none;">
+                        <div class="up-arrow" style="margin-top: 20px;" >
+                          <% notes.each do |r| %>
+                            <div class="user-thumb" style="position: relative;top: -21px;min-height: 67px; background-color: #d6eff8;">
+                              <h3><%= image_tag "respond.png" , :alt => "User" , :style => "border-radius: 50%;position: relative;top: -10px;width: 46px;left: 9px;" %><h1 style="font-size: 9px;position: absolute;top: 24px;right: 13px;">John Doe</h1></h1><h1 style="font-size: 9px;position: absolute;top: 35px;right: 10px;">On <%= r.created_at.strftime("%B %d") %></h1></h3>
+                            </div>
+                            <div class="article-post" style="position: relative;left: 50px;"> 
+                                <p style="min-height: 85px"><%= r.note_text %></p>
+                              </div>
+                            <%end%> 
+                          </div>
+                        </div>
+                        <%if current_user.has_role?(:Client) %>
+                          <button name="note<%=f.id%>Form" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%;float:right;width:19%;" onclick="hideButton(name)">Add Note</button><br><br>
+                          <%end%>
+                      </br>
+                        <!--   Add note TEXTBOX -->
+                      <%else%>
+                        <div >
+                          <%if current_user.has_role?(:Client) %>
+
+                            <form action="/home/add_note_for_reviews">
+                              <input name="id" value="<%= f.id %>" type="hidden">
+                              <input type="text" name="review_note" placeholder="Enter note for review"  required maxlength="1024" style="padding-bottom: 55px;width: 917px;margin-left: 55px;margin-top: 10px;">
+                              <br/>
+                              <input type="submit" value="Submit Note" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%;float:right;width:19%;" ></br></br>
+                          <%end%>
+                        </div>
+                      <%end%>
+                      <!-- add note form  -->
+                    </div>
+                    <div id="note<%=f.id%>Form" class="dadiv" style="display:none; ">
+                      <%if current_user.has_role?(:Client) %>
+                        <form action="/home/add_note_for_reviews">
+                          <input name="id" value="<%= f.id %>" type="hidden">
+                          <input type="text" name="review_note" placeholder="Enter note for review"  required maxlength="1024" style="padding-bottom: 55px;width: 917px;margin-left: 55px;margin-top: 10px;">
+                          <br/>
+                          <input type="submit" value="Submit Note" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%;float:right;width:19%;" ></br></br>
+                        </form>
+                      <%end%>  
+                    </div>
+                    <!--   Respond DIV -->
+                    <div id="respond1<%=f.id%>" class="drdiv" style="display:none; margin-bottom: 10px;" >
+                      <%  a = f.id  %>
+                      <%  responds = ClientResponse.where(:response_id => a) %>
+                      <% if responds.exists? %>
+                        <div id="respondlessreview<%=f.id%>">
+                          <div class="up-arrow up-arrow4" style="margin-top:20px;">
+                            <% responds.take(2).each do |r| %>
+                            <br>
+                              <div class="user-thumb" style="position: relative;top: -15px;min-height: 67px; background-color: #d6eff8;" >
+                                <h3><%= image_tag "respond.png" , :alt => "User" , :style => "border-radius: 50%;position: relative;top: -10px;width: 46px;left: 9px;" %><h1 style="font-size: 9px;position: absolute;top: 24px;right: 13px;">John Doe</h1></h1><h1 style="font-size: 9px;position: absolute;top: 35px;right: 10px;">On <%= r.created_at.strftime("%B %d") %></h1></h3>
+                              </div>
+                              <div class="article-post" style="position: relative;left: 50px;"> 
+                                <p><%= r.client_reply %></p>
+                                <p>On <%= r.created_at.strftime("%B %d %I:%M %p")%></p><br/></br>
+                              </div>
+                            <% end %>
+                          </div>
+                          <% if responds.length > 2 %>
+                            <button class="btn btn-warning btn-mini" style="width: 60px;margin-left: 58px;position: relative;top: -25px;font-size: 23px;" name="respondmorereview<%=f.id%>" id="respondlessreview<%=f.id%>" onclick="Show_respond(name,id)">+</button>
+                          <% end %>
+                        <!-- ShowRespondReview -->
+                        </div>
+                        <div id="respondmorereview<%=f.id%>" style="display:none;">
+                          <div class="up-arrow up-arrow4"  style="margin-top: 20px;" >
+                            <% responds.each do |r| %>
+                              <div class="user-thumb" style="position: relative;top: -15px;min-height: 67px; background-color: #d6eff8;" >
+                                <h3><%= image_tag "respond.png" , :alt => "User" , :style => "border-radius: 50%;position: relative;top: -10px;width: 46px;left: 9px;" %><h1 style="font-size: 9px;position: absolute;top: 24px;right: 13px;">John Doe</h1></h1><h1 style="font-size: 9px;position: absolute;top: 35px;right: 10px;">On <%= r.created_at.strftime("%B %d") %></h1></h3>
+                              </div>
+                              <div class="article-post" style="position: relative;left: 50px;"> 
+                                <p><%= r.client_reply %></p>
+                                <p>On <%= r.created_at.strftime("%B %d %I:%M %p")%></p><br/></br>
+                            </div>
+                          <% end %>
+                        </div>
+                      </div>
+                      <%if current_user.has_role?(:Client) %>
+                        <button name="respond1<%=f.id%>Form" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%;float:right;width:19%;" onclick="hideButton(name)" >Add Respond</button><br>
+                      <%end%>   
+                      </br>
+                    <%else%>
+                      <!--   RESPOND TEXTBOX-->
+                      <div>
+                      <%if current_user.has_role?(:Client) %>
+                          <form action="/responses/user_response">
+                            <input name="id" value="<%= f.id %>" type="hidden">
+                            <input type="text" name="client_reply" required placeholder="Thanx for your support"  maxlength="1024" style="padding-bottom: 55px;width: 917px;margin-left: 55px;margin-top: 10px;">
+                            <br/>
+                            <input type="submit" value="Submit Reply" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%;float:right;width:19%;"></br></br>
+                          </form>
+                        <%end%>  
+                      </div>
+                    <%end%>
+                  </div>
+                  <!-- FORM RESPOND -->
+                  <%if current_user.has_role?(:Client) %>
+
+                    <div id="respond1<%=f.id%>Form" class="drdiv" style="display:none; ">
+                      <form action="/responses/user_response">
+                        <input name="id" value="<%= f.id %>" type="hidden">
+                        <input type="text" name="client_reply" required placeholder="Thanx for your support"  maxlength="1024" style="padding-bottom: 55px;width: 917px;;margin-left: 55px;margin-top: 10px;">
+                        <br/>
+                        <input type="submit" value="Submit Reply" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%;float:right;width:19%;"></br></br>
+                      </form>
+                    </div>
+                   <%end%>
+                  <!-- END -->
+                </li>
+              <% end %>
+              <li>
+                <button class="btn btn-warning btn-mini" id="view_all_new">View All</button>
+              </li>
+            </ul>
+        </div>
+    <div class="row-fluid">
+    <div id="footer" class="span12">
+  </div>
+</div>
+<script type="text/javascript">
+  $("#view_all").click(function(){
+    $("#less").hide();
+    $("#more").show();
+  });
+  $("#view").click(function(){
+    $("#less").show();
+    $("#more").hide();
+  });               
+  $('#location_address_id').on('change', function(event){
+    var selected_resource_id = $(this).val();
+    $.ajax({ 
+    type: 'GET', 
+    url: "<%= home_request_pending_path %>",
+    data: { id: selected_resource_id }, 
+    success: function (data)
+      {
+        $("#request").empty();
+        var count=data["count"];
+        $("#request").append(''+count+'');
+      }
+    });
+  });                  
+  $("#client_address_id").change(function () {
+  var client_id = this.value;
+  console.log("==client id=="+client_id);
+
+    $.ajax({
+      url: "<%= home_total_reviews_path %>",
+      type: "GET",
+      data: {client_id: client_id},
+      success: function (data)
+      {
+        console.log(data);
+        $("#reviews").empty();
+        var reviews=data["reviews"];
+        $("#reviews").append(''+reviews+'');
+      }
+    });
+  });
+  $( window ).load(function() {
+    $("#client_address_id option[value='1']").text('');
+  });
+</script>
+<script type= "text/javascript">
+  function hideButton(name)
+  {        
+    $("[name="+name+"]").hide();
+  }
+  function func_all8(){
+    $("#collapseG6").show();
+    $("#collapseG9").hide();
+    $("#collapseG8").show();
+  }
+  function func_les8(){
+    $("#collapseG6").show();
+    $("#collapseG9").hide();
+    $("#collapseG8").hide();
+  }
+  function Show_reviews(){
+    $("#collapseG6").hide();
+    // $("#collapseG9").show();
+    $("#collapseG8").show();
+  }    
+</script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+
+<!DOCTYPE html> 
+<html lang="en">  
+<head>
+  <title>Review Maiden</title><meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700,800' rel='stylesheet' type='text/css'>
+  <style type="text/css">
+    .header
+    {
+      text-align: center;
+      color: white;
+    }
+    .container{
+      width: 92%!important;
+    }
+  </style>
+  <%= stylesheet_link_tag 'bootstrap.min', 'bootstrap-responsive.min', 'matrix-login', 'font-awesome' %>
+</head>
+<body>
+  <div id="loginbox">
+    <%#= devise_error_messages! %>
+    <%= form_for(resource, as: resource_name, url: update_password_path(resource_name), html: { method: :put }) do |f| %>
+      <div id="new-password">
+        <%= devise_error_messages! %>
+      </div>
+      <%= f.hidden_field :reset_password_token %>
+      <form id="loginform" class="form-vertical">
+        <div class="control-group normal_text"> 
+       <!--  <h2>Reset Password</h2> -->
+          <h3><%= image_tag "logo1.png" , :alt => "Logo" %></h3></div>
+          <div class="control-group">
+            <div class="controls">
+              <div class="main_input_box">
+                <%= f.password_field :password, autocomplete: "off",placeholder:"New Password ", minlength: 6, autofocus: true ,maxlength: "50" %>
+              </div>
+            </div>
+          </div>
+          <div class="control-group">
+            <div class="controls">
+              <div class="main_input_box">
+                <%= f.password_field :password_confirmation,  placeholder:"Password Confirmation", minlength: 6,maxlength: "50" %>
+              </div>
+            </div>
+          </div>
+        <div class="form-actions">
+          <%= f.submit "Change My Password", :action => "update", class: "pull-center btn btn-success borrad"  %>
+        </div>
+      </form>
+    <% end %> 
+  </div>
+</body>
+</html>
+<script src="/js/jquery.min.js"></script>  
+<script src="/js/matrix.login.js"></script>
+<%= javascript_include_tag "jquery.min", "matrix.login" %>
+

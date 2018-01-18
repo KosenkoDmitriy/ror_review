@@ -1,0 +1,460 @@
+
+/* form_html.erb */
+
+.panel-body .btn:not(.btn-block)
+{ 
+  width:185px;margin-bottom:10px;height: 100px; 
+}
+select{
+  color: #999;
+}
+form .error {
+/*color: #ff0000;*/
+  color: #dd2f2f;
+  font-size: 12px;
+  border-color: #dd2f2f;
+}
+.navbar-inverse {
+  background-color: #68727b;
+  border-color: #68727b;
+  /* width: 0; */
+  margin-top: -5px !important;
+}
+.formTittle{
+  text-align:center;
+  font-size: 17px;
+}
+.roleForm{
+  -webkit-margin-after: -23px;
+  color: #999
+}
+.roleFor{
+  width: 88%;
+  margin-left: 33px;
+  border-radius: 7px !important;
+}
+.container{
+  border: 1px solid gainsboro;
+  width: 45%;
+  background: white;
+}
+.containerContent{
+  border: 1px solid gainsboro;
+}
+.primaryName{
+  padding: 0;
+}
+.clientSaveButton{
+  border-radius: 18px;
+  width: 105px;
+  height: 29px;
+  margin-left: 69px;
+  margin-top: -52px;
+}
+
+.spanLine{
+  border-top: 1px solid gainsboro;
+  margin-top: 5px;
+  margin-left: 3px
+}
+.formInputclient{
+  width: 89%;
+  height: 23px !important;
+  border-radius: 7px !important;
+  margin-left: 17px;
+}
+.buttonsClient{
+  margin-top: 12px;
+  right: -27px;
+  margin-bottom: 7px;
+  float: right;
+}
+.clientCancelButton{
+  border: none;
+  color: black;
+
+}
+.addUserButton{
+  border-radius: 18px;
+  width: 105px;
+  height: 29px;
+  background-image: none !important;
+}
+.clientButton{
+  color: #51a351;
+  margin-top: 1px;
+  margin-left: -2px
+}
+.clientAlgButton{
+  color: white;
+}
+.formInput{
+  width: 89%;
+  height: 23px !important;
+  border-radius: 7px !important;
+}
+#user_address_country{
+  width: 92%;
+  height: 32px !important;
+  border-radius: 7px !important;
+  margin-left: 4%;
+}
+#user_address_state{
+  width: 92%;
+  height: 32px !important;
+  border-radius: 7px !important;
+  margin-left: 4%;
+}
+#user_address_city{
+  width: 92%;
+  height: 32px !important;
+  border-radius: 7px !important;
+  margin-left: 4%;
+}
+.notice{
+  color: red;
+  position: relative; 
+  bottom: 20px; 
+}
+.role-div{
+  margin-left: 4%;
+}
+.phone
+{
+  margin-top: -65px;
+  margin-left: 65px; 
+  width: 350px;
+
+}
+
+#sub_cnrty_code_country{
+  width: 413px;
+  margin-left: 17px;
+  height: 32px !important;
+  border-radius: 7px !important;
+}
+
+.forminputphone
+{
+  margin-top: -52px;
+  width: 23px !important;
+  margin-left: 40px;
+}
+.phone
+{
+  width: 347px !important;
+  margin-left: 96px !important;
+  margin-top: -66px !important;
+}
+.phone_clnt
+{
+ margin-left: 62px; 
+ margin-top: -61px;
+}
+
+.cntry-select-dropdown
+{
+   width: 424px;
+   margin-left: 20px;
+   border-radius: 6px; 
+ }
+
+#sub_cnrty_code_country{
+  width: 440px;
+  margin-left: 17px;
+  height: 32px !important;
+  border-radius: 7px !important;
+}
+#country_code_mob{
+
+  border-radius: 6px;
+  height: 21px !important;
+  background-color: white;
+  margin-left: 39px !important;
+  width: 57px;
+}
+.mob-width{
+  margin-top: 19px;
+  margin-left: 33px;
+  width: 84% !important;
+}
+#user_clients_name-error{
+  margin-top: -9px;
+}
+#user_first_name-error{
+  margin-top: -9px;
+}
+#user_last_name-error{
+  margin-top: -9px;
+}
+#user_email-error{
+  margin-top: -9px;
+}
+#user_password-error{
+  margin-top: -9px;
+}
+#user_password_confirmation-error{
+  margin-top: -9px;
+}
+#user_address_country-error{
+  margin-top: -9px;
+}
+#user_primary_mobile_no-error{
+  margin-top: -9px;
+}
+#user_clients_website-error{
+  margin-top: -9px;
+}
+#user_address_street-error{
+  margin-top: -9px;
+}
+#user_address_state-error{
+  margin-top: -9px;
+}
+#user_address_city-error{
+  margin-top: -9px;
+}
+#user_address_zipcode-error{
+  margin-top: -9px;
+}
+#user_clients_originator-error{
+  margin-top: -9px;
+}
+#user_clients_created_at-error{
+  margin-top: -9px;
+}
+#user_subscriptions_next_billing_date-error{
+  margin-top: -9px;
+}
+#sub_cnrty_code_country-error{
+  margin-top: -9px;
+}
+#user_primary_mobile_number-error{
+  margin-left: 96px;
+  margin-top: -33px;
+}
+.settingsSignout{
+  margin-top: 269px;
+}
+.errors {
+  margin-top: -8px;
+  margin-left: 19px;
+}
+
+
+@media only screen and (max-width: 768px) {
+.container {
+   width: 90% !important;  
+}
+#location_address_id {
+   width: 94% !important;
+   margin-top: 12px;
+}
+.addUserButton {
+   margin-top: 8px !important;
+}
+#sidebar {
+  top: 8px;
+}
+.FAQbutton{
+  margin-top: 0 !important;
+}
+.addbutton{
+  margin-top: 0 !important;
+}
+.sendReviewrequestButton{
+  margin-top: 0 !important;
+}
+.phone{
+  width: 63% !important;
+  margin-left: 30% !important;
+}
+#header {
+  background: #262324;
+}
+#user-nav {
+  width: 100%;
+  top: 0px;
+  left: 0px;
+  border: none;
+}
+.buttonsClient {
+  float: right;
+}
+#search button {
+  padding: 18px 14px 4px;
+}
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+#choose_file {
+  margin-left: 80px;
+  width: 100px;
+  height: 30px;
+}
+#checkExtension {
+  opacity: 0;
+  margin-top: -32px;
+  width: 100%;
+  height: 34px;
+}
+#bulkrequestmodal{
+  width: 70%;
+}
+#search {
+  display: inline;
+}
+#user_address_country {
+  margin-left: 5%;
+}
+#user_address_state {
+  margin-left: 5%;
+}
+#user_address_city {
+  margin-left: 5%;
+}
+/*.form-group {
+  margin-bottom: 0px;
+}*/
+.dropdown:hover .dropdown-content {
+  display: block;
+  
+}
+canvas{
+  width: 403px !important;
+}
+#content {
+  min-height: 1000px;
+}
+.logoDiv {
+   width: 51%;
+}
+/*.body-size {
+    width: 434px;
+}*/
+}
+
+/* form_user.html.erb */
+
+.navbar-inverse {
+  background-color: #68727b;
+  border-color: #68727b;
+  /* width: 0; */
+  margin-top: -5px !important;
+}
+
+.formTittle{
+  text-align:center;
+  font-size: 17px;
+}
+.roleForm{
+  -webkit-margin-after: -23px;
+  color: #999
+}
+.roleFor{
+  width: 88%;
+  border-radius: 7px !important;
+}
+.container{
+  border: 1px solid gainsboro;
+  width: 45%;
+  background: white;
+}
+.containerContent{
+  border: 1px solid gainsboro;
+}
+.primaryName{
+  padding: 0;
+}
+.clientSaveButton{
+  border-radius: 18px;
+  width: 105px;
+  height: 29px;
+  margin-left: 69px;
+  margin-top: -52px;
+}
+.addUserButton{
+  border-radius: 18px;
+  width: 105px;
+  height: 29px;
+  background-image: none !important;
+}
+
+.spanLine{
+  border-top: 1px solid gainsboro;
+  margin-top: 5px;
+  margin-left: 3px
+}
+.buttonsClient{
+  margin-top: 12px;
+  right: -27px;
+  margin-bottom: 7px;
+}
+.clientCancelButton{
+  border: none;
+  color: black;
+
+}
+.clientButton{
+  color: #51a351;
+  margin-top: 1px;
+  margin-left: -2px
+}
+.clientAlgButton{
+  color: white;
+}
+.formInput{
+  width: 89%;
+  height: 23px !important;
+  border-radius: 7px !important;
+}
+#user_address_country{
+  width: 92%;
+  height: 32px !important;
+  border-radius: 7px !important;
+}
+#user_address_state{
+  width: 92%;
+  height: 32px !important;
+  border-radius: 7px !important;
+}
+#user_address_city{
+  width: 92%;
+  height: 32px !important;
+  border-radius: 7px !important;
+}
+.notice{
+ color: red;
+ position: relative; 
+ bottom: 20px; 
+}
+
+
+#user_primary_mobile_no-error{
+  margin-left: 64px;
+  margin-top: -28px;
+}
+#sub_cnrty_code_country-error{
+  margin-left: 15px;
+  margin-top: -9px;
+}
+
+#sub_cnrty_code_country{
+   width: 92%;
+   margin-left: 17px;
+   height: 32px !important;
+   border-radius: 7px !important;
+}
+.settingsSignout{
+    margin-top: 269px;
+}
+#user_clients_originator{
+  width: 92%;
+  height: 34px !important;
+  border-radius: 7px !important;
+  margin-left: 17px;
+}
+#update_button{
+  background-color: #2ebd59 !important;
+  border: 0;
+}

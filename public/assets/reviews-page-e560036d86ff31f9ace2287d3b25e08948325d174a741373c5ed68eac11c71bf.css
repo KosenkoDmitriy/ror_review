@@ -1,0 +1,117 @@
+/*/*/
+*/*/*/* */
+.panel-body .btn:not(.btn-block)
+{ 
+  width:185px;margin-bottom:10px;height: 100px; 
+}
+/* */
+.labelstyle
+{
+  margin-top: 11%; margin-left: -3%;
+}
+/* */
+.panelstylefirst
+{
+  margin-left: 2%;
+  cursor: none;
+  pointer-events: none;
+}
+/* */
+.panelstyle
+{
+  margin-left: 10%;
+  cursor: none;
+  pointer-events: none;
+}
+/* */
+.btn-lg
+{
+  margin-left: 2%;
+  cursor: none;
+  pointer-events: none;
+}
+/* */
+.tabwidth
+{
+  border-top: none;
+  background-color: #EEEEEE;
+}
+/* */
+#txtDate
+{
+  background-image: url(http://i988.photobucket.com/albums/af3/mudassarkhan/calender.png);
+  background-repeat: no-repeat;
+  padding-left: 25px;
+  width: 50px;
+  height: 15px;
+  margin-top: 1%;
+}
+div.up-arrow {
+  display: inline-block;
+  position: relative;
+  background-color: rgba(165, 223, 246, 0.42);
+  color: #FFF;
+  text-decoration: none;
+  padding: 20px;
+  border-width: 2px;
+  border-style: solid;
+  border-color :rgb(165, 223, 246);
+  color: black;
+  height: 147%;
+  width: 90%;
+  margin-left: 56px;
+}
+div:hover.up-arrow {
+  background: #ccefff;
+}
+div.up-arrow:after {
+  content: '';
+  display: block;  
+  position: absolute;
+  left: 80px; 
+  bottom: 100%;
+  width: 0;
+  height: 0;
+  border-bottom: 10px solid #ccefff;
+  border-top: 10px solid transparent;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+}
+div:hover.up-arrow:after {
+  border-bottom-color: #ccefff80;
+}
+
+.fbtwifont{
+  font-size: 17px;
+}
+
+
+
+.parastyle{
+  margin-left:85px !important;
+}
+.addnote{
+  background-color:#39393c;
+  color: white;
+}
+.respond{
+  margin-left: 10px;
+}
+.share{
+  margin-left: 10px;
+}
+.modalfade{
+  display:none;
+  width:30%;
+}
+.sharetitle{
+  font-size:20px;
+  text-align:center;
+}
+.closebutn{
+  margin-top: -30px !important;
+}
+.fbmodal{
+  padding-left:140px !important;
+}
+*/*/*/*/*/

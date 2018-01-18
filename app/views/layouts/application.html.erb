@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Review</title>
+    <%= csrf_meta_tags %>
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track'=> false%>
+    <title>Review Maiden</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700,800' rel='stylesheet' type='text/css'>
+    <%= stylesheet_link_tag 'bootstrap.min','fullcalendar','matrix-style','matrix-media','font-awesome','jquery.gritter' %>
+    <%= javascript_include_tag 'http://yandex.st/bootstrap/3.1.1/js/bootstrap.min.js' %>
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css ">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    
+    <script type="text/javascript">
+      $( document ).ready(function() {
+        $("#revws_country option[value='']").remove();
+        $("#revws_country option[value='United States(+1)']").remove();
+        $("#revws_country").prepend('<option value="United States(+1)" >United States(+1)</option>');
+        $("#revws_country").prepend('<option value="" selected>Select Country</option>');
+      
+        $("#sub_cnrty_code_country option[value='']").remove();
+        $("#sub_cnrty_code_country option[value='US']").remove();
+        $("#sub_cnrty_code_country").prepend('<option value="US" >United States</option>');
+        $("#sub_cnrty_code_country").prepend('<option value="" selected>Country</option>');
+        $("#user_address_country option[value='']").remove();
+        $("#user_address_country option[value='US']").remove();
+        $("#user_address_country option[value='COUNTRY_ISO_CODE']").remove();
+
+        $("#user_address_country").prepend('<option value="US" >United States</option>');
+        $("#user_address_country").prepend('<option value="" selected>Select Country</option>');
+        $("#address_country option[value='']").remove();
+        $("#address_country option[value='US']").remove();
+        $("#address_country option[value='COUNTRY_ISO_CODE']").remove();
+        $("#address_country").prepend('<option value="US" >United States</option>');
+        $("#address_address_attributes_country").prepend('<option value="" selected></option>');
+        $("#address_address_attributes_country option[value='']").remove();
+        $("#address_address_attributes_country option[value='US']").remove();
+        $("#address_address_attributes_country option[value='COUNTRY_ISO_CODE']").remove();
+        $("#address_address_attributes_country").prepend('<option value="US" >United States</option>');
+        if (window.location.href.includes("edit_location") == true){
+          var locatio_country = "<%=@address.country rescue nil%>";
+          var locatio_state = "<%=@address.state rescue nil%>";
+          var locatio_city = "<%=@address.city rescue nil%>";
+         $("#address_address_attributes_country").prepend('<option value="locatio_country" selected><%=@address.country rescue nil%></option>');
+         $("#address_address_attributes_state").prepend('<option value="locatio_state"><%=@address.state rescue nil%></option>');
+         $("#address_address_attributes_city").prepend('<option value="locatio_city"><%=@address.city rescue nil%></option>');
+        }
+        else{
+           
+          $("#address_address_attributes_country").prepend('<option value="" selected>Country</option>');
+        }
+
+        $("#location_country option[value='']").remove();
+        $("#location_country option[value='US']").remove();
+        $("#location_country option[value='COUNTRY_ISO_CODE']").remove();
+        $("#location_country").prepend('<option value="US" >United States</option>');
+        $("#location_country").prepend('<option value="" selected>Country</option>');
+
+      });
+      $(document).ready(function(){
+        $("button").click(function(){
+          var div_id = this.name;
+          document.getElementById(div_id).style.display = "block";
+        });
+      });
+      $(document).ready(function(){
+        $("button").click(function(){
+          var div_id = this.name;
+          console.log(div_id);
+          document.getElementById(div_id).style.display = "block"; 
+          name = div_id.concat("Form");
+          $("[name="+name+"]").show();
+          document.getElementById(name).style.display = "none";
+        });
+      });
+      function hideButton1(name)
+      {          
+        $("[name="+name+"]").hide();
+        document.getElementById(name).style.display = "block";
+      }
+      function hideButton(name)
+      {        
+        $("[name="+name+"]").hide();
+        document.getElementById(name).style.display = "block";
+      }
+      function noteResponse(div_id)
+      {       
+        $(".dadiv").hide();
+        $(".drdiv").hide();
+        document.getElementById(div_id).style.display = "block";
+        name = div_id.concat("Form");
+        $("[name="+name+"]").show();
+        document.getElementById(name).style.display = "none";
+      }
+      function Google_notes(name,id)
+      {
+        $("#"+name).show();
+        $("#"+id).hide();
+      }
+      function Show_respond(name,id)
+      {
+        $("#"+name).show();
+        $("#"+id).hide();
+      }   
+    </script>
+  </head>
+  <%if !"created_password".in? request.url %>
+  <% if user_signed_in? && (root_path != request.env['REQUEST_URI']) && (request.fullpath != "/users/sign_in")%>
+   <% if !current_page?(clients_request_review_path) && (!"review_feedback".in? request.url) && (!"feedback_response".in? request.url) %>
+    <body>
+      <%= link_to home_index_path, method: :get do %> 
+        <div id="header">
+          <div class="logoDiv">
+            <div class="control-group normal_text"> <h3><%= image_tag "logo1.png" , :alt => "Logo" %></h3>
+            </div>
+          </div>
+        </div>
+      <% end %>
+      <div id="user-nav" class="navbar navbar-inverse ">
+        <% if current_user.has_role?(:superadmin) %> 
+          <% clients_listing %>
+          <%= select(:client, (params[:action] == "add_new_location") ? :ids : :id, options_for_select( @client_name.collect {|p| [ "#{p.name}", p.id] }), {class: 'textboxwidthwidth'}) %>  
+          <select id="location_address_id" class="locationField"><option></option></select>
+          <a  href="<%= add_new_location_path %>" class="btn btn-info addButton" />+</a>
+        <% else current_user.has_role? (:Client) || :Demo || :Admin || :User %>
+          <%= select(:location, :address_id, options_for_select(addresses.collect {|p| [ "#{p.street+','+p.city+','+p.state+','+p.country+','+p.zipcode}", p.id] }), {class: 'textboxwidthwidth'}) %> 
+        <% end %>
+        <% if current_user.has_role? (:Client) %>
+          <a  href="<%= request_add_location_path %>" class="btn btn-info addButton"/>+</a>
+        <%end%>
+        <button class="btn btn-info sendReviewrequestButton" data-target="#myModal" data-toggle="modal" /> <i class="fa fa-paper-plane"></i> Send Review Request</button>
+        <a href="https://www.reviewmaiden.com/faq" class="btn btn-default FAQButton" target="_blank"/>?</a>
+      </div>
+      <% if current_user.has_role?(:Client) %>
+        <div id="myModal" class="modal fade" role="dialog" >
+          <div class="modal-dialog">
+            <div class="modal-body">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title"><center>Send Review Request</center></h4></br>
+              <%= render 'clients/send_request' %>
+            </div>
+          </div>
+        </div>
+      <% end %>     
+    <div id="search">
+      <!-- <div class="dropdown">   -->
+        <!-- <button class="btn btn-default dropdown-toggle usernameclass" 
+              style="text-align: left;height: 67px;color: white;text-shadow: none;font-weight: bold;line-height: 32px;width: 153px;text-align: center;" type="button" data-toggle="dropdown">
+              <%= current_user.first_name %> <%= current_user.last_name %>
+        <span class="fa fa-caret-down" aria-hidden="true"></span>
+        </button> -->
+        <div class="dropdown">
+          <button class="dropbtn dropdownButton"><%= current_user.first_name %> <%= current_user.last_name %><i class="fa fa-caret-down caretIcon" aria-hidden="true"></i>
+          </button>
+        <!-- <ul class="dropdown-menu" style="width: 100%;"> -->
+         <div class="dropdown-content">
+          <li><%= link_to "My Profile", home_admin_profile_path, method: :get, class: "linkClass" %></li>
+          <!-- <li>Tell a friend</li> -->
+          <li><%= link_to "Change Password", edit_user_registration_path, class: "linkClass" %></li>
+          <% if current_user.has_role?(:superadmin) %>
+            <li><%= link_to "Add new Client", new_user_path, method: :get,class: "linkClass" %></li>
+          <%end%>
+          <% if current_user.has_role?(:Client) %>
+            <li><%= link_to "Add User", new_user_path, method: :get,class: "linkClass" %></li>
+          <%end%>
+          <li><%= link_to "Log Out", destroy_user_session_path, method: :delete , data: {confirm: 'Are you sure?'},class: "linkClass" %><span></span></li>
+        <!-- </ul> -->
+      </div>
+      </div> 
+    </div>
+  <% end %>
+  <% end %>
+  <% end %>
+  <%= javascript_include_tag 'matrix.charts','excanvas.min','jquery.min','jquery.ui.custom','bootstrap.min','jquery.flot.min','jquery.flot.resize.min','jquery.peity.min','jquery.peity.min','fullcalendar.min','matrix','matrix.dashboard','matrix.dashboard','jquery.gritter.min','matrix.interface','matrix.chat','jquery.validate','matrix.form_validation','jquery.wizard','jquery.uniform','select2.min','matrix.popover','jquery.dataTables.min','matrix.tables','matrix.login' %> 
+  <%= yield %>
+   <script>
+    $(document).ready(function(){
+      document.getElementById('location_address_id').value = localStorage.location_id;
+      var selected_location = document.getElementById('location_address_id').value;
+      var selected_resource_id = $(this).val();
+      var selected_resource_id = selected_location;
+      $.ajax({ 
+      type: 'GET', 
+      url: "<%= chart_data_path %>",
+      <%# root_path %> 
+      data: { id: selected_resource_id }, 
+      success: function (data) { 
+      console.log("Reviews",data);  
+      $.each(data["Review_data"], function(review,r){
+      // $("#collapseG2").append('<li style="list-style-type: none;"> <div class="user-thumb" style="position: relative;top: -15px;"> <h3> <img src="/assets/av1.jpg" alt="Smiley face"></h3></div><div class="article-post" style="position: relative;left: 50px;"> <span class="user-info"> By: john Deo / Date: '+r.created_at +' </span><p><a href="#">'+r.feedback+'</a></p></div><div class="buttonmargin"><p><button  href="" class="btn btn-default btn-mini borrad" value="Add note"> Add note</button><button  href="" class="btn btn-success btn-mini borrad" value="Respond">Respond</button> </p></div></li><hr/>');
+       });
+      // $("#collapseG2").append('<li style="list-style-type: none;"><button class="btn btn-warning btn-mini" id="view_all">View All</button></li>');
+
+      $('#jqChart').jqChart({
+        title: { text: '' },
+        animation: { duration: 1 },
+        shadows: {
+          enabled: true
+        },
+        border: {
+          cornerRadius: 1,
+          lineWidth: 1,
+          // strokeStyle: '#6ba851'
+        },
+        axes: [
+          {
+            type: 'category',
+            location: 'bottom',
+            categories: data["months_all"],
+          }
+        ],
+        series: [
+          {
+            type: 'stackedColumn',
+            title: '- ve',
+            data:  data['chart_data'],
+            labels: {
+              font: '12px sans-serif'
+            }
+          },
+          {
+            type: 'stackedColumn',
+            title: '+ve',
+            data: data['google_data'],
+            labels: {
+              font: '12px sans-serif'
+            }
+          }
+        ]
+      });
+    },
+  });
+  $(".dropdown-toggle").click(function(){
+    $(".dropdown-menu").toggle();
+       });
+   });
+  </script>
+  <script type="text/javascript">
+      function goPage (newURL) {
+      if (newURL != "") {
+        if (newURL == "-" ) {
+          resetMenu();            
+        }            
+        else {  
+        document.location.href = newURL;
+        }
+      }
+    }
+      function resetMenu() {
+      document.gomenu.selector.selectedIndex = 2;
+    }
+  </script>
+  <script type="text/javascript">
+  gdata='';
+  $(function () {
+    var data = [], totalPoints = 300;
+    function getRandomData() {
+      if (data.length > 0)
+        data = data.slice(1);
+      while (data.length < totalPoints) {
+        var prev = data.length > 0 ? data[data.length - 1] : 50;
+        var y = prev + Math.random() * 10 - 5;
+          if (y < 0)
+            y = 0;
+          if (y > 100)
+            y = 100;
+            data.push(y);
+          }
+          var res = [];
+          for (var i = 0; i < data.length; ++i)
+              res.push([i, data[i]])
+          return res;
+      }
+      var updateInterval = 30;
+      $("#updateInterval").val(updateInterval).change(function () {
+          var v = $(this).val();
+          if (v && !isNaN(+v)) {
+              updateInterval = +v;
+              if (updateInterval < 1)
+                  updateInterval = 1;
+              if (updateInterval > 2000)
+                  updateInterval = 2000;
+              $(this).val("" + updateInterval);
+          }
+      });
+      var options = {
+          series: { shadowSize: 0 },
+          yaxis: { min: 0, max: 100 },
+          xaxis: { show: false }
+      };
+      var plot = $.plot($("#placeholder2"), [ getRandomData() ], options);
+
+      function update() {
+          plot.setData([ getRandomData() ]);
+          plot.draw();
+          
+          setTimeout(update, updateInterval);
+      }
+
+      update();
+  });
+  
+  $( window ).on( "load", readyFn );
+
+  function readyFn () 
+  {
+    // body...
+    document.getElementById('location_address_id').value = localStorage.location_id;
+    var selected_location = document.getElementById('location_address_id');
+    var address_id = selected_location.value;
+    $.ajax({
+      url: "/current_location/"+address_id,
+      type: "POST",
+    });
+  }
+  $("#location_address_id").change(function () {
+    localStorage.location_id = document.getElementById('location_address_id').value;
+    var address_id = this.value;
+    $.ajax({
+      url: "/current_location/"+address_id,
+      type: "POST",
+    });
+  });
+  $("#location_address_id").change(function () {
+    var address_id = this.value;
+    $.ajax({
+      url: "/current_location/"+address_id,
+      type: "POST",
+    });
+  });
+   $('#location_address_id,#client_ids, #client_id').on('change', function(event) {
+    var selected_resource_id = $(this).val();
+    if(this.id=='client_ids' || this.id=='client_id')
+    {
+      $("#location_address_id").empty();  
+      var client_id = this.value;
+      client_id=client_id;
+    }
+    else
+    {
+      var selected_resource_id = $(this).val();
+    }
+$.ajax({ 
+  type: 'GET', 
+  url: "<%= chart_data_path %>",
+  <%# root_path %> 
+  data: { id: selected_resource_id, client_id: client_id }, 
+  success: function (data) {  
+    gdata = data.Google_reviews;
+    isclient = data.isclient;
+    if(client_id!=null)
+    {
+      $("#location_address_id").empty();  
+      $.each(data["addresses"], function(keys,values)
+      {
+        // console.log(keys,values);
+        $("#location_address_id").append('<option value='+values.id+'>'+values.street+','+values.city+','+values.state+','+values.country+','+values.zipcode+'</option>');
+      })
+    }
+    // alert(isclient);
+    // alert(gdata);
+    console.log(gdata);
+    $("#collapseG2").empty();
+    $("#collapseG3").empty();
+    // START: For google reviews in viewless 
+    var grcount=0;
+    if(gdata!=[])
+    {
+      var rg = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})\..*/g;
+      var monthShortNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      $.each(data["Google_reviews"], function(review,gr){
+        grcount++;
+        if(grcount==11){
+          return false;
+        }
+        else
+        {
+          var name = gr.reviewer_name
+          var create_date = gr.google_review_create_time.replace(rg,"$3-$2-$1");
+          var month_id = gr.google_review_create_time.replace(rg,"$2");
+          month_id = parseInt(month_id)-1;
+          var month =  monthShortNames[month_id];
+          var date = gr.google_review_create_time.replace(rg,"$3");
+          var create_time = gr.google_review_create_time.replace(rg,"$4:$5");
+          name = name.split(' ');
+          if(gr.review_comment==null){gr.review_comment="";}
+          $("#collapseG2").append('<li style="list-style-type: none;"> <div style="border-color:rgba(128, 128, 128, 0.25);border-width: 2px;border-style: solid;height: auto;min-height: 80px;"><div class="user-thumb" style="position: relative;top: 0px;min-height: 67px;"><h3><img src="/assets/respond.png"  alt="User"  style="border-radius: 50%;position: relative;top: -10px;width: 46px;left: 9px;"><h1 style="font-size: 9px;position: absolute;top: 25px;right: 20px;">'+name[0]+'</h1></h3><div class="rating-image-style_viewless" id="rating-image-style_viewless'+grcount+'"> </div><h1 class="rating-img-h1-tag" >On '+date+' '+month+' </h1></h3></div><div class="article-post" style="position: relative;"> <span style="margin-right: -46px;" > By: '+gr.reviewer_name+' / Date: '+create_date+' / <br> Time: '+create_time+' </span><p style="max-width:80%;text-align:justify;">'+gr.review_comment+'</p></div><div class="buttonmargin" style="margin-left: -19% !important;"><p style="margin-left: 166px;"><a style="background-color:#39393c;color: white;" class="btn btn-default btn-mini borrad" name="indGoogletodayallrnote0r20'+gr.id +'" onClick="noteResponse(name)">Add Note</a><button  class="btn btn-success btn-mini borrad respond-btn" value="Respond" style="width: 66px;" name="respond020positive'+gr.id +'" onClick="noteResponse(name)">Respond</button></p></div><div id="note10'+gr.id +'" style="display: none" ><form action="/home/add_note_for_reviews"><input name="id" value= '+gr.id +' type="hidden"><input type="text" name="review_note" placeholder="Enter note for review"  class="review-note" required maxlength="1024"><br/><input type="submit" value="Submit Note" class="sendReviewrequestButton" style="width: 95px;height: 28px;/*! margin-right: 100px; */margin-left: 318px;color: white;"></form></div></div></li><br>');
+          for(i=0;i< parseInt(gr.star_rating);i++)
+          { 
+            $("#rating-image-style_viewless"+grcount).append('<img src="/assets/star.png" style ="height:12px;position: relative;margin-top: -34px;">')
+          }
+          indGoogletodayallrnamediv="#indGoogletodayallrnote0r20"+gr.id;
+          indGoogletodayallrarrowdiv = "#indGoogletodayallrabc0r20"+gr.id;
+          indGoogletodayallrarrowdiv38 = "#indGoogletodayallrabc0440"+gr.id;
+          indGoogletodayallrtextdiv= "#indGoogletodayallrtextdivnote0r20"+gr.id;
+          $("#collapseG2").append('<div id="indGoogletodayallrnote0r20'+gr.id+'" class="dadiv" style="display:none;"><div><div class="" id="indGoogletodayallrabc0r20'+gr.id+'"></div><div id="indGoogletodayallrabc0440'+gr.id+'" style="display:none;"></div><div id="indGoogletodayallrtextdivnote0r20'+gr.id+'"</div></div></div>');
+                // alert(data["response_notes"]);
+             // console.log("=====================NOTES===============");
+          inc = 0; 
+          flag =0;
+          count1=0;
+          $.each(data["response_notes"], function(response_notes,rn){
+            console.log(rn.note_text);
+            inc++;
+            if(gr.id==rn.google_review_id)
+            {
+              count1++;
+              if(count1==3)
+              {
+                return false;
+              }
+              else
+              {
+                flag =1;
+                $(indGoogletodayallrarrowdiv).addClass('up-arrow');
+                $(indGoogletodayallrarrowdiv).append('<div class="user-thumb" style="position: relative;top:-20px;min-height:67px;background-color:#d6eff8;"><h3><img src="/assets/respond.png" alt="User" style="border-radius:50%;position:relative;top:-10px;width:46px;left:9px;"><h1 style="font-size:9px;position:absolute;top:24px;right: 13px;">John Doe</h1></h1><h1 style="font-size: 9px;position: absolute;top: 40px;right: 13px;">On July 17</h1></h3></div><div class="article-post" style="position:relative;"><p style="min-height: 85px">'+rn.note_text+'</p>');
+              }
+            }
+          });            
+          if((flag==1) &&(count1 > 2))
+            {
+              $(indGoogletodayallrarrowdiv).append('<button class="btn btn-warning" style="width: 60px;margin-left: -20px;position: relative;top: 20px;font-size: 23px;" name="indGoogletodayallrabc0440'+gr.id+'" id="indGoogletodayallrabc0r20'+gr.id+'" onclick="Google_notes(name,id)">+</button>');
+            }
+            $.each(data["response_notes"], function(response_notes,rn){
+              console.log(rn.note_text);
+              inc++;
+              console.log("loop2--"+inc);
+              if(gr.id==rn.google_review_id)
+              {
+                flag =1;
+                $(indGoogletodayallrarrowdiv38).addClass('up-arrow');
+                $(indGoogletodayallrarrowdiv38).append('<div class="user-thumb" style="position: relative;top:-35px;min-height:67px;background-color:#d6eff8;"><h3><img src="/assets/respond.png" alt="User" style="border-radius:50%;position:relative;top:-10px;width:46px;left:9px;"><h1 style="font-size:9px;position:absolute;top:24px;right: 13px;">John Doe</h1></h1><h1 style="font-size: 9px;position: absolute;top: 40px;right: 13px;">On July 17</h1></h3></div><div class="article-post" style="position:relative;"><p style="min-height: 85px">'+rn.note_text+'</p>');
+              }
+            });
+            if(isclient==true)
+            {
+              if(flag==1)
+              {
+                $(indGoogletodayallrtextdiv).append('</div><br><button name="indGoogletodayallrnote0r20'+gr.id+'Form" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%;float:right;" onclick="hideButton1(name)">Add Note</button><br>');
+              } 
+              else
+              {
+                $(indGoogletodayallrtextdiv).append('<form action="/home/add_note_for_google_reviews"><input name="id" value="'+gr.id+'" type="hidden"><input type="text" name="review_note" placeholder="Enter note for review"  class="review-note" required maxlength="1024"><br/><input type="submit" value="Submit Note" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%; float:right;" ><br></form>');
+              }
+              $("#collapseG2").append('<div id="indGoogletodayallrnote0r20'+gr.id+'Form" class="dadiv" style="display:none;"><form action="/home/add_note_for_google_reviews"><input name="id" value='+gr.id+' type="hidden"><input type="text" name="review_note" placeholder="Enter note for review"  class="review-note" required maxlength="1024"><br/><input type="submit" value="Submit Note" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%; float:right;" ></form><br> </div>'); 
+            } 
+          }
+          // START POSITIVE RESPOND IN LOCATION CHANGE in VIEW LESS
+          namediv1postive="#respond020positive"+gr.id;
+          arrowdiv1positive = "#abcr020positive"+gr.id;
+          arrowdivrespondlesspositive = "#abcr060positive"+gr.id;
+          textdiv1positive= "#textdivrespond020positive"+gr.id;
+          $("#collapseG2").append('<div id="respond020positive'+gr.id+'" class="dadiv" style="display:none;"><div><div class="" id="abcr020positive'+gr.id+'"></div></div><div id="abcr060positive'+gr.id+'" style="display:none;"></div><div id="textdivrespond020positive'+gr.id+'"</div></div></div>');
+          // console.log("=====================responds===============");
+          flag1 =0;
+          count=0;
+          $.each(data["client_response"], function(response_notes,rn){
+            if(gr.id==rn.google_review_id)
+            {
+              count++;
+              if(count==3)
+              {
+                return false;
+              }
+              else
+              {
+                // alert(r.id+"--"+rn.response_id);
+                flag1 =1;
+                $(arrowdiv1positive).addClass('up-arrow up-arrow4');
+                $(arrowdiv1positive).append('<div class="user-thumb" style="position: relative;top:-35px;min-height:67px;background-color:#d6eff8;"><h3><img src="/assets/respond.png" alt="User" style="border-radius:50%;position:relative;top:-10px;width:46px;left:9px;"><h1 style="font-size:9px;position:absolute;top:24px;right: 13px;">John Doe</h1></h1><h1 style="font-size: 9px;position: absolute;top: 40px;right: 13px;">On July 17</h1></h3></div><div class="article-post" style="position:relative;"><p style="min-height: 85px">'+rn.client_reply+'</p>');
+              }
+            }
+          });    
+          if ((flag1==1) && (count > 2)) 
+          {
+            $(arrowdiv1positive).append('<button class="btn btn-warning" style="width: 60px;margin-left: -20px;position: relative;top: 20px;font-size: 23px;" name="abcr060positive'+gr.id+'" id="abcr020positive'+gr.id+'" onclick="Show_respond(name,id)">+</button>');
+          }
+          $.each(data["client_response"], function(response_notes,rn)
+          {
+            if(gr.id==rn.google_review_id)
+            {
+              $(arrowdivrespondlesspositive).addClass('up-arrow up-arrow4');
+              $(arrowdivrespondlesspositive).append('<div class="user-thumb" style="position: relative;top:-35px;min-height:67px;background-color:#d6eff8;"><h3><img src="/assets/respond.png" alt="User" style="border-radius:50%;position:relative;top:-10px;width:46px;left:9px;"><h1 style="font-size:9px;position:absolute;top:24px;right: 13px;">John Doe</h1></h1><h1 style="font-size: 9px;position: absolute;top: 40px;right: 13px;">On July 17</h1></h3></div><div class="article-post" style="position:relative;"><p style="min-height: 85px">'+rn.client_reply+'</p>');
+            }
+          });
+          if(isclient==true)
+          {
+            if(flag1==1)
+            {
+              $(textdiv1positive).append('</div><br><button name="respond020positive'+gr.id+'Form" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%;float:right;width:19%;" onclick="hideButton1(name)">Add Respond</button></br><br>');
+            }
+            else
+            {
+              $(textdiv1positive).append('<form action="/responses/google_review_reply"><input name="id" value="'+gr.id+'" type="hidden"> <input type="text" name="client_reply" placeholder="Thanks for your support"  class="review-note" required maxlength="1024"> <br/><input type="submit" value="Submit Reply" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%;float:right;width:19%;"></br><br></form>');  }
+              $("#collapseG2").append('<div id="respond020positive'+gr.id+'Form" class="drdiv" style="display:none; "><form action="/responses/google_review_reply"><input name="id" value="'+gr.id+'" type="hidden"> <input type="text" name="client_reply" placeholder="Thanks for your support"  class="review-note" required maxlength="1024"> <br/><input type="submit" value="Submit Reply" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%;float:right;width:19%;"></br><br></form> </div>'
+            );
+          }
+            // END POSITIVE RESPOND IN LOCATION CHANGE in VIEW LESS
+        });
+      }
+
+      // end of google reviews viewless
+      var count=0;
+      $.each(data["Review_data"], function(review,r){
+      var rg = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})\..*/g;
+      var dateStr = r.created_at.replace(rg,"$3-$2-$1");
+      var timeStr = r.created_at.replace(rg,"$4:$5");
+      count++;
+      if(count==11)
+      {
+        return false;
+      }
+      else
+      {
+        $("#collapseG2").append('<li style="list-style-type: none;"> <div style="border-color:rgba(128, 128, 128, 0.25);border-width: 2px;border-style: solid;height: auto;"><div class="user-thumb" style="position: relative;top: 0px;min-height: 67px;"><h3><img src="/assets/respond.png"  alt="User"  style="border-radius: 50%;position: relative;top: -10px;width: 46px;left: 9px;"><h1 style="font-size: 9px;position: absolute;top: 28px;right: 13px;">John Doe</h1></h3></div><div class="article-post" style="position: relative;"> <span style="margin-right: -46px;" > By: john Deo / Date: '+dateStr+' / <br> Time: '+timeStr+' </span><p style="text-align: justify;">'+r.feedback+'</p></div><div class="buttonmargin" style="margin-left: -19% !important;"><p style="margin-left: 166px;"><a style="background-color:#39393c;color: white;" class="btn btn-default btn-mini borrad" name="ilocnegtodnotetodyr'+r.id +'" onClick="noteResponse(name)">Add Note</a><button  class="btn btn-success btn-mini borrad respond-btn" value="Respond" style="width: 66px;" name="respond020'+r.id +'" onClick="noteResponse(name)">Respond</button></p></div><div id="note10'+r.id +'" style="display: none" ><form action="/home/add_note_for_reviews"><input name="id" value= '+r.id +' type="hidden"><input type="text" name="review_note" placeholder="Enter note for review"  class="review-note" required maxlength="1024"><br/><input type="submit" value="Submit Note" class="sendReviewrequestButton" style="width: 95px;height: 28px;/*! margin-right: 100px; */margin-left: 318px;color: white;"></form></div></div></li><br>');
+        ilocnegtodarrowdivnotetodyr = "#ilocnegtodabcnotetodyr"+r.id;
+        ilocnegtodtextdivnotetodyr= "#ilocnegtodtextdivnotetodyr"+r.id;
+        ilocnegtodarrowdivnotetodyrnotes = "#ilocnegtodabcnotetodyrnotes"+r.id;
+        ilocnegtodtextdivnotetodyr= "#ilocnegtodtextdivnotetodyr"+r.id;
+        $("#collapseG2").append('<div id="ilocnegtodnotetodyr'+r.id+'" class="dadiv" style="display:none;"><div><div class="" id="ilocnegtodabcnotetodyr'+r.id+'"></div><div class="" id="ilocnegtodabcnotetodyrnotes'+r.id+'" style="display:none;"></div><div id="ilocnegtodtextdivnotetodyr'+r.id+'"></div></div></div>');
+          // console.log("=====================NOTES===============");
+        inctodyra = 0; 
+        flagtodyra =0;
+        counttoadyra=0;
+        $.each(data["response_notes"], function(response_notes,rn){
+          console.log(rn.note_text);
+          inctodyra++;          
+          if(r.id==rn.response_id)
+          {
+            counttoadyra++;
+            if(counttoadyra==3)
+            {
+              return false;
+            }
+            else
+            {
+              flagtodyra=1;
+              $(ilocnegtodarrowdivnotetodyr).addClass('up-arrow');
+              $(ilocnegtodarrowdivnotetodyr).append('<div class="user-thumb" style="position: relative;top:-20px;min-height:67px;background-color:#d6eff8;"><h3><img src="/assets/respond.png" alt="User" style="border-radius:50%;position:relative;top:-10px;width:46px;left:9px;"><h1 style="font-size:9px;position:absolute;top:24px;right: 13px;">John Doe</h1></h1><h1 style="font-size: 9px;position: absolute;top: 40px;right: 13px;">On July 17</h1></h3></div><div class="article-post" style="position:relative;"><p style="min-height: 85px">'+rn.note_text+'</p>');
+            }
+          }
+        });
+        if((flagtodyra==1) && (counttoadyra > 2))
+        {
+          $(ilocnegtodarrowdivnotetodyr).append('<button class="btn btn-warning " style="width: 60px;margin-left: -20px;position: relative;top: 20px;font-size: 23px;" name="ilocnegtodabcnotetodyrnotes'+r.id+'" id="ilocnegtodabcnotetodyr'+r.id+'" onclick="Google_notes(name,id)">+</button>');
+        }
+        $.each(data["response_notes"], function(response_notes,rn){
+          if(r.id==rn.response_id)
+          {
+            flagtodyra =1;
+            $(ilocnegtodarrowdivnotetodyrnotes).addClass('up-arrow');
+            $(ilocnegtodarrowdivnotetodyrnotes).append('<div class="user-thumb" style="position: relative;top:-20px;min-height:67px;background-color:#d6eff8;"><h3><img src="/assets/respond.png" alt="User" style="border-radius:50%;position:relative;top:-10px;width:46px;left:9px;"><h1 style="font-size:9px;position:absolute;top:24px;right: 13px;">John Doe</h1></h1><h1 style="font-size: 9px;position: absolute;top: 40px;right: 13px;">On July 17</h1></h3></div><div class="article-post" style="position:relative;"><p style="min-height: 85px">'+rn.note_text+'</p>');
+          }
+        });
+        if(isclient==true)
+        {
+          if(flagtodyra==1)
+          {
+            $(ilocnegtodtextdivnotetodyr).append('</div><br><button name="ilocnegtodnotetodyr'+r.id+'Form" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%;float:right;" onclick="hideButton1(name)">Add Note</button><br>');
+          }
+          else
+          {
+            $(ilocnegtodtextdivnotetodyr).append('<form action="/home/add_note_for_reviews"><input name="id" value="'+r.id+'" type="hidden"><input type="text" name="review_note" placeholder="Enter note for review"  class="review-note" required maxlength="1024"><br/><input type="submit" value="Submit Note" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%; float:right;" ><br></form>');
+          }
+          $("#collapseG2").append('<div id="ilocnegtodnotetodyr'+r.id+'Form" class="dadiv" style="display:none;"><form action="/home/add_note_for_reviews"><input name="id" value='+r.id+' type="hidden"><input type="text" name="review_note" placeholder="Enter note for review"  class="review-note" required maxlength="1024"><br/><input type="submit" value="Submit Note" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%; float:right;" ><br></form> </div></div>'); 
+        }
+        //////Respond on location change view less
+        namediv1="#respond020"+r.id;
+        arrowdiv1 = "#abcr020"+r.id;
+        arrowdivrespondless = "#abcr060"+r.id;
+        textdiv1= "#textdivrespond020"+r.id;
+        $("#collapseG2").append('<div id="respond020'+r.id+'" class="dadiv" style="display:none;"><div><div class="" id="abcr020'+r.id+'"></div></div><div id="abcr060'+r.id+'" style="display:none;"></div><div id="textdivrespond020'+r.id+'"</div></div></div>');
+        // console.log("=====================responds===============");
+        flag1 =0;
+        count=0;
+        $.each(data["client_response"], function(response_notes,rn){
+          if(r.id==rn.response_id)
+          {
+            count++;
+            if(count==3)
+            {
+              return false;
+            }
+            else
+            {
+              // alert(r.id+"--"+rn.response_id);
+              flag1 =1;
+              $(arrowdiv1).addClass('up-arrow up-arrow4');
+              $(arrowdiv1).append('<div class="user-thumb" style="position: relative;top:-35px;min-height:67px;background-color:#d6eff8;"><h3><img src="/assets/respond.png" alt="User" style="border-radius:50%;position:relative;top:-10px;width:46px;left:9px;"><h1 style="font-size:9px;position:absolute;top:24px;right: 13px;">John Doe</h1></h1><h1 style="font-size: 9px;position: absolute;top: 40px;right: 13px;">On July 17</h1></h3></div><div class="article-post" style="position:relative;"><p style="min-height: 85px">'+rn.client_reply+'</p>');
+            }
+          }
+        });    
+        if ((flag1==1) && (count > 2)) 
+        {
+          $(arrowdiv1).append('<button class="btn btn-warning" style="width: 60px;margin-left: -20px;position: relative;top: 20px;font-size: 23px;" name="abcr060'+r.id+'" id="abcr020'+r.id+'" onclick="Show_respond(name,id)">+</button>');
+        }
+        $.each(data["client_response"], function(response_notes,rn)
+        {
+          if(r.id==rn.response_id)
+          {
+            $(arrowdivrespondless).addClass('up-arrow up-arrow4');
+            $(arrowdivrespondless).append('<div class="user-thumb" style="position: relative;top:-35px;min-height:67px;background-color:#d6eff8;"><h3><img src="/assets/respond.png" alt="User" style="border-radius:50%;position:relative;top:-10px;width:46px;left:9px;"><h1 style="font-size:9px;position:absolute;top:24px;right: 13px;">John Doe</h1></h1><h1 style="font-size: 9px;position: absolute;top: 40px;right: 13px;">On July 17</h1></h3></div><div class="article-post" style="position:relative;"><p style="min-height: 85px">'+rn.client_reply+'</p>');
+          }
+        });
+        if(isclient==true)
+        {
+          if(flag1==1)
+          {
+            $(textdiv1).append('</div><br><button name="respond020'+r.id+'Form" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%;float:right;width:19%;" onclick="hideButton1(name)">Add Respond</button></br><br>');
+          }
+          else
+          {
+            $(textdiv1).append('<form action="/responses/user_response"><input name="id" value="'+r.id+'" type="hidden"> <input type="text" name="client_reply" placeholder="Thanks for your support"  class="review-note" required maxlength="1024"> <br/><input type="submit" value="Submit Reply" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%;float:right;width:19%;"></br><br></form>');  }
+            $("#collapseG2").append('<div id="respond020'+r.id+'Form" class="drdiv" style="display:none; "><form action="/responses/user_response"><input name="id" value="'+r.id+'" type="hidden"> <input type="text" name="client_reply" placeholder="Thanks for your support"  class="review-note" required maxlength="1024"> <br/><input type="submit" value="Submit Reply" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%;float:right;width:19%;"></br><br></form> </div>');
+          }
+        }
+      });
+      $("#collapseG2").append('<li style="list-style-type: none;"><button class="btn btn-warning btn-mini" id="view_id" onClick="func_all();" style="width: 60px;margin-left: 2px;background-color:#f89406">View All</button></li>');
+      // START: For google reviews in view_all 
+      if(gdata!=[])
+      {
+        var grcountall = 0;
+        $.each(data["Google_reviews"], function(review,gr){
+          grcountall++;
+          // console.log(gr);
+          var rg = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})\..*/g;
+            var monthShortNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+              "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+            ];
+          var name = gr.reviewer_name
+          var create_date = gr.google_review_create_time.replace(rg,"$3-$2-$1");
+          var month_id = gr.google_review_create_time.replace(rg,"$2");
+          month_id = parseInt(month_id);
+          var month =  monthShortNames[month_id-1];
+          var date = gr.google_review_create_time.replace(rg,"$3");
+          var create_time = gr.google_review_create_time.replace(rg,"$4:$5");
+          var name = name.split(' ');
+          if(gr.review_comment==null){gr.review_comment="";}
+          $("#collapseG3").append('<li style="list-style-type: none;"> <div style="border-color:rgba(128, 128, 128, 0.25);border-width: 2px;border-style: solid;height: auto; min-height: 80px;"><div class="user-thumb" style="position: relative;top: 0px;min-height: 67px;"><h3><img src="/assets/respond.png"  alt="User"  style="border-radius: 50%;position: relative;top: -10px;width: 46px;left: 9px;"><h1 style="font-size: 9px;position: absolute;top: 25px;right: 20px;">'+name[0]+'</h1></h3><div class="rating-image-style_viewless" id="rating-image-style_viewall'+grcountall+'"> </div><h1 class="rating-img-h1-tag" >On '+date+' '+month+' </h1></h3> </div><div class="article-post" style="position: relative;"> <span style="margin-right: -46px;" > By: '+gr.reviewer_name+' / Date: '+create_date+' / <br> Time: '+create_time+' </span><p style="max-width:80%;text-align:justify;">'+gr.review_comment+'</p></div><div class="buttonmargin" style="margin-left: -19% !important;"><p style="margin-left: 166px;"><a style="background-color:#39393c;color: white;" class="btn btn-default btn-mini borrad" name="allindGoogletodayallrnote0r20'+gr.id +'" onClick="noteResponse(name)">Add Note</a><button  class="btn btn-success btn-mini borrad respond-btn" value="Respond" style="width: 66px;" name="respond020positiveall'+gr.id +'" onClick="noteResponse(name)">Respond</button></p></div><div id="note10'+gr.id +'" style="display: none" ><form action="/home/add_note_for_reviews"><input name="id" value= '+gr.id +' type="hidden"><input type="text" name="review_note" placeholder="Enter note for review"  class="review-note" required maxlength="1024"><br/><input type="submit" value="Submit Note" class="sendReviewrequestButton" style="width: 95px;height: 28px;/*! margin-right: 100px; */margin-left: 318px;color: white;"></form></div></div></li><br>');
+          for(i=0;i< parseInt(gr.star_rating);i++)
+          {
+            $("#rating-image-style_viewall"+grcountall).append('<img src="/assets/star.png" style ="height:12px;position: relative;margin-top: -34px;">')
+          }
+          allindGoogletodayallrnamediv="#allindGoogletodayallrnote0r20"+gr.id;
+          allindGoogletodayallrarrowdiv = "#allindGoogletodayallrabc0r20"+gr.id;
+          allindGoogletodayallrarrowdiv38 = "#allindGoogletodayallrabc0440"+gr.id;
+          allindGoogletodayallrtextdiv= "#allindGoogletodayallrtextdivnote0r20"+gr.id;
+          $("#collapseG3").append('<div id="allindGoogletodayallrnote0r20'+gr.id+'" class="dadiv" style="display:none;"><div><div class="" id="allindGoogletodayallrabc0r20'+gr.id+'"></div><div id="allindGoogletodayallrabc0440'+gr.id+'" style="display:none;"></div><div id="allindGoogletodayallrtextdivnote0r20'+gr.id+'"</div></div></div>');
+          // alert(data["response_notes"]);
+          // console.log("=====================NOTES===============");
+          inc = 0; 
+          flag =0;
+          count1=0;
+          $.each(data["response_notes"], function(response_notes,rn){
+            // alert()
+            console.log(rn.note_text);
+            inc++;
+            if(gr.id==rn.google_review_id)
+            {
+              count1++;
+              if(count1==3)
+              {
+                return false;
+              }
+              else
+              {
+                flag =1;
+                $(allindGoogletodayallrarrowdiv).addClass('up-arrow');
+                $(allindGoogletodayallrarrowdiv).append('<div class="user-thumb" style="position: relative;top:-20px;min-height:67px;background-color:#d6eff8;"><h3><img src="/assets/respond.png" alt="User" style="border-radius:50%;position:relative;top:-10px;width:46px;left:9px;"><h1 style="font-size:9px;position:absolute;top:24px;right: 13px;">John Doe</h1></h1><h1 style="font-size: 9px;position: absolute;top: 40px;right: 13px;">On July 17</h1></h3></div><div class="article-post" style="position:relative;"><p style="min-height: 85px">'+rn.note_text+'</p>');
+              }
+            }
+          });      
+          if((flag==1) &&(count1 > 2))
+          {
+            $(allindGoogletodayallrarrowdiv).append('<button class="btn btn-warning" style="width: 60px;margin-left: -20px;position: relative;top: 20px;font-size: 23px;" name="allindGoogletodayallrabc0440'+gr.id+'" id="allindGoogletodayallrabc0r20'+gr.id+'" onclick="Google_notes(name,id)">+</button>');
+          }
+          $.each(data["response_notes"], function(response_notes,rn){
+            console.log(rn.note_text);
+            inc++;
+            console.log("loop2--"+inc);
+            if(gr.id==rn.google_review_id)
+            {
+              flag =1;
+              $(allindGoogletodayallrarrowdiv38).addClass('up-arrow');
+              $(allindGoogletodayallrarrowdiv38).append('<div class="user-thumb" style="position: relative;top:-35px;min-height:67px;background-color:#d6eff8;"><h3><img src="/assets/respond.png" alt="User" style="border-radius:50%;position:relative;top:-10px;width:46px;left:9px;"><h1 style="font-size:9px;position:absolute;top:24px;right: 13px;">John Doe</h1></h1><h1 style="font-size: 9px;position: absolute;top: 40px;right: 13px;">On July 17</h1></h3></div><div class="article-post" style="position:relative;"><p style="min-height: 85px">'+rn.note_text+'</p>');
+            }
+          });
+          if(isclient==true)
+          {
+            if(flag==1)
+            {
+              $(allindGoogletodayallrtextdiv).append('</div><br><button name="allindGoogletodayallrnote0r20'+gr.id+'Form" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%;float:right;" onclick="hideButton1(name)">Add Note</button><br>');
+            } else{
+              $(allindGoogletodayallrtextdiv).append('<form action="/home/add_note_for_google_reviews"><input name="id" value="'+gr.id+'" type="hidden"><input type="text" name="review_note" placeholder="Enter note for review"  class="review-note" required maxlength="1024"><br/><input type="submit" value="Submit Note" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%; float:right;" ><br></form>');
+            }
+            $("#collapseG3").append('<div id="allindGoogletodayallrnote0r20'+gr.id+'Form" class="dadiv" style="display:none;"><form action="/home/add_note_for_google_reviews"><input name="id" value='+gr.id+' type="hidden"><input type="text" name="review_note" placeholder="Enter note for review"  class="review-note" required maxlength="1024"><br/><input type="submit" value="Submit Note" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%; float:right;" ></form><br> </div>'); 
+          } 
+          // START POSITIVE RESPOND IN LOCATION CHANGE in VIEW ALL
+          namediv1postiveall="#respond020positiveall"+gr.id;
+          arrowdiv1positiveall = "#abcr020positiveall"+gr.id;
+          arrowdivrespondlesspositiveall = "#abcr060positiveall"+gr.id;
+          textdiv1positiveall= "#textdivrespond020positiveall"+gr.id;
+          $("#collapseG3").append('<div id="respond020positiveall'+gr.id+'" class="dadiv" style="display:none;"><div><div class="" id="abcr020positiveall'+gr.id+'"></div></div><div id="abcr060positiveall'+gr.id+'" style="display:none;"></div><div id="textdivrespond020positiveall'+gr.id+'"</div></div></div>');
+          // console.log("=====================responds===============");
+          flag1 =0;
+          count=0;
+          $.each(data["client_response"], function(response_notes,rn){
+            if(gr.id==rn.google_review_id)
+            {
+              count++;
+              if(count==3)
+              {
+                return false;
+              }
+              else
+              {
+                // alert(r.id+"--"+rn.response_id);
+                flag1 =1;
+                $(arrowdiv1positiveall).addClass('up-arrow up-arrow4');
+                $(arrowdiv1positiveall).append('<div class="user-thumb" style="position: relative;top:-35px;min-height:67px;background-color:#d6eff8;"><h3><img src="/assets/respond.png" alt="User" style="border-radius:50%;position:relative;top:-10px;width:46px;left:9px;"><h1 style="font-size:9px;position:absolute;top:24px;right: 13px;">John Doe</h1></h1><h1 style="font-size: 9px;position: absolute;top: 40px;right: 13px;">On July 17</h1></h3></div><div class="article-post" style="position:relative;"><p style="min-height: 85px">'+rn.client_reply+'</p>');
+              }
+            }
+          });    
+          if ((flag1==1) && (count > 2)) 
+          {
+            $(arrowdiv1positiveall).append('<button class="btn btn-warning" style="width: 60px;margin-left: -20px;position: relative;top: 20px;font-size: 23px;" name="abcr060positiveall'+gr.id+'" id="abcr020positiveall'+gr.id+'" onclick="Show_respond(name,id)">+</button>');
+          }
+          $.each(data["client_response"], function(response_notes,rn)
+          {
+            if(gr.id==rn.google_review_id)
+            {
+              $(arrowdivrespondlesspositiveall).addClass('up-arrow up-arrow4');
+              $(arrowdivrespondlesspositiveall).append('<div class="user-thumb" style="position: relative;top:-35px;min-height:67px;background-color:#d6eff8;"><h3><img src="/assets/respond.png" alt="User" style="border-radius:50%;position:relative;top:-10px;width:46px;left:9px;"><h1 style="font-size:9px;position:absolute;top:24px;right: 13px;">John Doe</h1></h1><h1 style="font-size: 9px;position: absolute;top: 40px;right: 13px;">On July 17</h1></h3></div><div class="article-post" style="position:relative;"><p style="min-height: 85px">'+rn.client_reply+'</p>');
+            }
+          });
+          if(isclient==true)
+          {
+            if(flag1==1)
+            {
+              $(textdiv1positiveall).append('</div><br><button name="respond020positiveall'+gr.id+'Form" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%;float:right;width:19%;" onclick="hideButton1(name)">Add Respond</button></br><br>');
+            }
+            else
+            {
+              $(textdiv1positiveall).append('<form action="/responses/google_review_reply"><input name="id" value="'+gr.id+'" type="hidden"> <input type="text" name="client_reply" placeholder="Thanks for your support"  class="review-note" required maxlength="1024"> <br/><input type="submit" value="Submit Reply" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%;float:right;width:19%;"></br><br></form>');  }
+              $("#collapseG3").append('<div id="respond020positiveall'+gr.id+'Form" class="drdiv" style="display:none; "><form action="/responses/google_review_reply"><input name="id" value="'+gr.id+'" type="hidden"> <input type="text" name="client_reply" placeholder="Thanks for your support"  class="review-note" required maxlength="1024"> <br/><input type="submit" value="Submit Reply" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%;float:right;width:19%;"></br><br></form> </div>'
+            );
+          }           
+          // END POSITIVE RESPOND IN LOCATION CHANGE in VIEW ALL
+        });
+      }
+      // end of google reviews view_all
+      $.each(data["Review_data"], function(review,r){
+        var rg = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})\..*/g;
+        var dateStr = r.created_at.replace(rg,"$3-$2-$1");
+        var timeStr = r.created_at.replace(rg,"$4:$5");
+      $("#collapseG3").append('<li style="list-style-type: none;"> <div style="border-color:rgba(128, 128, 128, 0.25);border-width: 2px;border-style: solid;height: auto;"><div class="user-thumb" style="position: relative;top: 0px;min-height: 67px;"><h3><img src="/assets/respond.png"  alt="User"  style="border-radius: 50%;position: relative;top: -10px;width: 46px;left: 9px;"><h1 style="font-size: 9px;position: absolute;top: 28px;right: 13px;">John Doe</h1></h3></div><div class="article-post" style="position: relative;"> <span style="margin-right: -46px;" > By: john Deo / Date: '+dateStr+' / <br> Time: '+timeStr+' </span><p style="text-align: justify;">'+r.feedback+'</p></div><div class="buttonmargin" style="margin-left: -19% !important;"><p style="margin-left: 166px;"><a style="background-color:#39393c;color: white;" class="btn btn-default btn-mini borrad" name="allilocnegtodnotetodyr'+r.id +'" onClick="noteResponse(name)">Add Note</a><button  href="" class="btn btn-success btn-mini borrad respond-btn" value="Respond" name="respond090'+r.id +'" onClick="noteResponse(name)" style="width: 66px;">Respond</button> </p></div><div style="display: none" ><form action="/home/add_note_for_reviews"><input name="id" value= '+r.id +' type="hidden"><input type="text" name="review_note" placeholder="Enter note for review"  class="review-note" required maxlength="1024"><br/><input type="submit" value="Submit Note" class="sendReviewrequestButton" style="width: 115px;height: 28px;/*! margin-right: 100px; */margin-left: 318px;color: white;"></form></div></div></li><br>');
+        allilocnegtodnamedivnotetodyr="#allilocnegtodnotetodyr"+r.id;
+        allilocnegtodarrowdivnotetodyr = "#allilocnegtodabcnotetodyr"+r.id;
+        allilocnegtodtextdivnotetodyr= "#allilocnegtodtextdivnotetodyr"+r.id;
+        allilocnegtodarrowdivnotetodyrnotes = "#allilocnegtodabcnotetodyrnotes"+r.id;
+        // allilocnegtodtextdivnotetodyr= "#allilocnegtodtextdivnotetodyr"+r.id;
+        $("#collapseG3").append('<div id="allilocnegtodnotetodyr'+r.id+'" class="dadiv" style="display:none;"><div><div class="" id="allilocnegtodabcnotetodyr'+r.id+'"></div><div class="" id="allilocnegtodabcnotetodyrnotes'+r.id+'" style="display:none;"></div><div id="allilocnegtodtextdivnotetodyr'+r.id+'"</div></div></div>');
+          // console.log("=====================NOTES===============");
+        inctodyra = 0; 
+        flagtodyra =0;
+        counttoadyra=0;
+        $.each(data["response_notes"], function(response_notes,rn){
+          console.log(rn.note_text);
+          inctodyra++;          
+          if(r.id==rn.response_id)
+          {
+            counttoadyra++;
+            if(counttoadyra==3)
+            {
+              return false;
+            }
+            else
+            {
+            flagtodyra=1;
+            $(allilocnegtodarrowdivnotetodyr).addClass('up-arrow');
+            $(allilocnegtodarrowdivnotetodyr).append('<div class="user-thumb" style="position: relative;top:-20px;min-height:67px;background-color:#d6eff8;"><h3><img src="/assets/respond.png" alt="User" style="border-radius:50%;position:relative;top:-10px;width:46px;left:9px;"><h1 style="font-size:9px;position:absolute;top:24px;right: 13px;">John Doe</h1></h1><h1 style="font-size: 9px;position: absolute;top: 40px;right: 13px;">On July 17</h1></h3></div><div class="article-post" style="position:relative;"><p style="min-height: 85px">'+rn.note_text+'</p>');
+            }
+          }
+        });
+        if((flagtodyra==1) && (counttoadyra > 2))
+        {
+          $(allilocnegtodarrowdivnotetodyr).append('<button class="btn btn-warning " style="width: 60px;margin-left: -20px;position: relative;top: 20px;font-size: 23px;" name="allilocnegtodabcnotetodyrnotes'+r.id+'" id="allilocnegtodabcnotetodyr'+r.id+'" onclick="Google_notes(name,id)">+</button>');
+        }
+        $.each(data["response_notes"], function(response_notes,rn)
+        {
+          if(r.id==rn.response_id)
+          {
+            flagtodyra =1;
+            $(allilocnegtodarrowdivnotetodyrnotes).addClass('up-arrow');
+            $(allilocnegtodarrowdivnotetodyrnotes).append('<div class="user-thumb" style="position: relative;top:-20px;min-height:67px;background-color:#d6eff8;"><h3><img src="/assets/respond.png" alt="User" style="border-radius:50%;position:relative;top:-10px;width:46px;left:9px;"><h1 style="font-size:9px;position:absolute;top:24px;right: 13px;">John Doe</h1></h1><h1 style="font-size: 9px;position: absolute;top: 40px;right: 13px;">On July 17</h1></h3></div><div class="article-post" style="position:relative;"><p style="min-height: 85px">'+rn.note_text+'</p>');
+          }
+        });
+        if(isclient==true)
+        {
+          if(flagtodyra==1)
+          {
+            $(allilocnegtodtextdivnotetodyr).append('</div><br><button name="allilocnegtodnotetodyr'+r.id+'Form" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%;float:right;" onclick="hideButton1(name)">Add Note</button><br>');
+          }
+          else
+          {
+            $(allilocnegtodtextdivnotetodyr).append('<form action="/home/add_note_for_reviews"><input name="id" value="'+r.id+'" type="hidden"><input type="text" name="review_note" placeholder="Enter note for review"  class="review-note" required maxlength="1024"><br/><input type="submit" value="Submit Note" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%; float:right;" ><br></form>');
+          }
+          $("#collapseG3").append('<div id="allilocnegtodnotetodyr'+r.id+'Form" class="dadiv" style="display:none;"><form action="/home/add_note_for_reviews"><input name="id" value='+r.id+' type="hidden"><input type="text" name="review_note" placeholder="Enter note for review"  class="review-note" required maxlength="1024"><br/><input type="submit" value="Submit Note" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%; float:right;" ><br></form> </div></div>'); 
+        }
+        //////Location change Respond in View all
+        vnamedivall="#respond090"+r.id;
+        varrowdivall = "#abcr090"+r.id;
+        varrowdivallrespond = "#abcr0990"+r.id;
+        vtextdivall= "#textdivrespond090"+r.id;
+        $("#collapseG3").append('<div id="respond090'+r.id+'" class="dadiv" style="display:none;"><div><div class="" id="abcr090'+r.id+'"></div><div id="abcr0990'+r.id+'" style="display:none;"></div><div id="textdivrespond090'+r.id+'"</div></div></div>');
+        flag1 =0;
+        count=0;
+        $.each(data["client_response"], function(response_notes,rn){
+          if(r.id==rn.response_id)
+          {
+            count++;
+            if(count==3)
+            {
+              return false;
+            }
+            else
+            {
+              flag1 =1;
+              $(varrowdivall).addClass('up-arrow up-arrow4');
+              $(varrowdivall).append('<div class="user-thumb" style="position: relative;top:-35px;min-height:67px;background-color:#d6eff8;"><h3><img src="/assets/respond.png" alt="User" style="border-radius:50%;position:relative;top:-10px;width:46px;left:9px;"><h1 style="font-size:9px;position:absolute;top:24px;right: 13px;">John Doe</h1></h1><h1 style="font-size: 9px;position: absolute;top: 40px;right: 13px;">On July 17</h1></h3></div><div class="article-post" style="position:relative;"><p style="min-height: 85px">'+rn.client_reply+'</p>');
+            }
+          }
+        });
+        if((flag1==1) && (count > 2))
+        {
+          $(varrowdivall).append('<button class="btn btn-warning" style="width: 60px;margin-left: -20px;position: relative;top: 20px;font-size: 23px;" name="abcr0990'+r.id+'" id="abcr090'+r.id+'" onclick="Show_respond(name,id)">+</button>');
+        }
+        $.each(data["client_response"], function(response_notes,rn){
+          if(r.id==rn.response_id)
+          {
+            $(varrowdivallrespond).addClass('up-arrow up-arrow4');
+            $(varrowdivallrespond).append('<div class="user-thumb" style="position: relative;top:-35px;min-height:67px;background-color:#d6eff8;"><h3><img src="/assets/respond.png" alt="User" style="border-radius:50%;position:relative;top:-10px;width:46px;left:9px;"><h1 style="font-size:9px;position:absolute;top:24px;right: 13px;">John Doe</h1></h1><h1 style="font-size: 9px;position: absolute;top: 40px;right: 13px;">On July 17</h1></h3></div><div class="article-post" style="position:relative;"><p style="min-height: 85px">'+rn.client_reply+'</p>');
+          }
+        });  
+        if(isclient==true)
+        {
+          if(flag1==1)
+          {
+            $(vtextdivall).append('</div><br><button name="respond090'+r.id+'Form" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%;float:right;width:19%;" onclick="hideButton1(name)">Add Respond</button></br><br>');
+          } 
+          else
+          {
+            $(vtextdivall).append('<form action="/responses/user_response"><input name="id" value="'+r.id+'" type="hidden"> <input type="text" name="client_reply" placeholder="Thanks for your support"  class="review-note" required maxlength="1024"> <br/><input type="submit" value="Submit Reply" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%;float:right;width:19%;"></br><br></form>');  
+          }
+          $("#collapseG3").append('<div id="respond090'+r.id+'Form" class="drdiv" style="display:none; "><form action="/responses/user_response"><input name="id" value="'+r.id+'" type="hidden"> <input type="text" name="client_reply" placeholder="Thanks for your support"  class="review-note" required maxlength="1024"> <br/><input type="submit" value="Submit Reply" class="btn btn-success btn-mini borrad btn-info add-note-btn" style="height: 70%;float:right;width:19%;"</br><br></form> </div>');
+        }
+        //////End of Location change Respond in View all
+      });
+      $("#collapseG3").append('<li style="list-style-type: none;"><button class="btn btn-warning btn-mini" style="width: 66px;margin-left: 2px;background-color:#f89406" id="view112" onClick="func_less()">View Less</button></li>');
+        $("#request_sent").empty();
+        var req_count=data["Request_count"];
+        $("#request_sent").append(''+req_count+'');
+        $('#jqChart').jqChart({
+          title: { text: '' },
+          animation: { duration: 1 },
+          shadows: {
+            enabled: true
+          },
+          border: {
+            cornerRadius: 1,
+            lineWidth: 1,
+            // strokeStyle: '#6ba851'
+          },
+          axes: [
+            {
+              type: 'category',
+              location: 'bottom',
+              categories: data["months_all"],
+            }
+          ],
+          series: [
+            {
+              type: 'stackedColumn',
+              title: '- ve',
+              data:  data['chart_data'],
+              labels: {
+                font: '12px sans-serif'
+              }
+            },
+            {
+              type: 'stackedColumn',
+              title: '+ve',
+              data: data['google_data'],
+              labels: {
+                font: '12px sans-serif'
+              }
+            }
+          ]
+        });
+        },
+      });
+    });
+    $(document).ajaxSend(function(e, xhr, options) {
+      var sid = $("meta[name='csrf-token']").attr("content");
+      xhr.setRequestHeader("X-CSRF-Token", sid);
+      $( window ).load(function() {
+        $("#client_ids option[value='1']").text('');
+        $("#client_id option[value='1']").text('');
+      });
+    });
+   </script>
+   <script type="text/javascript">
+    function  func_all(){
+    $("#collapseG2").hide();
+    $("#collapseG3").show();
+    }
+    function  func_less(){
+    $("#collapseG2").show();
+    $("#collapseG3").hide();
+    }
+    // ajax for notification settings
+    $('input[type="checkbox"]').change(function() {
+      var notification_type = this.id;
+      var email_push = this.name;
+      if($(this).prop('checked') === true)
+      {
+        check = true;
+      }
+      else
+      {
+        check = false;
+      }      
+      $.ajax({
+        type: "POST",
+        url: "/update_notification_settings/",
+        data: {email_push:email_push, notification_type:notification_type, check:check },
+      });
+    });
+  </script>
+  <script type="text/javascript">
+    function func_add_note(data){
+      var str1 = "note10";
+      var str2 = data;
+      var res = str1.concat(str2);
+      document.getElementById(res).style.display = "block";
+    }
+  </script>
+  <script type="text/javascript">
+    function func_add_note_for_view_less(data){
+      var str1 = "note20";
+      var str2 = data;
+      var res = str1.concat(str2);
+      document.getElementById(res).style.display = "block";
+    }
+  </script>
+  </body>
+</html>
